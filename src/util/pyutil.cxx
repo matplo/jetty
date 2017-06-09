@@ -1,6 +1,7 @@
 #include "pyutil.h"
 #include "util.h"
 #include "strutil.h"
+#include "sysutil.h"
 
 #include <Pythia8/Pythia.h>
 
@@ -9,6 +10,7 @@
 #include <iomanip>
 #include <cmath>
 #include <string>
+#include <cstdlib>
 
 #include <TMath.h>
 
@@ -16,35 +18,21 @@ using namespace std;
 
 namespace PyUtil
 {
-    double sqrts(double _eA, double _eB, double mA, double mB)
-        {
-                double eA  = TMath::Abs(eA);
-                double eB  = TMath::Abs(eB);
-                double pA  = TMath::Sqrt(eA * eA - mA * mA);
-                double pB  = TMath::Sqrt(eB * eB - mB * mB);
-                double eCM = TMath::Sqrt( TMath::Power(eA + eB, 2.) - TMath::Power(pA + (-1. * pB), 2.) );
-                return eCM;
-        }
-
-	Pythia8::Pythia* get_pythia(string cmndfile /*= "pythia.cmnd"*/, bool init /* = true */)
-	{
-		// Generator. Shorthand for event.
-		Pythia8::Pythia *ppythia = new Pythia8::Pythia();
-		// Read in commands from external file.
-		ppythia->readFile(cmndfile.c_str());
-		if (init)
-			ppythia->init();
-
-		return ppythia;
-	}
+	double sqrts(double _eA, double _eB, double mA, double mB)
+		{
+				double eA  = TMath::Abs(eA);
+				double eB  = TMath::Abs(eB);
+				double pA  = TMath::Sqrt(eA * eA - mA * mA);
+				double pB  = TMath::Sqrt(eB * eB - mB * mB);
+				double eCM = TMath::Sqrt( TMath::Power(eA + eB, 2.) - TMath::Power(pA + (-1. * pB), 2.) );
+				return eCM;
+		}
 
 	Pythia8::Pythia *make_pythia(const SysUtil::Args &args)
 	{
 		string cfgfile = args.get("--config");
-		if (cfgfile.length() == 0)
-		{
-			cfgfile = "./pythia.cmnd";
-		}
+		if (SysUtil::file_exists(cfgfile) == false)
+			cerr << "[w] config file does not exists... - tried: " << cfgfile << endl;
 
 		// create pythia generator with some config
 		Pythia8::Pythia *ppythia = new Pythia8::Pythia();

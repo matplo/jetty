@@ -1,5 +1,6 @@
 #include "pyargs.h"
 #include "pyutil.h"
+#include "sysutil.h"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
@@ -12,11 +13,23 @@ namespace PyUtil
 	//pythia args - args preprocessed
 	void Args::_cook()
 	{
+		std::string cfgfile = get("--config");
+		if (cfgfile.length() == 0)
+		{
+			cfgfile = "./pythia.cmnd";
+			if (SysUtil::file_exists(cfgfile) == false)
+			{
+				cfgfile = std::getenv("JETTYDIR");
+				cfgfile += std::string("/config/pythia.cmnd");
+			}
+		}
+		if (SysUtil::file_exists(cfgfile))
+			readConfig(cfgfile.c_str());
+
 		int nEvent = getI("Main:numberOfEvents");
-		int userNEvent = getI("--nev");
+		int userNEvent = getI("--nev", nEvent);
 		if (userNEvent > 0)
 		{
-			// std::cout << "[i] User set number of events: " << userNEvent << std::endl;
 			nEvent 		= userNEvent;
 		}
 		set("Main:numberOfEvents", nEvent);
@@ -78,13 +91,7 @@ namespace PyUtil
 			add(boost::str(boost::format("Beams:eCM=%f") % sqrts));
 		}
 
-		add("Next:numberCount=0");
-
-		std::string cfgfile = get("--config");
-		if (cfgfile.length() == 0)
-		{
-			cfgfile = "./pythia.cmnd";
-		}
-		readConfig(cfgfile.c_str());
+		if (isSet("Next:numberCount") == false)
+			add("Next:numberCount=0");
 	}
 };

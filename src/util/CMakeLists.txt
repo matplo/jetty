@@ -1,8 +1,10 @@
-set(MODULE Util)
-set(NAME_LIB Util)
+set(MODULE ${PROJECT_NAME}Util)
+set(NAME_LIB ${MODULE})
 
 set(SOURCES_LIB
 	strutil.cxx
+	sysutil.cxx
+	looputil.cxx
 	args.cxx
 	pyargs.cxx
 	pyutil.cxx

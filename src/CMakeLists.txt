@@ -1,4 +1,4 @@
-project(fastsim CXX)
+project(jetty CXX)
 cmake_minimum_required(VERSION 2.8.11)
 
 include(CheckCXXCompilerFlag)
@@ -55,12 +55,4 @@ set(CMAKE_MACOSX_RPATH 1)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${TRIGGER_MAKER_INCLUDE_DIR})
 
 add_subdirectory(util)
-
-# message("GLAUBERDIR:" $ENV{GLAUBERDIR})
-if(DEFINED ENV{GLAUBERDIR})
-    message(STATUS "GLAUBERDIR environment variable defined $ENV{GLAUBERDIR}")
-    # some more commands
-    add_subdirectory(pyglauber)
-else()
-	message(WARNING "GLAUBERDIR environment variable NOT defined")
-endif()
+add_subdirectory(examples)

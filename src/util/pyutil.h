@@ -8,6 +8,8 @@
 
 namespace PyUtil
 {
+	Pythia8::Pythia *make_pythia(const SysUtil::Args &args);
+
     double sqrts(double _eA, double _eB, double mA = 0.93827, double mB = 0.93827);
 
 	void PrintParticle(const Pythia8::Particle &p);

@@ -13,25 +13,22 @@ function is_arg_set
 
 savedir=$PWD
 
-if [ -z $JETTY ]; then
+if [ -z $JETTYDIR ]; then
+  echo "[e] JETTYDIR dir not set..."
   exit
 fi
 
-if [ -d $JETTY ]; then
-  cd $JETTY
+if [ -d $JETTYDIR ]; then
+  cd $JETTYDIR
 
   if is_arg_set "realclean" ;
   then
-    rm -rf $JETTY/include/* $JETTY/lib/*
-    for ex in jetty
-    do
-      rm -rf $JETTY/bin/$ex
-    done
+    rm -rf $JETTYDIR/include/* $JETTYDIR/lib/* $JETTYDIR/bin/*
   fi
 
   for pack in src
   do
-    bdir=$JETTY/.build/$pack
+    bdir=$JETTYDIR/.build/$pack
     if is_arg_set "realclean" ;
     then
     	rm -rf $bdir
@@ -42,7 +39,7 @@ if [ -d $JETTY ]; then
     #cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo
     #is_arg_set "o3" && export CXXFLAGS=-O3 # Release does it
     is_arg_set "debug" && debug=-DCMAKE_BUILD_TYPE=Debug
-    cmake -DCMAKE_INSTALL_PREFIX=$JETTY $debug $JETTY/$pack
+    cmake -DCMAKE_INSTALL_PREFIX=$JETTYDIR $debug $JETTYDIR/$pack
     is_arg_set "clean" && make clean
     is_arg_set "verbose" && verbose="VERBOSE=1"
     make $verbose && make install

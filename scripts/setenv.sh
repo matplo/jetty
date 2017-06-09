@@ -34,10 +34,22 @@ fi
 THISDIR=$XDIR
 XDIR=`dirname $XDIR`
 
-export JETTY=$XDIR
+export JETTYDIR=$XDIR
 
 if [ -z $PATH ]; then
-	export PATH=$JETTY/bin
+	export PATH=$JETTYDIR/bin:$JETTYDIR/scripts
 else
-	export PATH=$JETTY/bin:$PATH
+	export PATH=$JETTYDIR/bin:$JETTYDIR/scripts:$PATH
+fi
+
+if [ -z $LD_LIBRARY_PATH ]; then
+    export LD_LIBRARY_PATH=$JETTYDIR/lib
+else
+    export LD_LIBRARY_PATH=$JETTYDIR/lib:$LD_LIBRARY_PATH
+fi
+
+if [ -z $DYLD_LIBRARY_PATH ]; then
+    export DYLD_LIBRARY_PATH=$JETTYDIR/lib
+else
+    export DYLD_LIBRARY_PATH=$JETTYDIR/lib:$DYLD_LIBRARY_PATH
 fi

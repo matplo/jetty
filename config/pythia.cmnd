@@ -1,5 +1,5 @@
 ! based on pythia original: main03.cmnd.
-! This file contains commands to be read in for a Pythia8 run. 
+! This file contains commands to be read in for a Pythia8 run.
 ! Lines not beginning with a letter or digit are comments.
 ! Names are case-insensitive  -  but spellings-sensitive!
 ! The settings here are illustrative, not always physics-motivated.
@@ -11,7 +11,7 @@ Main:timesAllowErrors = 5          ! how many aborts before run stops
 ! 2) Settings related to output in init(), next() and stat().
 Init:showChangedSettings = on      ! list changed settings
 Init:showChangedParticleData = off ! list changed particle data
-Next:numberCount = 1000            ! print message every n events
+Next:numberCount = 0            ! print message every n events
 Next:numberShowInfo = 0            ! print event information n times
 Next:numberShowProcess = 0         ! print process record n times
 Next:numberShowEvent = 0           ! print event record n times
@@ -23,28 +23,28 @@ Beams:eCM = 5000.                 ! CM energy of collision
 
 ! 4) Settings for the hard-process generation.
 
-! Example 1: QCD + prompt photon production; must set pTmin. 
+! Example 1: QCD + prompt photon production; must set pTmin.
 HardQCD:all = on                   ! switch on all QCD jet + jet processes
-PromptPhoton:all = on              ! swich on gamma + jet and gamma + gamma 
-PhaseSpace:pTHatMax = 88.        ! minimal pT scale in process 
-PhaseSpace:pTHatMin = 44.          ! minimal pT scale in process 
+PromptPhoton:all = on              ! swich on gamma + jet and gamma + gamma
+PhaseSpace:pTHatMax = 88.        ! minimal pT scale in process
+PhaseSpace:pTHatMin = 44.          ! minimal pT scale in process
 ! SoftQCD:minBias = on
 
-! Example 2: t-tbar production.  
+! Example 2: t-tbar production.
 ! Top:gg2ttbar = on                  ! g g -> t tbar
 ! Top:qqbar2ttbar = on               ! q qbar -> t tbar
 
 ! Example 3: Z0 production; should set mMin.
 ! WeakSingleBoson:ffbar2gmZ = on     ! q qbar -> gamma*/Z0
-! PhaseSpace:mHatMin = 50.            
+! PhaseSpace:mHatMin = 50.
 
 ! Example 4: gauge boson pair production; set pTmin. Not yet complete.
-! WeakDoubleBoson:ffbar2ZW = on      ! q qbar -> Z0 W+- 
+! WeakDoubleBoson:ffbar2ZW = on      ! q qbar -> Z0 W+-
 ! WeakDoubleBoson:ffbar2WW = on      ! q qbar -> W+ W-
 
-! 5) Switch on/off the key event generation steps. 
+! 5) Switch on/off the key event generation steps.
 ! PartonLevel:MPI = off              ! no multiparton interactions
-! PartonLevel:ISR = off              ! no initial-state radiation 
+! PartonLevel:ISR = off              ! no initial-state radiation
 ! PartonLevel:FSR = off              ! no final-state radiation
 ! HadronLevel:Hadronize = off        ! no hadronization
 ! HadronLevel:Decay = off            ! no decays
