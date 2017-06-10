@@ -34,6 +34,8 @@ message( STATUS "PYTHIA8_LDFLAGS: ${PYTHIA8_LDFLAGS}")
 find_package(Boost REQUIRED math_c99)
 if (BOOST-NOTFOUND)
 	message(SEND_ERROR "Boost or one of the components not found. Will not compile ${EXE_NAME}")
+else()
+	include_directories(${Boost_INCLUDE_DIRS})
 endif (BOOST-NOTFOUND)
 
 # indep. if root built with cmake assume the root-cint is in the path
@@ -52,7 +54,7 @@ endif()
 
 set(CMAKE_MACOSX_RPATH 1)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${TRIGGER_MAKER_INCLUDE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_subdirectory(util)
 add_subdirectory(examples)

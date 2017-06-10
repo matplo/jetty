@@ -1,5 +1,4 @@
 #include "pyutil.h"
-#include "util.h"
 #include "strutil.h"
 #include "sysutil.h"
 
