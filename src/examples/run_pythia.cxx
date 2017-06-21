@@ -8,6 +8,7 @@
 
 #include <TFile.h>
 #include <TH1F.h>
+#include <TMath.h>
 
 #include <string>
 #include <iostream>
@@ -29,7 +30,7 @@ int run_pythia (const std::string &s)
         }
         TFile *fout = TFile::Open(outfname.c_str(), "RECREATE");
         fout->cd();
-        TH1F *hpT = new TH1F("hpT", "pT;p_{T} (GeV/#it{c});counts", 300, 0, 300);
+        TH1F *hpT = new TH1F("hpT", "pT;p_{T} (GeV/#it{c});counts", 50, 0, 100);
 
         // initialize pythia with a config and command line args
 		Pythia8::Pythia *ppythia = PyUtil::make_pythia(args.asString());
@@ -47,16 +48,21 @@ int run_pythia (const std::string &s)
             // loop over particles in the event
             for (unsigned int ip = 0; ip < event.size(); ip++)
             {
-            	hpT->Fill(event[ip].pT());
+                if (event[ip].isFinal())
+                    if (TMath::Abs(event[ip].eta()) < 1.)
+                    	hpT->Fill(event[ip].pT(), 1./event[ip].pT());
             }
         }
         pythia.stat();
-        cout << "[i] Done." << endl;
+        cout << "[i] Generation done." << endl;
 
         // remember to properly save/update and close the output file
         fout->Write();
         fout->Close();
         delete fout;
+
+        string xsec_outfname = outfname + ".txt";
+        PyUtil::CrossSections(pythia, xsec_outfname.c_str());
 
         // delete the pythia
         delete ppythia;
