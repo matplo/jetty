@@ -6,13 +6,28 @@
 
 HEPData-ins1241422-v1-Table1.root 		:Table 1/Graph1D_y3 :p :  title=ALICE data
 
-7TeV.root 		:hpT :p  : title=pT,,scale=1./(100./50.)
-7TeV.root 		:hpT :p  : title=pT x #sigma/N_{ev},,scale=71.3922/10000/(100./50.)
-7TeV.root 		:hpT :p  : title=pT x #sigma/N_{ev} / (2#pi),,scale=71.3922/10000/(2*pi)/(100./50.)
+# 7TeV.root 		:hpT :p  : title=pT,,scale=1./(100./50.)
+# 7TeV.root 		:hpT :p  : title=pT x #sigma/N_{ev},,scale=71.3922/10000/(100./50.)
+# 7TeV.root 		:hpT :p  : title=pT x #sigma/N_{ev} / (2#pi),,scale=71.3922/10000/(2*pi)/(100./50.)
 7TeV.root 		:hpT :p  : title=pT x #sigma/N_{ev} / (2#pi) / d#eta,,scale=71.3922/10000/(2*pi)/4./(100./50.)
+7TeVcheck.root 		:hpT :p  : title=charged pT x #sigma/N_{ev} / (2#pi) / d#eta,,scale=71.3922/10000/(2*pi)/4./(100./50.)*2/3.
+
+
+/Users/ploskon/Downloads/7TeV.root :hpT :p  : title=pT x #sigma/N_{ev} / (2#pi) / d#eta,,scale=71.3922/10000/(2*pi)/4./(100./50.)
+
+
+~/Downloads/7TeVJosh.root : hpTRaw : p : title=Josh pT x #sigma/N_{ev} / (2#pi) / d#eta,,scale=71.3922/10000/(2*pi)/4./(100./50.)
 
 #logx 1
 #logy 1
 #xrange 0.2,50
 #miny 1e-7
 #y some measure of x-section(p_{T})
+
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+
+~/Downloads/7TeVJosh.root : hpTRaw : p : title=Josh pT x #sigma/N_{ev} / (2#pi) / d#eta,,scale=71.3922/10000/(2*pi)/4./(100./50.)
