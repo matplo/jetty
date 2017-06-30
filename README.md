@@ -17,8 +17,10 @@ $ module load jetty/default
 $ build_jetty.sh
 ```
 
-# run example
+# run an example
 
 ```bash
-$  jettyExamplesExe --pythia
+$ module load use.own
+$ module load jetty/default
+$ jettyExamplesExe --pythia
 ```
