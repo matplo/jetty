@@ -1,0 +1,122 @@
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+
+#legend 0.2,0.4,0.5,0.87,, tx_size=0.04
+
+inel/fits.root 		:p0 :p  : title=#Delta p_{z}^{beam}
+inel/fits.root 		:fitp0 :l -k: title=fit #Delta p_{z}^{beam}
+inel/fits.root 		:p1 :p  : title=#Delta p_{z}^{beam}
+inel/fits.root 		:fitp1 :l -k : title=fit #Delta p_{z}^{beam}
+inel/fits.root 		:et :p  : title=E_{T}/2
+inel/fits.root 		:fitpe :l -k: title=fit E_{T}/2
+
+#logx 1
+#logy 1
+#x #sqrt{s} (GeV)
+#y E_{T}/2 or #Delta p_{z}^{beam}
+#miny 0.5
+#maxy 50
+#comment 0.6,0.82,0.8,0.87, item=inelastic tx_size=0.04
+
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+
+#legend 0.2,0.4,0.5,0.87,, tx_size=0.04
+
+el/fits.root 		:p0 :p  : title=#Delta p_{z}^{beam}
+el/fits.root 		:fitp0 :l -k: title=fit #Delta p_{z}^{beam}
+el/fits.root 		:p1 :p  : title=#Delta p_{z}^{beam}
+el/fits.root 		:fitp1 :l -k : title=fit #Delta p_{z}^{beam}
+el/fits.root 		:et :p  : title=E_{T}/2
+el/fits.root 		:fitpe :l -k: title=fit E_{T}/2
+
+#logx 1
+#logy 1
+#x #sqrt{s} (GeV)
+#y E_{T}/2 or #Delta p_{z}^{beam}
+#miny 0.5
+#maxy 50
+#comment 0.6,0.82,0.8,0.87, item=elastic tx_size=0.04
+
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+
+#legend 0.2,0.4,0.5,0.87,, tx_size=0.04
+
+mb/fits.root 		:p0 :p  : title=#Delta p_{z}^{beam}
+mb/fits.root 		:fitp0 :l -k: title=fit #Delta p_{z}^{beam}
+mb/fits.root 		:p1 :p  : title=#Delta p_{z}^{beam}
+mb/fits.root 		:fitp1 :l -k : title=fit #Delta p_{z}^{beam}
+mb/fits.root 		:et :p  : title=E_{T}/2
+mb/fits.root 		:fitpe :l -k: title=fit E_{T}/2
+
+#logx 1
+#logy 1
+#x #sqrt{s} (GeV)
+#y E_{T}/2 or #Delta p_{z}^{beam}
+#miny 0.5
+#maxy 50
+#comment 0.6,0.82,0.8,0.87, item=min. bias tx_size=0.04
+
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+
+#legend 0.2,0.4,0.5,0.87,, tx_size=0.04
+
+mb_noifsr/fits.root 		:p0 :p  : title=#Delta p_{z}^{beam}
+mb_noifsr/fits.root 		:fitp0 :l -k: title=fit #Delta p_{z}^{beam}
+mb_noifsr/fits.root 		:p1 :p  : title=#Delta p_{z}^{beam}
+mb_noifsr/fits.root 		:fitp1 :l -k : title=fit #Delta p_{z}^{beam}
+mb_noifsr/fits.root 		:et :p  : title=E_{T}/2
+mb_noifsr/fits.root 		:fitpe :l -k: title=fit E_{T}/2
+
+#logx 1
+#logy 1
+#x #sqrt{s} (GeV)
+#y E_{T}/2 or #Delta p_{z}^{beam}
+#miny 0.5
+#maxy 50
+#comment 0.6,0.82,0.8,0.87, item=min. bias no I/FSR tx_size=0.04
+
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+
+#legend 0.2,0.4,0.5,0.87,, tx_size=0.04
+
+inel/fits.root 		:fitp0 :l1 : title=#Delta p_{z}^{beam}, INEL
+#inel/fits.root 		:fitp1 :l2 -k : title=#Delta p_{z}^{beam}
+inel/fits.root 		:fitpe :l3 -k: title=E_{T}/2, INEL
+
+mb/fits.root 		:fitp0 :l1 : title=#Delta p_{z}^{beam}, Min. Bias
+#mb/fits.root 		:fitp1 :l2 -k : title=#Delta p_{z}^{beam}
+mb/fits.root 		:fitpe :l3 -k: title=E_{T}/2, Min. Bias
+
+mb_noifsr/fits.root 		:fitp0 :l1 : title=#Delta p_{z}^{beam} MB noI/FSR
+#mb_noifsr/fits.root 		:fitp1 :l2 -k : title=#Delta p_{z}^{beam} MB noI/FSR
+mb_noifsr/fits.root 		:fitpe :l3 -k: title=E_{T}/2 MB noI/FSR
+
+##dir $HOME/Dropbox/Public/Physics/Glauber/rfiles
+##kine_vs_eCM.root                :eAlossFit :l  : title=Linear function #Deltap = -1.4 - 0.0025 #sqrt{s}
+mb_noifsr/fits.root 		:ref :l1 : title=reference*
+
+#logx 1
+#logy 1
+#x #sqrt{s} (GeV)
+#y E_{T}/2 or #Delta p_{z}^{beam}
+#miny 0.5
+#maxy 50

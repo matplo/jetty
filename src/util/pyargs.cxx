@@ -104,6 +104,22 @@ namespace PyUtil
 			add("SoftQCD:centralDiffractive=on"); //    ! Central diffractive
 		}
 
+		if (isSet("--el"))
+		{
+			add("HardQCD:all=off");
+			add("PromptPhoton:all=off");
+			add("SoftQCD:all=off");
+			add("SoftQCD:elastic=on"); //             ! All inelastic
+		}
+
+		if (isSet("--nd"))
+		{
+			add("HardQCD:all=off");
+			add("PromptPhoton:all=off");
+			add("SoftQCD:all=off");
+			add("SoftQCD:nonDiffractive=on"); //        ! Nondiffractive (inelastic)
+		}
+
 		if (isSet("Beams:eA") || isSet("Beams:eB"))
 		{
 			add("Beams:frameType=2");

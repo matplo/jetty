@@ -43,7 +43,7 @@ int et (const std::string &s)
         TH2F *hetmean2d = new TH2F("hetmean2d", "hetmean2d;#sqrt{s};E_{T}/2 (GeV);counts", 100, 0, 12000., 100, 0, 100.);
         TH2F *hptmean2d = new TH2F("hptmean2d", "hptmean2d;#sqrt{s};p_{z}^{loss}/2 (GeV);counts", 100, 0, 12000., 100, 0, 100.);
 
-        TNtuple *tn = new TNtuple("eloss", "eloss", "ecm/F:p0/F:p1/F:et/F");
+        TNtuple *tn = new TNtuple("eloss", "eloss", "ecm:p0:p1:et:pid");
 
         TProfile *p0 = new TProfile("p0", "p0", 12000, 0, 12000);
         TProfile *p1 = new TProfile("p1", "p1", 12000, 0, 12000);
@@ -88,7 +88,9 @@ int et (const std::string &s)
             hetmean2d->Fill(ecm, total_et/2.);
             hptmean2d->Fill(ecm, mean_p_loss_perN);
 
-            tn->Fill(ecm, outk.d_p_z[0], outk.d_p_z[1], total_et/2.);
+            int proc_id = pythia.info.code();
+            tn->Fill(ecm, outk.d_p_z[0], outk.d_p_z[1], total_et/2., proc_id);
+
             p0->Fill(ecm, outk.d_p_z[0]);
             p1->Fill(ecm, outk.d_p_z[1]);
             et->Fill(ecm, total_et/2.);
