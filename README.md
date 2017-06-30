@@ -3,6 +3,7 @@ Jets with pythia &amp; fastjet &amp; root sandbox
 
 # requirements
 
+ - [CMAKE](https://cmake.org)
  - [ROOT](http://root.cern.ch) - `root-config` should be in the $PATH
  - [Pythia8](http://home.thep.lu.se/~torbjorn/Pythia.html) - `pythia8-config` should be in the $PATH.
  - [BOOST](http://www.boost.org)
