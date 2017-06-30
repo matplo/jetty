@@ -16,7 +16,8 @@ $ module load jetty/default
 $ build_jetty.sh
 ```
 
-# example
+# run example
 
+```bash
 $  jettyExamplesExe --pythia
-
+```
