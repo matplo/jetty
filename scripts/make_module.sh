@@ -66,15 +66,31 @@ while getopts ":v:cm" opt; do
 done
 
 outdir=$JETTYDIR/modules/jetty
-mkdir -p $outdir
 modfile=$outdir/$version
 
+if [ $copy == 1 ] && [ $domake == 0 ]; then
+  if [ -f $modfile ]; then
+    mkdir -p $HOME/privatemodules/jetty
+    cp -v $modfile $HOME/privatemodules/jetty/
+  else
+    echo "[e] no file copied. $modfile does not exist."
+  fi
+  exit 1
+fi
+
 if [ $domake == 0 ]; then
-	echo "[i] this is a dry run use -m for actual modfile creation"
+	echo "[i] this is a dry run use -m [-v <version>] for actual modfile creation"
 	modfile=$outdir/${version}_test
 fi
+
+if [ $copy == 0 ] && [ $domake == 0 ]; then
+  echo "[i] this is a dry run use -c [-v <version>] for copying existing files to your $HOME/privatemodules"
+  echo
+fi
+
 echo "[i] working with "$modfile
 
+mkdir -p $outdir
 cp $XDIR/config/module_template $modfile
 sed -i "" -e "s|par1|$JETTYDIR|g" $modfile
 sed -i "" -e "s|par2|$version|g" $modfile
