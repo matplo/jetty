@@ -78,6 +78,14 @@ if [ $domake == 1 ] && [ $dopatch == 1 ]; then
 fi
 
 if [ $dopatch == 1 ]; then
+  modfiledot=$outdir/.$version
+  if [ -f $modfiledot ]; then
+    rm -rfv $modfile
+    cp -v $modfiledot $modfile
+  else
+    echo "[e] template to patch does not exist: $modfiledot"
+    exit 1
+  fi
   if [ -f $modfile ]; then
     sed -i "" -e "s|JDIR2PATCH|$JETTYDIR|g" $modfile 2&>/dev/null
     echo "[i] patched $modfile"
