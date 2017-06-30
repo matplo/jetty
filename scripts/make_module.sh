@@ -42,8 +42,9 @@ fi
 
 copy=0
 domake=0
+dopatch=0
 version=default
-while getopts ":v:cm" opt; do
+while getopts ":v:cmp" opt; do
   case $opt in
     v)
       version=$OPTARG
@@ -54,6 +55,9 @@ while getopts ":v:cm" opt; do
     m)
 	  domake=1
 	  ;;
+    p)
+    dopatch=1
+    ;;
     \?)
       echo "[e] Invalid option: -$OPTARG" >&2
       exit 1
@@ -68,15 +72,32 @@ done
 outdir=$JETTYDIR/modules/jetty
 modfile=$outdir/$version
 
+if [ $domake == 1 ] && [ $dopatch == 1 ]; then
+  echo "[e] flags -m and -p are not be combined"
+  exit 1
+fi
+
+if [ $dopatch == 1 ]; then
+  if [ -f $modfile ]; then
+    sed -i "" -e "s|JDIR2PATCH|$JETTYDIR|g" $modfile 2&>/dev/null
+    echo "[i] patched $modfile"
+  else
+    echo "[e] nothing patched. $modfile does not exist."
+  fi
+fi
+
 if [ $copy == 1 ] && [ $domake == 0 ]; then
   if [ -f $modfile ]; then
     mkdir -p $HOME/privatemodules/jetty
     cp -v $modfile $HOME/privatemodules/jetty/
+    exit 0
   else
     echo "[e] no file copied. $modfile does not exist."
   fi
-  exit 1
+  exit 0
 fi
+
+[ $dopatch == 1 ] && exit 0
 
 if [ $domake == 0 ]; then
 	echo "[i] this is a dry run use -m [-v <version>] for actual modfile creation"
