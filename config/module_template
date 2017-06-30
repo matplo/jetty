@@ -1,0 +1,13 @@
+#%Module
+proc ModulesHelp { } {
+        global version
+        puts stderr "   Setup jetty par2"
+    }
+
+set     version par2
+setenv  JETTYDIR par1
+setenv  JETTY_VERSION par2
+prepend-path LD_LIBRARY_PATH par1/lib
+prepend-path DYLD_LIBRARY_PATH par1/lib
+prepend-path PATH par1/bin
+prepend-path PATH par1/scripts
