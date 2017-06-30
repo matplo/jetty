@@ -5,12 +5,12 @@ proc ModulesHelp { } {
     }
 
 set     version pdsf
-setenv  JETTYDIR JDIR2PATCH
+setenv  JETTYDIR /project/projectdirs/alice/ploskon/jetty
 setenv  JETTY_VERSION pdsf
-prepend-path LD_LIBRARY_PATH JDIR2PATCH/lib
-prepend-path DYLD_LIBRARY_PATH JDIR2PATCH/lib
-prepend-path PATH JDIR2PATCH/bin
-prepend-path PATH JDIR2PATCH/scripts
+prepend-path LD_LIBRARY_PATH /project/projectdirs/alice/ploskon/jetty/lib
+prepend-path DYLD_LIBRARY_PATH /project/projectdirs/alice/ploskon/jetty/lib
+prepend-path PATH /project/projectdirs/alice/ploskon/jetty/bin
+prepend-path PATH /project/projectdirs/alice/ploskon/jetty/scripts
 if { [ module-info mode load ] } {
 module use /project/projectdirs/alice/software/modulefiles
 module use /usr/share/modules/3.2.10/Modules/versions

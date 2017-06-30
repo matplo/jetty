@@ -1,16 +1,18 @@
 # jetty
 Jets with pythia &amp; fastjet &amp; root sandbox
 
-# requires
+# requirements
 
- - Installed root and Pythia8 - `pythia8-config` and `root-config` should be in the $PATH.
- - BOOST
+ - [ROOT](http://root.cern.ch) - `root-config` should be in the $PATH
+ - [Pythia8](http://home.thep.lu.se/~torbjorn/Pythia.html) - `pythia8-config` should be in the $PATH.
+ - [BOOST](http://www.boost.org)
 
 # installation
 
-
-```
-$ source <dir_where_downloaded>/scripts/setenv.sh
+```bash
+$ <dir_where_downloaded>/scripts/make_module.sh -mc
+$ module load use.own
+$ module load jetty/default
 $ build_jetty.sh
 ```
 
