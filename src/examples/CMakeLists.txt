@@ -1,5 +1,6 @@
 set(SOURCES_LIB
 	run_pythia.cxx
+	et.cxx
 )
 
 set(MODULE ${PROJECT_NAME}Examples)

@@ -8,6 +8,7 @@ set(SOURCES_LIB
 	args.cxx
 	pyargs.cxx
 	pyutil.cxx
+	outkinematics.cxx
 )
 
 # Headers from sources

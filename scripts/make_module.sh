@@ -87,15 +87,15 @@ for mp in $mpaths
 do
 	echo "module use $mp" >> $modfile
 done
-echo "}" >> $modfile
 
 # grep -v jetty is to set a minimal prevention from recursive loads...
-loaded=`module -t list 2>&1 | grep -v Current | grep -v jetty`
+loaded=`module -t list 2>&1 | grep -v Current | grep -v jetty | grep -v use.own`
 for m in $loaded
 do
 	#echo "prereq $m" >> $modfile
 	echo "module load $m" >> $modfile
 done
+echo "}" >> $modfile
 
 if [ $domake == 0 ]; then
 	cat $modfile
