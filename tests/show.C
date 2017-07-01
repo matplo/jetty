@@ -1,5 +1,5 @@
 {
-	TProfile *p0 = (TProfile*)(TFile::Open("et_sum.root")->Get("p0"));
+	TProfile *p0 = (TProfile*)(TFile::Open("et_sum.root")->Get("prof_pmom_100"));
 	TProfile *p1 = (TProfile*)(TFile::Open("et_sum.root")->Get("p1"));
 	TProfile *pe = (TProfile*)(TFile::Open("et_sum.root")->Get("et"));
 
@@ -8,9 +8,12 @@
 	p0->Draw();
 	//TF1 *fitp0 = new TF1("fitp0", "[0] + [1] * x[0]", 10, 10000);
 	TF1 *fitp0 = new TF1("fitp0", "[0] + [1] * TMath::Power(x[0], [2])", 10, 10000);
+	//TF1 *fitp0 = new TF1("fitp0", "[0] + [1] * TMath::Log(x[0])", 10, 10000);
 	fitp0->SetParameter(0, 1);
 	fitp0->SetParameter(1, 0.1);
-	fitp0->SetParameter(2, 0.1);
+	fitp0->SetParameter(2, 1./3.);
+	fitp0->SetLineColor(kBlack);
+	//fitp0->SetTitle("the fit");
 	p0->Fit(fitp0, "RMN");
 	fitp0->Draw("same");
 
@@ -19,6 +22,7 @@
 	fitp1->SetParameter(0, 1);
 	fitp1->SetParameter(1, 0.1);
 	p1->Fit(fitp1, "RMN");
+	fitp1->SetLineColor(kBlue);
 	fitp1->Draw("same");
 	fitp1->SetRange(10,10000);
 
@@ -26,7 +30,8 @@
 	TF1 *fitpe = new TF1("fitpe", "[0] + [1] * TMath::Power(x[0], [2])", 10, 10000);
 	fitpe->SetParameter(0, 1);
 	fitpe->SetParameter(1, 0.1);
-	fitpe->SetParameter(2, 0.1);
+	fitpe->SetParameter(2, 1./3.);
+	fitpe->SetLineColor(kGreen);
 	pe->Fit(fitpe, "RMN");
 	fitpe->Draw("same");
 
@@ -34,10 +39,13 @@
 	fitpe2->SetParameter(0, 1);
 	fitpe2->SetParameter(1, 0.1);
 	fitpe2->SetParameter(2, 0.1);
+	fitpe2->SetLineColor(kMagenta);
 	pe->Fit(fitpe2, "RMN");
 	fitpe2->Draw("same");
 
 	gPad->SetLogx();
+	gPad->SetLogy();
+	gPad->BuildLegend();
 
 	TF1 *ref = new TF1("ref", "[0] + [1] * x[0]", 100, 10000);
 	ref->SetParameter(0, +1.4);

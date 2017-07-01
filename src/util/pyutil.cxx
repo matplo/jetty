@@ -66,6 +66,9 @@ namespace PyUtil
 		std::cout << " | pT: "; std::cout.flush();
 		std::cout << std::setfill(' ') << std::setw(10) << std::right << std::noshowpos;
 		std::cout << p.pT(); std::cout.flush();
+		std::cout << " | pz: "; std::cout.flush();
+		std::cout << std::setfill(' ') << std::setw(10) << std::right << std::noshowpos;
+		std::cout << p.pz(); std::cout.flush();
 		std::cout << " | y: "; std::cout.flush();
 		std::cout << std::setfill(' ') << std::setw(10) << std::right << std::noshowpos;
 		std::cout << p.y(); std::cout.flush();

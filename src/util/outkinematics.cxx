@@ -10,14 +10,14 @@
 namespace PyUtil
 {
 	// OutKinematics implementation
-	OutKinematics::OutKinematics(const Pythia8::Event &event)
-	: i_p_z({event[1].pz(), event[2].pz()})
+	OutKinematics::OutKinematics(const Pythia8::Pythia &pythia, bool includeHard)
+	: i_p_z({pythia.event[1].pz(), pythia.event[2].pz()})
 	, f_p_z({0, 0})
 	, d_p_z({0, 0})
 	, mA(0.93827)
 	, mB(0.93827)
 	{
-		_calculate(event);
+		_calculate(pythia, includeHard);
 	}
 
 	OutKinematics::OutKinematics()
@@ -43,8 +43,9 @@ namespace PyUtil
 		mB = o.mB;
 	}
 
-	void OutKinematics::_calculate(const Pythia8::Event &event)
+	void OutKinematics::_calculate(const Pythia8::Pythia &pythia, bool includeHard)
 	{
+		auto &event = pythia.event;
 		for (unsigned int i = 0; i < event.size(); i++)
 		{
 			auto &p = event[i];
@@ -62,6 +63,17 @@ namespace PyUtil
 					// cout << " mother: " << 2 << " " << pypart_to_str(event[2]) << endl;
 					f_p_z[1] += p.pz();
 				}
+			}
+		}
+		if (pythia.info.code() == 101) // non-diffractive
+		{
+			if (pythia.info.hasSub() && includeHard == true)
+			{
+				//f_p_z[0] += event[3].pz(); //incoming partons to the hard process
+				//f_p_z[1] += event[4].pz(); //incoming partons to the hard process
+
+				f_p_z[0] += event[5].pT(); //outgoing partons to the hard process
+				f_p_z[1] += event[6].pT(); //outgoing partons to the hard process
 			}
 		}
 		for ( int i : {0, 1})

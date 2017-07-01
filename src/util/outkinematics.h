@@ -11,7 +11,7 @@ namespace PyUtil
 	{
 	public:
 		OutKinematics();
-		OutKinematics(const Pythia8::Event &event);
+		OutKinematics(const Pythia8::Pythia &pythia, bool includeHard = true);
 		OutKinematics(const OutKinematics &o);
 		~OutKinematics() { ; }
 
@@ -29,7 +29,7 @@ namespace PyUtil
 
 	private:
 
-		void _calculate(const Pythia8::Event &event);
+		void _calculate(const Pythia8::Pythia &pythia, bool includeHard);
 	};
 
 };
