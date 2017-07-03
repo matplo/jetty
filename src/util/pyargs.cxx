@@ -93,6 +93,29 @@ namespace PyUtil
 			add("SoftQCD:inelastic=on"); //             ! All inelastic
 		}
 
+
+		if (isSet("--inel-d"))
+		{
+			add("HardQCD:all=off");
+			add("PromptPhoton:all=off");
+			add("SoftQCD:all=off");
+			add("SoftQCD:singleDiffractive=on"); //     ! Single diffractive
+			add("SoftQCD:doubleDiffractive=on"); //     ! Double diffractive
+			add("SoftQCD:centralDiffractive=on"); //    ! Central diffractive
+			add("SoftQCD:nonDiffractive=on"); //        ! Nondiffractive (inelastic)
+			add("SoftQCD:inelastic=on"); //             ! All inelastic
+		}
+
+		if (isSet("--diff"))
+		{
+			add("HardQCD:all=off");
+			add("PromptPhoton:all=off");
+			add("SoftQCD:all=off");
+			add("SoftQCD:singleDiffractive=on"); //     ! Single diffractive
+			add("SoftQCD:doubleDiffractive=on"); //     ! Double diffractive
+			add("SoftQCD:centralDiffractive=on"); //    ! Central diffractive
+		}
+
 		if (isSet("--inel-nsd"))
 		{
 			add("HardQCD:all=off");
