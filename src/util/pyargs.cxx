@@ -8,6 +8,8 @@
 #include <iostream>
 #include <sstream>
 
+using namespace std;
+
 namespace PyUtil
 {
 	//pythia args - args preprocessed
@@ -24,7 +26,10 @@ namespace PyUtil
 			}
 		}
 		if (SysUtil::file_exists(cfgfile))
+		{
 			readConfig(cfgfile.c_str());
+			cout << "[i PyUtil::Args::_cook] using " << cfgfile << " to [pre-]configure pythia." << endl;
+		}
 
 		int nEvent = getI("Main:numberOfEvents");
 		int userNEvent = getI("--nev", nEvent);
