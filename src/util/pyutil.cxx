@@ -29,16 +29,23 @@ namespace PyUtil
 
 	Pythia8::Pythia *make_pythia(const SysUtil::Args &args)
 	{
-		string cfgfile = args.get("--config");
-		if (SysUtil::file_exists(cfgfile) == false)
-			cerr << "[w] config file does not exists... - tried: " << cfgfile << endl;
-
+		string cfgfile;
+		if (args.isSet("--config"))
+		{
+			cfgfile = args.get("--config");
+			if (SysUtil::file_exists(cfgfile) == false)
+			{
+				cerr << "[w] config file does not exists... - tried: " << cfgfile << endl;
+				cerr << "    since you asked for a specific config to load we stop here... not creating pythia." << endl;
+				return 0x0;
+			}
+		}
 		// create pythia generator with some config
 		Pythia8::Pythia *ppythia = new Pythia8::Pythia();
 		// Read in commands from external file.
-		ppythia->readFile(cfgfile.c_str());
-
-		cout << "[i] Setup standard pythia... using:" << cfgfile << endl;
+		// nope - no need to... this is pre-loaded with pyargs::_cook
+		// ppythia->readFile(cfgfile.c_str());
+		// cout << "[i] Setup standard pythia... using:" << cfgfile << endl;
 
 		auto pairs = args.pairs();
 		for (unsigned int i = 0; i < pairs.size(); i++)
