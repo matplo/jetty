@@ -7,6 +7,8 @@
 #include <cmath>
 #include <string>
 
+#include "util/rstream/tstream.h"
+
 namespace PyUtil
 {
 	// OutKinematics implementation
@@ -109,3 +111,18 @@ namespace PyUtil
 	}
 
 };
+
+TTree & operator << (TTree & t, const PyUtil::OutKinematics &kine)
+{
+	RStream::TStream e("e", &t);
+	e << "Ai" << kine.i_p_z[0];
+	e << "Bi" << kine.i_p_z[1];
+	e << "CMi" << kine.sqrts_i();
+
+	e << "Af" << kine.f_p_z[0];
+	e << "Bf" << kine.f_p_z[1];
+	e << "CMf" << kine.sqrts_f();
+
+	e << std::endl;
+	return t;
+}

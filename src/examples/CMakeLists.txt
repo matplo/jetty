@@ -1,5 +1,6 @@
 set(SOURCES_LIB
 	run_pythia.cxx
+	run_pythia_wrapper.cxx
 	et.cxx
 )
 

@@ -21,4 +21,5 @@ install(TARGETS ${NAME_LIB} LIBRARY DESTINATION lib)
 install(FILES ${HEADERS_LIB} DESTINATION include/${MODULE})
 
 add_subdirectory(wrapper)
+add_subdirectory(rstream)
 add_subdirectory(pythia)

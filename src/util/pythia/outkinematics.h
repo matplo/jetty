@@ -5,6 +5,8 @@
 #include <vector>
 #include "pyutil.h"
 
+#include <TTree.h>
+
 namespace PyUtil
 {
 	class OutKinematics
@@ -31,6 +33,8 @@ namespace PyUtil
 
 		void _calculate(const Pythia8::Pythia &pythia, bool includeHard);
 	};
-
 };
+
+TTree & operator << (TTree & t, const PyUtil::OutKinematics &kine);
+
 #endif // __OUTKINEMATICS__HH
