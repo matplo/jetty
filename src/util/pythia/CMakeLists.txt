@@ -5,7 +5,7 @@ set(SOURCES_LIB
 	pyargs.cxx
 	pyutil.cxx
 	outkinematics.cxx
-	#pythia_wrapper.cxx
+	pythia_wrapper.cxx
 )
 
 # Headers from sources
