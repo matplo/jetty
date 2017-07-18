@@ -51,6 +51,7 @@ namespace SysUtil
 
 	protected:
 		void			_convert(int argc, char **argv);
+		void 			_init_logging();
 
 		std::vector<std::string> _args;
 	};

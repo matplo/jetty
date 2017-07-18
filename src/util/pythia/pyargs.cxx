@@ -1,6 +1,7 @@
 #include "pyargs.h"
 #include "pyutil.h"
-#include "sysutil.h"
+#include "util/sysutil.h"
+#include "util/blog.h"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
@@ -28,7 +29,7 @@ namespace PyUtil
 		if (SysUtil::file_exists(cfgfile))
 		{
 			readConfig(cfgfile.c_str());
-			cout << "[i PyUtil::Args::_cook] using " << cfgfile << " to [pre-]configure pythia." << endl;
+			Linfo << "[PyUtil::Args::_cook] using " << cfgfile << " to [pre-]configure pythia.";
 		}
 
 		int nEvent = getI("Main:numberOfEvents");
@@ -38,6 +39,7 @@ namespace PyUtil
 			nEvent 		= userNEvent;
 		}
 		set("Main:numberOfEvents", nEvent);
+		Ldebug << "[PyUtil::Args::_cook] Main:numberOfEvents = " << get("Main:numberOfEvents");
 
 		double pTHatMin = getD("-pTHatMin", -99);
 		if (pTHatMin == -99)

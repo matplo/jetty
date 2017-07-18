@@ -1,6 +1,6 @@
 #include "args.h"
 #include "strutil.h"
-
+#include "blog.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
 
@@ -15,30 +15,31 @@ namespace SysUtil
 		: _args()
 	{
 		_convert(argc, argv);
+		_init_logging();
 	}
 
 	Args::Args()
 		: _args()
 	{
-		;
+		_init_logging();
 	}
 
 	Args::Args(const vector<string> &v)
-		: _args()
+		: _args(v)
 	{
-		_args = v;
+		_init_logging();
 	}
 
 	Args::Args(const string &s)
-		: _args()
+		: _args(breakup(s.c_str(), ' '))
 	{
-		_args = breakup(s.c_str(), ' ');
+		_init_logging();
 	}
 
 	Args::Args(const Args &v)
-		: _args()
+		: _args(v._args)
 	{
-		_args = v._args;
+		_init_logging();
 	}
 
 	bool Args::isSet(const char *what) const
@@ -267,6 +268,17 @@ namespace SysUtil
 				}
 			}
 		}
+	}
+
+	void Args::_init_logging()
+	{
+		SysUtil::blog_set_severity();
+
+		if (isSet("--debug"))
+			SysUtil::blog_set_severity(boost::log::trivial::debug);
+
+		if (isSet("--trace"))
+			SysUtil::blog_set_severity(boost::log::trivial::trace);
 	}
 
 };

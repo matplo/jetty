@@ -1,6 +1,6 @@
 #include "pyutil.h"
-#include "strutil.h"
-#include "sysutil.h"
+#include "util/strutil.h"
+#include "util/sysutil.h"
 
 #include <Pythia8/Pythia.h>
 
