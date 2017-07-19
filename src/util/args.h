@@ -15,13 +15,13 @@ namespace SysUtil
 		Args(const std::string &s);
 		Args(const Args &v);
 		Args();
-		virtual ~Args() {;}
+		virtual ~Args();
 
 		bool 			isSet(const char *what) const;
 		bool 			isSet(const std::string &what) const;
 
 		std::string     get (const char *what) const;
-		double 			getD(const char *what, const double 	defret = 0.0) const;
+		double 			getD(const char *what, const double defret = 0.0) const;
 		int 			getI(const char *what, const int 	defret = 0  ) const;
 
 		template <class T>
@@ -50,9 +50,15 @@ namespace SysUtil
 		void 			readConfig(const char *fname);
 
 	protected:
-		void			_convert(int argc, char **argv);
+		void				_convert(int argc, char **argv);
+		void 				_init_logging();
+
+		static void 		_log_argument(const char *what);
+		void 				_dump_logged_arguments();
+		static unsigned int _instance_counter;
 
 		std::vector<std::string> _args;
+		static std::vector<std::string> _args_logged;
 	};
 
 	template <class T>

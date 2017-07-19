@@ -1,48 +1,85 @@
 #include "args.h"
 #include "strutil.h"
-
+#include "blog.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
 
+#include <algorithm>
 #include <fstream>
-
 #include <iostream>
 using namespace std;
 
 namespace SysUtil
 {
+	unsigned int Args::_instance_counter = 0;
+
+	void Args::_log_argument(const char *what)
+	{
+		string swhat = what;
+		for (auto s : _args_logged)
+		{
+			if (s == swhat)
+				return;
+		}
+		_args_logged.push_back(swhat);
+	}
+
+	void Args::_dump_logged_arguments()
+	{
+		if (isSet("--dump-args-log") || isSet("--debug") || isSet("--help") || isSet("-h"))
+		{
+			sort(_args_logged.begin(), _args_logged.end());
+			cout << asString("[i] argument log : known via ::isSet|add|set|get - cmnd was:");
+			for (auto s : _args_logged)
+			{
+				cout << "    " << s << endl;
+			}
+		}
+	}
+
+	std::vector<std::string> Args::_args_logged;
+
+	Args::~Args()
+	{
+		_instance_counter -= 1;
+		if (_instance_counter == 0)
+			_dump_logged_arguments();
+	}
+
 	Args::Args(int argc, char **argv)
 		: _args()
 	{
 		_convert(argc, argv);
+		_init_logging();
 	}
 
 	Args::Args()
 		: _args()
 	{
-		;
+		_init_logging();
 	}
 
 	Args::Args(const vector<string> &v)
-		: _args()
+		: _args(v)
 	{
-		_args = v;
+		_init_logging();
 	}
 
 	Args::Args(const string &s)
-		: _args()
+		: _args(breakup(s.c_str(), ' '))
 	{
-		_args = breakup(s.c_str(), ' ');
+		_init_logging();
 	}
 
 	Args::Args(const Args &v)
-		: _args()
+		: _args(v._args)
 	{
-		_args = v._args;
+		_init_logging();
 	}
 
 	bool Args::isSet(const char *what) const
 	{
+		_log_argument(what);
 		string swhat(what);
 		auto prs = pairs();
 		for (auto &p : prs)
@@ -57,6 +94,7 @@ namespace SysUtil
 
 	string Args::get(const char *what) const
 	{
+		_log_argument(what);
 		string sret("");
 		string swhat(what);
 		auto prs = pairs();
@@ -65,7 +103,7 @@ namespace SysUtil
 			{
 				sret = p.second;
 			}
-		return sret.c_str();
+		return sret;
 	}
 
 	double Args::getD(const char *what, const double defret) const
@@ -87,10 +125,12 @@ namespace SysUtil
 		{
 			auto f = swhat.find("=");
 			auto s = swhat.substr(0, f);
+			_log_argument(s.c_str());
 			remove(s);
 		}
 		else
 		{
+			_log_argument(what);
 			remove(what);
 		}
 		string s(what);
@@ -226,18 +266,13 @@ namespace SysUtil
 
 	void Args::readConfig(const char *fname)
 	{
-		bool debug = isSet("--debug");
-		if (debug)
-		{
-			std::cout << "[Args::readConfig] present:" << asString() << std::endl;
-			std::cout << "[Args::readConfig] file " << fname << std::endl;
-		}
+		Ldebug << "[Args::readConfig] present:" << asString();
+		Ldebug << "[Args::readConfig] file " << fname;
 		std::string str;
 		std::ifstream fin(fname);
 		if (!fin)
 		{
-			if (debug)
-				std::cerr << "[Args::readConfig:e] unable to read from config file:" << fname << std::endl;
+			Ldebug << "[Args::readConfig:e] unable to read from config file:" << fname;
 			return;
 		}
 		while (std::getline(fin, str))
@@ -256,17 +291,27 @@ namespace SysUtil
 				sarg = boost::trim_left_copy(sarg);
 				if (isSet(sarg))
 				{
-					if (debug)
-						std::cout << "    setting already present - ignoring entry: " << s << std::endl;
+					Ldebug << " - setting already present - ignoring entry: " << s << std::endl;
 				}
 				else
 				{
-					if (debug)
-						std::cout << "    adding setting " << sarg << " " << s << std::endl;
+					Ldebug << " - adding setting " << sarg << " " << s << std::endl;
 					add(s);
 				}
 			}
 		}
+	}
+
+	void Args::_init_logging()
+	{
+		_instance_counter += 1;
+		LogUtil::blog_set_severity();
+
+		if (isSet("--debug"))
+			LogUtil::blog_set_severity(boost::log::trivial::debug);
+
+		if (isSet("--trace"))
+			LogUtil::blog_set_severity(boost::log::trivial::trace);
 	}
 
 };
