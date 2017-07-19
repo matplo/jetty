@@ -265,13 +265,13 @@ namespace SysUtil
 
 	void Args::_init_logging()
 	{
-		SysUtil::blog_set_severity();
+		LogUtil::blog_set_severity();
 
 		if (isSet("--debug"))
-			SysUtil::blog_set_severity(boost::log::trivial::debug);
+			LogUtil::blog_set_severity(boost::log::trivial::debug);
 
 		if (isSet("--trace"))
-			SysUtil::blog_set_severity(boost::log::trivial::trace);
+			LogUtil::blog_set_severity(boost::log::trivial::trace);
 	}
 
 };

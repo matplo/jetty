@@ -33,8 +33,8 @@ int run_pythia (const std::string &s)
 	PyUtil::PythiaWrapper pywrap(args.asString());
 	if (pywrap.initialized() == false)
 	{
-		Lfatal << "Pythia not initialized. Stop here.";
-		return 1;
+		Lwarn << "Pythia not initialized. Stop here.";
+		return 0; // this is a normal termination
 	}
 
 	PyUtil::Args &pyargs    = *pywrap.args();
