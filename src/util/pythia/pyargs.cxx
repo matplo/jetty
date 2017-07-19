@@ -55,18 +55,15 @@ namespace PyUtil
 		double pTHatMax = getD("--pTHatMax", -99);
 		if (pTHatMax == -99)
 			pTHatMax = getD("PhaseSpace:pTHatMax", -99); // backward compat.
-		if (pTHatMax >= -1)
+		add(boost::str(boost::format("PhaseSpace:pTHatMax=%1%") % pTHatMax));
+
+		if (getD("PhaseSpace:pTHatMin") > getD("PhaseSpace:pTHatMax") && getD("PhaseSpace:pTHatMax") >= 0)
 		{
-			if (pTHatMax > -1 && pTHatMax < pTHatMin)
-			{
-				std::cerr << "[e] bad pTHat selection - min:" << pTHatMin << " max:" << pTHatMax << std::endl;
-				return;
-			}
-			else
-			{
-				// add(TString::Format("PhaseSpace:pTHatMax=%f", pTHatMax).Data());
-				add(boost::str(boost::format("PhaseSpace:pTHatMax=%1%") % pTHatMax));
-			}
+			Lwarn << "something is not right with your pThat selection min=" << getD("PhaseSpace:pTHatMin") << " max=" <<  getD("PhaseSpace:pTHatMax") << endl;
+			// Lwarn << "setting pTHatMax=-1";
+			set("Beams:eCM=0"); // this will fail on initialization
+			set("--dry"); // this if checked should halt the execution
+			set("--invalid"); // or this...
 		}
 
 		if (isSet("--minbias"))

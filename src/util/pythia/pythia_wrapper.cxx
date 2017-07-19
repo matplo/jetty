@@ -102,6 +102,7 @@ namespace PyUtil
 			{
 				Linfo << "setting pythia Beams:eCM=0 ... - this should stop execution.";
 				args->set("Beams:eCM=0");
+				args->set("--invalid");
 				return false;
 			}
 		}

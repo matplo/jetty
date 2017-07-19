@@ -4,8 +4,8 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
 
+#include <algorithm>
 #include <fstream>
-
 #include <iostream>
 using namespace std;
 
@@ -28,6 +28,7 @@ namespace SysUtil
 	{
 		if (isSet("--dump-args-log") || isSet("--debug"))
 		{
+			sort(_args_logged.begin(), _args_logged.end());
 			cout << asString("[i] argument log : known via ::isSet|add|set|get - cmnd was:");
 			for (auto s : _args_logged)
 			{
@@ -124,16 +125,17 @@ namespace SysUtil
 
 	void Args::add(const char *what)
 	{
-		_log_argument(what);
 		string swhat(what);
 		if (swhat.find("=") != std::string::npos)
 		{
 			auto f = swhat.find("=");
 			auto s = swhat.substr(0, f);
+			_log_argument(s.c_str());
 			remove(s);
 		}
 		else
 		{
+			_log_argument(what);
 			remove(what);
 		}
 		string s(what);

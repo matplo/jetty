@@ -29,9 +29,14 @@ int run_jets (const std::string &s)
 {
 	PyUtil::Args args(s);
 
+	if (args.isSet("--invalid"))
+	{
+		Linfo << "invalid parameters. stop here.";
+		return 0;
+	}
+
 	if (args.isSet("--out") == false)
 		args.set("--out", "subjets.root");
-
 	Linfo << args.asString("[subjets/pythia_run:status]");
 	if (args.isSet("--dry")) return 0;
 
@@ -57,6 +62,8 @@ int run_jets (const std::string &s)
 	Linfo << "running with particle |eta| < " << maxEta;
 	double jptcut = args.getD("--jptcut", 20.);
 	Linfo << "running with a cut on jet pT > " << jptcut;
+	double sjR = args.getD("--sjR", 0.1);
+	Linfo << "running with subjet R = " << sjR;
 
 	// this is where the event loop section starts
 	auto nEv = args.getI("Main:numberOfEvents");
@@ -93,7 +100,7 @@ int run_jets (const std::string &s)
 				hpT->Fill(j.perp());
 				jts << "j" << j;
 
-				auto sj_info = new JettyFJUtils::SJInfo(&j);
+				auto sj_info = new JettyFJUtils::SJInfo(&j, sjR);
 				j.set_user_info(sj_info);
 
 				auto sjs = sj_info->subjets();

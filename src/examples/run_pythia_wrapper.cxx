@@ -22,6 +22,11 @@ using namespace std;
 int run_pythia_wrapper (const std::string &s)
 {
 	PyUtil::Args args(s);
+	if (args.isSet("--invalid"))
+	{
+		Linfo << "invalid parameters. stop here.";
+		return 0;
+	}
 	Linfo << args.asString("[pythia_run_wrapper:status]");
 	if (args.isSet("--dry")) return 0;
 
