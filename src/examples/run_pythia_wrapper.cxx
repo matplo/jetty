@@ -21,41 +21,40 @@ using namespace std;
 
 int run_pythia_wrapper (const std::string &s)
 {
-		PyUtil::Args args(s);
-		Linfo << args.asString("[pythia_run_wrapper:status]");
-		if (args.isSet("--dry")) return 0;
+	PyUtil::Args args(s);
+	Linfo << args.asString("[pythia_run_wrapper:status]");
+	if (args.isSet("--dry")) return 0;
 
-		PyUtil::PythiaWrapper pywrap(args.asString());
-		PyUtil::Args &pyargs      = *pywrap.args();
-		Pythia8::Pythia &pythia = *pywrap.pythia();
-		auto &event             = pythia.event;
+	PyUtil::PythiaWrapper pywrap(args.asString());
+	PyUtil::Args &pyargs      = *pywrap.args();
+	Pythia8::Pythia &pythia = *pywrap.pythia();
+	auto &event             = pythia.event;
 
-		pywrap.outputFile()->cd();
-		TTree *tk = new TTree("kine", "kine");
-		TH1F *hpT = new TH1F("hpT", "pT;p_{T} (GeV/#it{c});counts", 50, 0, 100);
+	pywrap.outputFile()->cd();
+	TTree *tk = new TTree("kine", "kine");
+	TH1F *hpT = new TH1F("hpT", "pT;p_{T} (GeV/#it{c});counts", 50, 0, 100);
 
-		// this is where the event loop section starts
-		auto nEv = pyargs.getI("Main:numberOfEvents");
-		LoopUtil::TPbar pbar(nEv);
-		for (unsigned int iE = 0; iE < nEv; iE++)
+	// this is where the event loop section starts
+	auto nEv = pyargs.getI("Main:numberOfEvents");
+	LoopUtil::TPbar pbar(nEv);
+	for (unsigned int iE = 0; iE < nEv; iE++)
+	{
+		pbar.Update();
+		if (pywrap.next() == false) continue;
+
+		// some kinematics info
+		*tk << PyUtil::OutKinematics(pythia);
+
+		// loop over particles in the event
+		for (unsigned int ip = 0; ip < event.size(); ip++)
 		{
-			pbar.Update();
-			if (pywrap.next() == false) continue;
-
-			// some kinematics info
-			*tk << PyUtil::OutKinematics(pythia);
-
-			// loop over particles in the event
-			for (unsigned int ip = 0; ip < event.size(); ip++)
-			{
-				if (event[ip].isFinal())
-					if (TMath::Abs(event[ip].eta()) < 1.)
-						hpT->Fill(event[ip].pT(), 1./event[ip].pT());
-			}
+			if (event[ip].isFinal())
+				if (TMath::Abs(event[ip].eta()) < 1.)
+					hpT->Fill(event[ip].pT(), 1./event[ip].pT());
 		}
-		pythia.stat();
-		Linfo << "Generation done.";
-		Linfo << "[i] Done.";
+	}
+	pythia.stat();
+	Linfo << "Generation done.";
 
-		return 0;
+	return 0;
 }

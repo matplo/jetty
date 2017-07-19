@@ -3,8 +3,10 @@
 
 #include "util/pythia/pyargs.h"
 #include "util/pythia/pyutil.h"
+#include "util/pythia/pythia_wrapper.h"
 #include "util/pythia/crosssections.h"
 #include "util/looputil.h"
+#include "util/blog.h"
 
 #include <Pythia8/Pythia.h>
 
@@ -24,20 +26,22 @@ using namespace std;
 
 int run_pythia (const std::string &s)
 {
-	cout << "[i] this is run_pythia subjets" << endl;
 	PyUtil::Args args(s);
-	cout << args.asString("[pythia_run_wrapper:status]") << endl;
+	Linfo << args.asString("[subjets/pythia_run:status]");
 	if (args.isSet("--dry")) return 0;
 
-	// create the output root file
-	string outfname = args.get("--output");
-	if (outfname.size() < 1)
+	PyUtil::PythiaWrapper pywrap(args.asString());
+	if (pywrap.initialized() == false)
 	{
-		outfname = "default_output.root";
+		Lfatal << "Pythia not initialized. Stop here.";
+		return 1;
 	}
-	TFile *fout = TFile::Open(outfname.c_str(), "RECREATE");
-	fout->cd();
 
+	PyUtil::Args &pyargs    = *pywrap.args();
+	Pythia8::Pythia &pythia = *pywrap.pythia();
+	auto &event             = pythia.event;
+
+	pywrap.outputFile()->cd();
 	TH1F *hpT      = new TH1F("hpT", "pT;p_{T} (GeV/#it{c});counts", 100, 0, 100);
 
 	TH2F *hpTzg      = new TH2F("hpTzg", "pTzg;p_{T} (GeV/#it{c});zg;counts", 100, 0, 100, 100, 0, 1);
@@ -49,22 +53,12 @@ int run_pythia (const std::string &s)
 	TH2F *hpTslsjz   = new TH2F("hpTslsjz", "pTslsjz;p_{T} (GeV/#it{c});slsjz;counts", 100, 0, 100, 100, 0, 1);
 	TH2F *hpTdsj     = new TH2F("hpTdsj", "pTdsj;p_{T} (GeV/#it{c});dsj;counts", 100, 0, 100, 100, 0, 1);
 
-	// initialize pythia with a config and command line args
-	Pythia8::Pythia *ppythia = PyUtil::make_pythia(args.asString());
-	if (!ppythia)
-	{
-		cerr << "[e] no pythia - no fun." << endl;
-		return 1;
-	}
-	Pythia8::Pythia &pythia  = *ppythia;
-	auto &event              = pythia.event;
-
 	double R = args.getD("--R", 0.4);
-	cout << "[i] running with R = " << R << endl;
+	Linfo << "running with R = " << R;
 	double maxEta = args.getD("--eta", 3.);
-	cout << "[i] running with particle |eta| < " << maxEta << endl;
+	Linfo << "running with particle |eta| < " << maxEta;
 	double jptcut = args.getD("--jptcut", 5.);
-	cout << "[i] running with a cut on jet pT > " << jptcut << endl;
+	Linfo << "running with a cut on jet pT > " << jptcut;
 
 	// this is where the event loop section starts
 	auto nEv = args.getI("Main:numberOfEvents");
@@ -127,17 +121,7 @@ int run_pythia (const std::string &s)
 		}
 	}
 	pythia.stat();
-	cout << "[i] Generation done." << endl;
+	Linfo << "Generation done.";
 
-	// remember to properly save/update and close the output file
-	fout->Write();
-	fout->Close();
-	delete fout;
-
-	string xsec_outfname = outfname + ".txt";
-	PyUtil::CrossSections(pythia, xsec_outfname.c_str());
-
-	// delete the pythia
-	delete ppythia;
 	return 0;
 }

@@ -1,6 +1,7 @@
 #include "pythia_wrapper.h"
 #include "util/pythia/pyargs.h"
 #include "util/pythia/crosssections.h"
+#include "util/blog.h"
 
 #include <TNtuple.h>
 #include <TH1F.h>
@@ -44,7 +45,7 @@ namespace PyUtil
 
 	void PythiaWrapper::readConfig(const char *fname)
 	{
-		cout << "[PythiaWrapper::readConfig] file " << fname << endl;
+		Linfo << "[PythiaWrapper::readConfig] file " << fname;
 		auto args = fWrapper->get<PyUtil::Args>();
 		args->readConfig(fname);
 	}
@@ -65,14 +66,14 @@ namespace PyUtil
 		for (unsigned int i = 0; i < pairs.size(); i++)
 		{
 			if (pairs[i].second.size() < 1) continue;
-			cout << "[init pythia] paired arg: #" << i << " " << pairs[i].first << " " << pairs[i].second << endl;
+			Linfo << "[init pythia] paired arg: #" << i << " " << pairs[i].first << " " << pairs[i].second;
 			string spypar = pairs[i].first + " = " + pairs[i].second;
 			ppythia->readString(spypar.c_str());
 		}
 		_is_initialized = ppythia->init();
 		if (_is_initialized)
 		{
-			cout << "[i] pythia is at " << ppythia << endl;
+			Linfo << "pythia is at " << ppythia;
 			fWrapper->add(ppythia); // no need to remember to delete - just delete the pywrapp
 			_initOutput();
 			args->set("PyInit=1");
@@ -80,7 +81,7 @@ namespace PyUtil
 		else
 		{
 			args->set("PyInit=0");
-			cout << "[e] pythia initialization failed." << endl;
+			Lerror << "pythia initialization failed.";
 			delete ppythia;
 			ppythia = 0;
 		}
@@ -98,8 +99,8 @@ namespace PyUtil
 		// strange but yeah... kFALSE if the file exists
 		if (gSystem->AccessPathName(fname.c_str(), kFileExists) == kFALSE)
 		{
-			cout << "[w] output file " << fname.c_str() << "already exists" << endl;
-			cout << "    setting pythia Beams:eCM=0 ..." << endl;
+			Lwarn << "output file " << fname.c_str() << " already exists";
+			Linfo << "setting pythia Beams:eCM=0 ... - this should stop execution.";
 			args->set("Beams:eCM=0");
 			return false;
 		}
@@ -146,7 +147,7 @@ namespace PyUtil
 	void PythiaWrapper::_initOutput()
 	{
 		string outfname = _outputFileName();
-		cout << "[i] Output goes to: " << outfname << endl;
+		Linfo << "Output goes to: " << outfname;
 		TFile *fout = new TFile(outfname.c_str(), "RECREATE");
 		fout->cd();
 		fNtuple = new TNtuple("pystats", "pystats", "pxsec:pcode");
@@ -200,7 +201,7 @@ namespace PyUtil
 			auto ib       = h->FindBin(xcode);
 			h->SetBinContent(ib, xsec);
 			h->SetBinError(ib, xsec_err);
-			cout << "[i] code " << xcode << " xsec=" << xsec << " +- " << xsec_err << endl;
+			Linfo << "code " << xcode << " xsec=" << xsec << " +- " << xsec_err;
 		}
 
 		//same as above but to a txt file

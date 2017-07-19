@@ -7,6 +7,8 @@
 #include <iostream>
 #include <fstream>
 
+#include "util/blog.h"
+
 #include <TTree.h>
 
 namespace PyUtil
@@ -25,12 +27,12 @@ namespace PyUtil
 			std::ofstream foutput(fname, std::ofstream::out);
 			if (!foutput.good())
 			{
-				std::cerr << "[e] output file " << fname << "not ok." << std::endl;
+				Lerror << "output file " << fname << "not ok.";
 				fname = 0;
 			}
 			else
 			{
-				std::cout << "[i] xsections go to a file " << fname << std::endl;
+				Linfo << "xsections go to a file " << fname;
 			}
 
 			eCM = pythia.parm("Beams:eCM");
@@ -57,7 +59,7 @@ namespace PyUtil
 				codes.push_back(xcode);
 				xsec.push_back(xs);
 				xsec_err.push_back(xs_err);
-				// std::cout << xcode << " " << xs << " " << xs_err << std::endl;
+				// Linfo << xcode << " " << xs << " " << xs_err << std::endl;
 				if (fname)
 				{
 					foutput << "XSec:" << xcode << "=" << xs << std::endl;

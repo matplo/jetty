@@ -12,7 +12,7 @@ TTree & operator << (TTree & t, const PyUtil::CrossSections &xs)
 
 	for (unsigned int i = 0; i < xs.codes.size(); i++)
 	{
-		std::cout << xs.codes[i] << " xsec=" << xs.xsec[i] << " +- " << xs.xsec_err[i] << std::endl;
+		// std::cout << xs.codes[i] << " xsec=" << xs.xsec[i] << " +- " << xs.xsec_err[i] << std::endl;
 		e << StrUtil::sT(xs.codes[i]) + "_x_sec" << xs.xsec[i];
 		e << StrUtil::sT(xs.codes[i]) + "_x_err" << xs.xsec_err[i];
 	}
