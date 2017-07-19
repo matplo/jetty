@@ -29,7 +29,7 @@ namespace PyUtil
 		if (SysUtil::file_exists(cfgfile))
 		{
 			readConfig(cfgfile.c_str());
-			Ldebug << "[PyUtil::Args::_cook] using " << cfgfile << " to [pre-]configure pythia.";
+			Ltrace << "[PyUtil::Args::_cook] using " << cfgfile << " to [pre-]configure pythia.";
 		}
 
 		int nEvent = getI("Main:numberOfEvents");

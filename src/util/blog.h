@@ -5,14 +5,14 @@
 
 //#define BOOST_LOG_DYN_LINK 1
 
-#define LTRACE BOOST_LOG_TRIVIAL(trace)
+#define LTRACE BOOST_LOG_TRIVIAL(trace) << "(" << __FILE__ << ", " << __LINE__ << ") "
 #define LDBG BOOST_LOG_TRIVIAL(debug)
 #define LINFO BOOST_LOG_TRIVIAL(info)
 #define LWARN BOOST_LOG_TRIVIAL(warning)
 #define LERR BOOST_LOG_TRIVIAL(error)
 #define LFATAL BOOST_LOG_TRIVIAL(fatal)
 
-#define Ltrace BOOST_LOG_TRIVIAL(trace)
+#define Ltrace BOOST_LOG_TRIVIAL(trace) << "(" << __FILE__ << ", " << __LINE__ << ") "
 #define Ldebug BOOST_LOG_TRIVIAL(debug)
 #define Linfo BOOST_LOG_TRIVIAL(info)
 #define Lwarn BOOST_LOG_TRIVIAL(warning)

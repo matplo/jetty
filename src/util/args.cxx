@@ -227,18 +227,13 @@ namespace SysUtil
 
 	void Args::readConfig(const char *fname)
 	{
-		bool debug = isSet("--debug");
-		if (debug)
-		{
-			std::cout << "[Args::readConfig] present:" << asString() << std::endl;
-			std::cout << "[Args::readConfig] file " << fname << std::endl;
-		}
+		Ldebug << "[Args::readConfig] present:" << asString();
+		Ldebug << "[Args::readConfig] file " << fname;
 		std::string str;
 		std::ifstream fin(fname);
 		if (!fin)
 		{
-			if (debug)
-				std::cerr << "[Args::readConfig:e] unable to read from config file:" << fname << std::endl;
+			Ldebug << "[Args::readConfig:e] unable to read from config file:" << fname;
 			return;
 		}
 		while (std::getline(fin, str))
@@ -257,13 +252,11 @@ namespace SysUtil
 				sarg = boost::trim_left_copy(sarg);
 				if (isSet(sarg))
 				{
-					if (debug)
-						std::cout << "    setting already present - ignoring entry: " << s << std::endl;
+					Ldebug << " - setting already present - ignoring entry: " << s << std::endl;
 				}
 				else
 				{
-					if (debug)
-						std::cout << "    adding setting " << sarg << " " << s << std::endl;
+					Ldebug << " - adding setting " << sarg << " " << s << std::endl;
 					add(s);
 				}
 			}
