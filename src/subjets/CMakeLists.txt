@@ -1,6 +1,7 @@
 set(SOURCES_LIB
-	run_pythia.cxx
 	fjutils.cxx
+	run_pythia.cxx
+	run_jets.cxx
 )
 
 set(MODULE ${PROJECT_NAME}SubJets)
