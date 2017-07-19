@@ -41,6 +41,17 @@ namespace PyUtil
 		set("Main:numberOfEvents", nEvent);
 		Ldebug << "[PyUtil::Args::_cook] Main:numberOfEvents = " << get("Main:numberOfEvents");
 
+		if (isSet("-h") || isSet("--help"))
+		{
+			set("--dry");
+		}
+
+		if (isSet("--test"))
+		{
+			set("Main:numberOfEvents=1");
+			set("--out=test.root");
+		}
+
 		double pTHatMin = getD("-pTHatMin", -99);
 		if (pTHatMin == -99)
 			pTHatMin = getD("--pTHatMin", -99); // backward compat.

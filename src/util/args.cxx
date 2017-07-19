@@ -26,7 +26,7 @@ namespace SysUtil
 
 	void Args::_dump_logged_arguments()
 	{
-		if (isSet("--dump-args-log") || isSet("--debug"))
+		if (isSet("--dump-args-log") || isSet("--debug") || isSet("--help") || isSet("-h"))
 		{
 			sort(_args_logged.begin(), _args_logged.end());
 			cout << asString("[i] argument log : known via ::isSet|add|set|get - cmnd was:");
@@ -51,35 +51,30 @@ namespace SysUtil
 	{
 		_convert(argc, argv);
 		_init_logging();
-		_instance_counter += 1;
 	}
 
 	Args::Args()
 		: _args()
 	{
 		_init_logging();
-		_instance_counter += 1;
 	}
 
 	Args::Args(const vector<string> &v)
 		: _args(v)
 	{
 		_init_logging();
-		_instance_counter += 1;
 	}
 
 	Args::Args(const string &s)
 		: _args(breakup(s.c_str(), ' '))
 	{
 		_init_logging();
-		_instance_counter += 1;
 	}
 
 	Args::Args(const Args &v)
 		: _args(v._args)
 	{
 		_init_logging();
-		_instance_counter += 1;
 	}
 
 	bool Args::isSet(const char *what) const
@@ -309,6 +304,7 @@ namespace SysUtil
 
 	void Args::_init_logging()
 	{
+		_instance_counter += 1;
 		LogUtil::blog_set_severity();
 
 		if (isSet("--debug"))
