@@ -21,7 +21,7 @@ namespace SysUtil
 		bool 			isSet(const std::string &what) const;
 
 		std::string     get (const char *what) const;
-		double 			getD(const char *what, const double 	defret = 0.0) const;
+		double 			getD(const char *what, const double defret = 0.0) const;
 		int 			getI(const char *what, const int 	defret = 0  ) const;
 
 		template <class T>
@@ -52,8 +52,12 @@ namespace SysUtil
 	protected:
 		void			_convert(int argc, char **argv);
 		void 			_init_logging();
+		static void 	_record_request(const char *what);
+		static int      _instance_counter;
+		void 			_dump_requested();
 
 		std::vector<std::string> _args;
+		static std::vector<std::string> _requested;
 	};
 
 	template <class T>

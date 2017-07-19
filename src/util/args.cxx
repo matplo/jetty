@@ -66,7 +66,7 @@ namespace SysUtil
 			{
 				sret = p.second;
 			}
-		return sret.c_str();
+		return sret;
 	}
 
 	double Args::getD(const char *what, const double defret) const
