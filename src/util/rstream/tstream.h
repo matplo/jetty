@@ -21,6 +21,7 @@ namespace RStream
 		void FillBranch(const char *name, const fastjet::PseudoJet &in);
 		void FillBranch(const char *name, const double &in);
 		void FillBranch(const char *name, const int &in);
+		void FillBranch(const char *name, const unsigned long &in);
 		void FillBranch(const char *name, const std::vector<fastjet::PseudoJet> &in);
 		void FillBranch(const char *name, const std::vector<double> &in);
 		void FillBranch(const char *name, const std::vector<int> &in);
@@ -34,6 +35,7 @@ namespace RStream
 		friend TStream& operator<<(TStream& out, const fastjet::PseudoJet &in);
 		friend TStream& operator<<(TStream& out, const double &in);
 		friend TStream& operator<<(TStream& out, const int &in);
+		friend TStream& operator<<(TStream& out, const unsigned long &in);
 		// template<class T>
 		// friend TStream& operator<<(TStream& out, const T &val);
 		friend TStream& operator<<(TStream& out, const double &val);

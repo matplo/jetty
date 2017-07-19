@@ -64,7 +64,7 @@ int run_jets (const std::string &s)
 	for (unsigned int iE = 0; iE < nEv; iE++)
 	{
 		pbar.Update();
-		if (pythia.next() == false) continue;
+		if (pywrap.next() == false) continue;
 
 		std::vector<fj::PseudoJet> parts;
 		// loop over particles in the event
@@ -88,6 +88,8 @@ int run_jets (const std::string &s)
 				if (TMath::Abs(j.eta()) > maxEta - R)
 					continue;
 
+				jts << "code" << pythia.info.code();
+
 				hpT->Fill(j.perp());
 				jts << "j" << j;
 
@@ -96,6 +98,8 @@ int run_jets (const std::string &s)
 
 				auto sjs = sj_info->subjets();
 				jts << "subj" << sjs;
+
+				jts << "nsj" << sjs.size();
 
 				if (sj_info->has_at_least_2_subjets())
 				{
@@ -107,7 +111,6 @@ int run_jets (const std::string &s)
 					jts << "sj_delta_sum" << (sjs[0].perp() - sjs[1].perp()) / (sjs[0].perp() + sjs[1].perp());
 					jts << "sj_zg" << TMath::Min(sjs[0].perp(), sjs[1].perp()) / j.perp();
 				}
-
 				//auto zs   = sj_info->z();
 				jts << "z" << sj_info->z();
 

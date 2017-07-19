@@ -100,9 +100,14 @@ namespace PyUtil
 		if (gSystem->AccessPathName(fname.c_str(), kFileExists) == kFALSE)
 		{
 			Lwarn << "output file " << fname.c_str() << " already exists";
-			Linfo << "setting pythia Beams:eCM=0 ... - this should stop execution.";
-			args->set("Beams:eCM=0");
-			return false;
+			if (args->isSet("--overwrite"))
+				Linfo << "overwrite is set - continuing" << endl;
+			else
+			{
+				Linfo << "setting pythia Beams:eCM=0 ... - this should stop execution.";
+				args->set("Beams:eCM=0");
+				return false;
+			}
 		}
 		return true;
 	}

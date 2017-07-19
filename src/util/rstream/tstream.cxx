@@ -168,6 +168,20 @@ namespace RStream
 		b->SetAddress(0x0);
 	}
 
+	void TStream::FillBranch(const char *name, const unsigned long &in)
+	{
+		int v = in;
+		string sname = fName + "_" + name;
+		TBranch *b = fTree->GetBranch(sname.c_str());
+		if (b == 0)
+		{
+			b = fTree->Branch(sname.c_str(), &v);
+		}
+		b->SetAddress(&v);
+		b->Fill();
+		b->SetAddress(0x0);
+	}
+
 	void TStream::FillTree()
 	{
 		Long64_t n = fTree->GetEntries();
@@ -229,6 +243,14 @@ namespace RStream
 	}
 
 	TStream& operator<<(TStream& out, const int &in)
+	{
+	   assert(out.fCurrentName.size() > 0);
+	   out.FillBranch(out.fCurrentName.c_str(), in);
+	   out.fCurrentName = "";
+	   return out;
+	}
+
+	TStream& operator<<(TStream& out, const unsigned long &in)
 	{
 	   assert(out.fCurrentName.size() > 0);
 	   out.FillBranch(out.fCurrentName.c_str(), in);
