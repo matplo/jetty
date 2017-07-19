@@ -11,39 +11,79 @@ using namespace std;
 
 namespace SysUtil
 {
+	unsigned int Args::_instance_counter = 0;
+
+	void Args::_log_argument(const char *what)
+	{
+		string swhat = what;
+		for (auto s : _args_logged)
+		{
+			if (s == swhat)
+				return;
+		}
+		_args_logged.push_back(swhat);
+	}
+
+	void Args::_dump_logged_arguments()
+	{
+		if (isSet("--dump-args-log") || isSet("--debug"))
+		{
+			cout << asString("[i] argument log : known via ::isSet|add|set|get - cmnd was:");
+			for (auto s : _args_logged)
+			{
+				cout << "    " << s << endl;
+			}
+		}
+	}
+
+	std::vector<std::string> Args::_args_logged;
+
+	Args::~Args()
+	{
+		_instance_counter -= 1;
+		if (_instance_counter == 0)
+			_dump_logged_arguments();
+	}
+
 	Args::Args(int argc, char **argv)
 		: _args()
 	{
 		_convert(argc, argv);
 		_init_logging();
+		_instance_counter += 1;
 	}
 
 	Args::Args()
 		: _args()
 	{
 		_init_logging();
+		_instance_counter += 1;
 	}
 
 	Args::Args(const vector<string> &v)
 		: _args(v)
 	{
 		_init_logging();
+		_instance_counter += 1;
 	}
 
 	Args::Args(const string &s)
 		: _args(breakup(s.c_str(), ' '))
 	{
 		_init_logging();
+		_instance_counter += 1;
 	}
 
 	Args::Args(const Args &v)
 		: _args(v._args)
 	{
 		_init_logging();
+		_instance_counter += 1;
 	}
 
 	bool Args::isSet(const char *what) const
 	{
+		_log_argument(what);
 		string swhat(what);
 		auto prs = pairs();
 		for (auto &p : prs)
@@ -58,6 +98,7 @@ namespace SysUtil
 
 	string Args::get(const char *what) const
 	{
+		_log_argument(what);
 		string sret("");
 		string swhat(what);
 		auto prs = pairs();
@@ -83,6 +124,7 @@ namespace SysUtil
 
 	void Args::add(const char *what)
 	{
+		_log_argument(what);
 		string swhat(what);
 		if (swhat.find("=") != std::string::npos)
 		{

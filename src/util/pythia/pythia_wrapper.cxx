@@ -92,10 +92,6 @@ namespace PyUtil
 	{
 		auto args = fWrapper->get<PyUtil::Args>();
 		string fname = _outputFileName();
-		if (args->isSet("--force"))
-		{
-			return true;
-		}
 		// strange but yeah... kFALSE if the file exists
 		if (gSystem->AccessPathName(fname.c_str(), kFileExists) == kFALSE)
 		{
