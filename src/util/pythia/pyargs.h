@@ -1,7 +1,7 @@
 #ifndef __PYUTIL_ARGS__HH
 #define __PYUTIL_ARGS__HH
 
-#include "args.h"
+#include "util/args.h"
 
 namespace PyUtil
 {

@@ -1,6 +1,7 @@
 #include "pyargs.h"
 #include "pyutil.h"
-#include "sysutil.h"
+#include "util/sysutil.h"
+#include "util/blog.h"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
@@ -28,7 +29,7 @@ namespace PyUtil
 		if (SysUtil::file_exists(cfgfile))
 		{
 			readConfig(cfgfile.c_str());
-			cout << "[i PyUtil::Args::_cook] using " << cfgfile << " to [pre-]configure pythia." << endl;
+			Ltrace << "[PyUtil::Args::_cook] using " << cfgfile << " to [pre-]configure pythia.";
 		}
 
 		int nEvent = getI("Main:numberOfEvents");
@@ -38,6 +39,18 @@ namespace PyUtil
 			nEvent 		= userNEvent;
 		}
 		set("Main:numberOfEvents", nEvent);
+		Ldebug << "[PyUtil::Args::_cook] Main:numberOfEvents = " << get("Main:numberOfEvents");
+
+		if (isSet("-h") || isSet("--help"))
+		{
+			set("--dry");
+		}
+
+		if (isSet("--test"))
+		{
+			set("Main:numberOfEvents=1");
+			set("--out=test.root");
+		}
 
 		double pTHatMin = getD("-pTHatMin", -99);
 		if (pTHatMin == -99)
@@ -53,18 +66,15 @@ namespace PyUtil
 		double pTHatMax = getD("--pTHatMax", -99);
 		if (pTHatMax == -99)
 			pTHatMax = getD("PhaseSpace:pTHatMax", -99); // backward compat.
-		if (pTHatMax >= -1)
+		add(boost::str(boost::format("PhaseSpace:pTHatMax=%1%") % pTHatMax));
+
+		if (getD("PhaseSpace:pTHatMin") > getD("PhaseSpace:pTHatMax") && getD("PhaseSpace:pTHatMax") >= 0)
 		{
-			if (pTHatMax > -1 && pTHatMax < pTHatMin)
-			{
-				std::cerr << "[e] bad pTHat selection - min:" << pTHatMin << " max:" << pTHatMax << std::endl;
-				return;
-			}
-			else
-			{
-				// add(TString::Format("PhaseSpace:pTHatMax=%f", pTHatMax).Data());
-				add(boost::str(boost::format("PhaseSpace:pTHatMax=%1%") % pTHatMax));
-			}
+			Lwarn << "something is not right with your pThat selection min=" << getD("PhaseSpace:pTHatMin") << " max=" <<  getD("PhaseSpace:pTHatMax") << endl;
+			// Lwarn << "setting pTHatMax=-1";
+			set("Beams:eCM=0"); // this will fail on initialization
+			set("--dry"); // this if checked should halt the execution
+			set("--invalid"); // or this...
 		}
 
 		if (isSet("--minbias"))

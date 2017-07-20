@@ -31,11 +31,13 @@ message( STATUS "PYTHIA8_DIR: ${PYTHIA8_DIR}")
 message( STATUS "PYTHIA8_CXXFLAGS: ${PYTHIA8_CXXFLAGS}")
 message( STATUS "PYTHIA8_LDFLAGS: ${PYTHIA8_LDFLAGS}")
 
-find_package(Boost REQUIRED math_c99)
+find_package(Boost REQUIRED math_c99 log log_setup)
 if (BOOST-NOTFOUND)
 	message(SEND_ERROR "Boost or one of the components not found. Will not compile ${EXE_NAME}")
 else()
 	include_directories(${Boost_INCLUDE_DIRS})
+	link_libraries(${Boost_LIBRARIES})
+	SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -DBOOST_LOG_DYN_LINK" )
 endif (BOOST-NOTFOUND)
 
 # indep. if root built with cmake assume the root-cint is in the path
