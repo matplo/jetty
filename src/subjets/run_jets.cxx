@@ -78,12 +78,14 @@ int run_jets (const std::string &s)
 		for (unsigned int ip = 0; ip < event.size(); ip++)
 		{
 			if (event[ip].isFinal())
+			{
 				if (TMath::Abs(event[ip].eta()) < maxEta)
 				{
 					fj::PseudoJet p(event[ip].px(), event[ip].py(), event[ip].pz(), event[ip].e());
 					p.set_user_index(ip);
 					parts.push_back(p);
 				}
+			}
 
 			fj::JetDefinition jet_def(fj::antikt_algorithm, R);
 			fj::ClusterSequence cs(parts, jet_def);
