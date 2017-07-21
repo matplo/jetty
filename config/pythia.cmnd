@@ -25,8 +25,8 @@ Beams:eCM = 5000.                 ! CM energy of collision
 
 ! Example 1: QCD + prompt photon production; must set pTmin.
 HardQCD:all = on                   ! switch on all QCD jet + jet processes
-PromptPhoton:all = on              ! swich on gamma + jet and gamma + gamma
-PhaseSpace:pTHatMax = 88.        ! minimal pT scale in process
+! PromptPhoton:all = on              ! swich on gamma + jet and gamma + gamma
+PhaseSpace:pTHatMax = -1        ! minimal pT scale in process
 PhaseSpace:pTHatMin = 44.          ! minimal pT scale in process
 ! SoftQCD:minBias = on
 
