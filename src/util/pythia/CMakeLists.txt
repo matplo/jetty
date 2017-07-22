@@ -7,6 +7,8 @@ set(SOURCES_LIB
 	outkinematics.cxx
 	crosssections.cxx
 	pythia_wrapper.cxx
+	presample.cxx
+	scanhard.cxx
 )
 
 # Headers from sources

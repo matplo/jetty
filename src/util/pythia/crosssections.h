@@ -6,6 +6,7 @@
 #include <exception>
 #include <iostream>
 #include <fstream>
+#include <cmath>
 
 #include "util/blog.h"
 
@@ -18,25 +19,10 @@ namespace PyUtil
 	public:
 		CrossSections(Pythia8::Pythia &pythia, const char *fname = 0);
 
-		double xsection_for_code(const int &c)
-		{
-			double err = 0;
-			return xsection_for_code(c, err);
-		}
-
-		double xsection_for_code(const int &c, double &err)
-		{
-			for ( unsigned int i = 0; i < codes.size(); i++)
-			{
-				if (c == codes[i])
-				{
-					err = xsec_err[i];
-					return xsec[i];
-				}
-			}
-			err = -1;
-			return -1;
-		}
+		double xsection_for_code(const int c);
+		double xsection_for_code(const int c, double &err);
+		bool is_nsigma(const int icode, const double xs, const double nsigma_test = 3.);
+		double nsigma(const int icode, const double xs);
 
 		~CrossSections() {;}
 

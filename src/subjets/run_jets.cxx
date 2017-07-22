@@ -5,6 +5,8 @@
 #include "util/pythia/pyutil.h"
 #include "util/pythia/pythia_wrapper.h"
 #include "util/pythia/crosssections.h"
+#include "util/pythia/presample.h"
+
 #include "util/looputil.h"
 #include "util/blog.h"
 #include "util/rstream/tstream.h"
@@ -40,13 +42,18 @@ int run_jets (const std::string &s)
 	Linfo << args.asString("[subjets/pythia_run:status]");
 	if (args.isSet("--dry")) return 0;
 
+	PreSamplePythia presample(args.asString());
+	if (args.isSet("--presample"))
+	{
+		presample.run();
+	}
+
 	PyUtil::PythiaWrapper pywrap(args.asString());
 	if (pywrap.initialized() == false)
 	{
 		Lwarn << "Pythia not initialized. Stop here.";
 		return 0; // this is a normal termination
 	}
-
 	PyUtil::Args &pyargs    = *pywrap.args();
 	Pythia8::Pythia &pythia = *pywrap.pythia();
 	auto &event             = pythia.event;
@@ -73,10 +80,34 @@ int run_jets (const std::string &s)
 		pbar.Update();
 		if (pywrap.next() == false) continue;
 
+		double wxsec = 1.;
+		auto icode = pythia.info.code();
+		auto xsec_code = pythia.info.sigmaGen(icode);
+		double nsigma = 0;
+		double nsigma_code = 0;
+
+		double hard_mean      = 0;
+		double hard_std_dev   = 0;
+		double hard_n_std_dev = 0;
+		if (presample.ready())
+		{
+			nsigma      = presample.getXSections()->nsigma(0, pythia.info.sigmaGen(0));
+			nsigma_code = presample.getXSections()->nsigma(icode, xsec_code);
+			wxsec       = presample.getXsections()->xsection_for_code(0);
+
+			hard_mean      = presample.getStatHard()->mean(pythia);
+			hard_std_dev   = presample.getStatHard()->std_dev(pythia);
+			hard_n_std_dev = presample.getStatHard()->n_std_dev(pythia);
+			Ltrace << "presample ready...";
+		}
+		Ltrace << "xsec = " << wxsec << " nsigma(0) = " << nsigma << " code = " << icode << " nsigma_code = " << nsigma_code;
+		Ltrace << "hard: mean = " << hard_mean << " std_dev = " << hard_std_dev << " n_std_dev = " << hard_n_std_dev;
+
 		std::vector<fj::PseudoJet> parts;
 		// loop over particles in the event
 		for (unsigned int ip = 0; ip < event.size(); ip++)
 		{
+
 			if (event[ip].isFinal())
 			{
 				if (TMath::Abs(event[ip].eta()) < maxEta)
@@ -97,7 +128,14 @@ int run_jets (const std::string &s)
 				if (TMath::Abs(j.eta()) > maxEta - R)
 					continue;
 
-				jts << "code" << pythia.info.code();
+				jts << "xsec" << wxsec;
+				jts << "icode" << icode;
+				jts << "xsec_code" << xsec_code;
+				jts << "nsigma" << nsigma;
+				jts << "nsigma_code" << nsigma_code;
+				jts << "hard_mean" << hard_mean;
+				jts << "hard_std_dev" << hard_std_dev;
+				jts << "hard_n_std_dev" << hard_n_std_dev;
 
 				hpT->Fill(j.perp());
 				jts << "j" << j;
@@ -134,6 +172,19 @@ int run_jets (const std::string &s)
 			}
 		}
 	}
+
+	double wxsec = 1.;
+	if (presample.ready())
+	{
+		wxsec = presample.getXsections()->xsection_for_code(0);
+	}
+	else
+	{
+		auto xsec = PyUtil::CrossSections(pythia);
+		wxsec = xsec.xsection_for_code(0);
+	}
+	jt->SetWeight(wxsec);
+	Linfo << "setting output tree weight:" << wxsec;
 	pythia.stat();
 	Linfo << "Generation done.";
 

@@ -26,7 +26,8 @@ namespace PyUtil
 		}
 
 		auto _codes = pythia.info.codesHard();
-		_codes.push_back(0);
+		//_codes.push_back(0);
+		_codes.insert(_codes.begin(), 0);
 		for ( auto &xcode : _codes)
 		{
 			double xs     = pythia.info.sigmaGen(xcode);
@@ -69,6 +70,44 @@ namespace PyUtil
 			}
 		}
 	}
+
+	double CrossSections::xsection_for_code(const int c)
+	{
+		double err = 0;
+		return xsection_for_code(c, err);
+	}
+
+	double CrossSections::xsection_for_code(const int c, double &err)
+	{
+		for ( unsigned int i = 0; i < codes.size(); i++)
+		{
+			if (c == codes[i])
+			{
+				err = xsec_err[i];
+				return xsec[i];
+			}
+		}
+		err = 0.0;
+		return 0.0;
+	}
+
+	bool CrossSections::is_nsigma(const int icode, const double xs, const double nsigma_test)
+	{
+		if (fabs(nsigma(icode, xs)) > nsigma_test)
+			return false;
+		return true;
+	}
+
+	double CrossSections::nsigma(const int icode, const double xs)
+	{
+		double _x_sec_err = 0.0;
+		double _x_sec = xsection_for_code(icode, _x_sec_err);
+		if (_x_sec_err != 0.0)
+			return (xs - _x_sec) / _x_sec_err;
+		else
+			return 0.;
+	}
+
 };
 
 TTree & operator << (TTree & t, const PyUtil::CrossSections &xs)

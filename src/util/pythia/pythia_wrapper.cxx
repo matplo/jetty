@@ -76,11 +76,9 @@ namespace PyUtil
 			Linfo << "pythia is at " << ppythia;
 			fWrapper->add(ppythia); // no need to remember to delete - just delete the pywrapp
 			_initOutput();
-			args->set("PyInit=1");
 		}
 		else
 		{
-			args->set("PyInit=0");
 			Lerror << "pythia initialization failed.";
 			delete ppythia;
 			ppythia = 0;
