@@ -28,7 +28,7 @@ namespace PyUtil
 	public:
 		StatHardPythia();
 		virtual ~StatHardPythia();
-		void add_event(const Pythia8::Pythia &pythia);
+		void add_event(Pythia8::Pythia &pythia);
 		bool accept(const Pythia8::Pythia &pythia, double n_std_dev);
 		double std_dev(const Pythia8::Pythia &pythia);
 		double mean(const Pythia8::Pythia &pythia);

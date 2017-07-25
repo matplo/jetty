@@ -32,6 +32,11 @@ namespace PyUtil
 		return sum;
 	}
 
+	static bool psj_pt_compare(const fj::PseudoJet &a, const fj::PseudoJet &b)
+	{
+		return (a.perp() < b.perp());
+	}
+
 	double estim_eT_jets(const Pythia8::Pythia &pythia)
 	{
 		auto &event             = pythia.event;
@@ -49,12 +54,18 @@ namespace PyUtil
 		fj::JetDefinition jet_def(fj::antikt_algorithm, 0.4);
 		fj::ClusterSequence cs(parts, jet_def);
 		auto jets = fj::sorted_by_pt(cs.inclusive_jets());
-		for (auto j : jets)
-		{
-			if (std::fabs(j.eta()) < 2.)
-				sum += j.perp();
-		}
-		return sum;
+		//std::vector<double> vpt;
+		//for (auto j : jets)
+		//{
+		//	vpt.push_back(j.perp());
+		//	if (std::fabs(j.eta()) < 2.)
+		//		sum += j.perp();
+		//}
+		////return sum;
+		//auto max_element = std::max_element(vpt.begin(), vpt.end(), psj_pt_compare);
+		if (jets.size() > 0)
+			return jets[0].perp();
+		return 0;
 	}
 
 	ProcStats::ProcStats(int procid)
@@ -114,7 +125,7 @@ namespace PyUtil
 		;
 	}
 
-	void StatHardPythia::add_event(const Pythia8::Pythia &pythia)
+	void StatHardPythia::add_event(Pythia8::Pythia &pythia)
 	{
 		int icode = pythia.info.code();
 		if (icode == 101 || (icode >= 111 && icode <= 124) || (icode >=201 && icode <= 205))
@@ -143,8 +154,8 @@ namespace PyUtil
 			//double _max = std::max(pythia.event[5].pT(), pythia.event[6].pT());
 			//double _max = pythia.event[5].pT() + pythia.event[6].pT();
 			//double _max = total_eT(pythia);
-			//double _max = estim_eT_jets(pythia);
-			double _max = (pythia.event[5].pT() + pythia.event[6].pT()) / 2.;
+			double _max = estim_eT_jets(pythia);
+			//double _max = (pythia.event[5].pT() + pythia.event[6].pT()) / 2.; // * pythia.info.sigmaGen();
 			it->second.add(_max);
 			Ltrace << "hard max: " << _max << " mean = " << mean(pythia) << " std_dev = " << std_dev(pythia);
 			//it->second.add(pythia.event[5].pT());
@@ -189,8 +200,8 @@ namespace PyUtil
 			//double _max = std::max(pythia.event[5].pT(), pythia.event[6].pT());
 			//double _max = pythia.event[5].pT() + pythia.event[6].pT();
 			//double _max = total_eT(pythia);
-			//double _max = estim_eT_jets(pythia);
-			double _max = (pythia.event[5].pT() + pythia.event[6].pT()) / 2.;
+			double _max = estim_eT_jets(pythia);
+			//double _max = (pythia.event[5].pT() + pythia.event[6].pT()) / 2.;
 			return (_max - mean(pythia) ) / _std_dev;
 		}
 		return 0.0;
