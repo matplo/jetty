@@ -148,16 +148,22 @@ int run_jets (const std::string &s)
 
 				jts << "nsj" << sjs.size();
 
-				if (sj_info->has_at_least_2_subjets())
+				if (sjs.size() < 1)
 				{
-					jts << "sj_0" << sjs[0];
-					jts << "sj_1" << sjs[1];
-					jts << "sj_dR" << sjs[0].delta_R(sjs[1]);
-					jts << "sj_dpt" << sjs[0].perp() - sjs[1].perp();
-					jts << "sj_delta" << (sjs[0].perp() - sjs[1].perp()) / j.perp();
-					jts << "sj_delta_sum" << (sjs[0].perp() - sjs[1].perp()) / (sjs[0].perp() + sjs[1].perp());
-					jts << "sj_zg" << TMath::Min(sjs[0].perp(), sjs[1].perp()) / j.perp();
+					sjs.push_back(j);
 				}
+				if (sjs.size() < 2)
+				{
+					sjs.push_back(fj::PseudoJet(0,0,0,0));
+				}
+
+				jts << "sj_0" << sjs[0];
+				jts << "sj_1" << sjs[1];
+				jts << "sj_dR" << sjs[0].delta_R(sjs[1]);
+				jts << "sj_dpt" << sjs[0].perp() - sjs[1].perp();
+				jts << "sj_delta" << (sjs[0].perp() - sjs[1].perp()) / j.perp();
+				jts << "sj_delta_sum" << (sjs[0].perp() - sjs[1].perp()) / (sjs[0].perp() + sjs[1].perp());
+				jts << "sj_zg" << TMath::Min(sjs[0].perp(), sjs[1].perp()) / j.perp();
 				//auto zs   = sj_info->z();
 				jts << "z" << sj_info->z();
 
