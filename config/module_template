@@ -11,3 +11,5 @@ prepend-path LD_LIBRARY_PATH par1/lib
 prepend-path DYLD_LIBRARY_PATH par1/lib
 prepend-path PATH par1/bin
 prepend-path PATH par1/scripts
+
+set-alias jettydir_cd "cd par1"
