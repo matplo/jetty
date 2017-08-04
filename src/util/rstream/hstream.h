@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 #include <fastjet/PseudoJet.hh>
+#include <Pythia8/Pythia.h>
 
 class TList;
 class TH1;
@@ -23,11 +24,14 @@ namespace RStream
 		bool Init(const char *sconfig, bool file_config = false);
 		bool Init(const char *name, const char *sconfig, bool file_config = false);
 
+		bool Initialized() {return fInit;}
+
 		virtual ~HStream();
 
 		TH1* CreateH(const char *sname);
 		TH1* CreateH(const std::string &sname) {return CreateH(sname.c_str());}
 
+		void FillHranch(const char *name, const Pythia8::Particle &in);
 		void FillHranch(const char *name, const fastjet::PseudoJet &in);
 		void FillHranch(const char *name, const double &in);
 		void FillHranch(const char *name, const int &in);
@@ -42,6 +46,7 @@ namespace RStream
 		friend HStream& operator<<(HStream& out, const std::vector<double> &in);
 		friend HStream& operator<<(HStream& out, const std::vector<int> &in);
 		friend HStream& operator<<(HStream& out, const fastjet::PseudoJet &in);
+		friend HStream& operator<<(HStream& out, const Pythia8::Particle &in);
 		friend HStream& operator<<(HStream& out, const double &in);
 		friend HStream& operator<<(HStream& out, const int &in);
 		friend HStream& operator<<(HStream& out, const unsigned long &in);

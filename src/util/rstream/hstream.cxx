@@ -50,6 +50,7 @@ namespace RStream
 
 	bool HStream::Init(const char *name, const char *sconfig, bool file_config)
 	{
+		fInit = false;
 		fName = name;
 		fConfigString = sconfig;
 		if (file_config)
@@ -60,13 +61,21 @@ namespace RStream
 		}
 		SysUtil::Args args(fConfigString);
 		fOutputFile = new TFile(args.get("output_file").c_str(), "recreate");
-		if (!fOutputFile)
-			return false;
-		return true;
+		if (fOutputFile)
+		{
+			fList = new TList();
+			fList->SetOwner(kFALSE);
+			fInit = true;
+		}
+		return fInit;
 	}
 
 	HStream::~HStream()
 	{
+		if (fList)
+		{
+			delete fList;
+		}
 		if (fOutputFile)
 		{
 			fOutputFile->Write();
@@ -78,11 +87,16 @@ namespace RStream
 	TH1 *HStream::CreateH(const char *sname)
 	{
 		TH1 *h = 0;
+		if (!fInit) return h;
 		SysUtil::Args args(fConfigString);
 		if (args.isSet(sname) == false)
 		{
 			Lwarn << sname << " histogram is not configured";
-			return (TH1*)0x0;
+			return h;
+		}
+		else
+		{
+			Linfo << "creating histogram for " << sname;
 		}
 		auto _sname = args.get(sname);
 		auto _stitle = args.get(_sname + "_title");
@@ -98,6 +112,8 @@ namespace RStream
 
 	void HStream::FillHranch(const char *name, const vector<fastjet::PseudoJet> &in)
 	{
+		Ltrace << "FillHranch...";
+		if (!fInit) return;
 		std::vector<double> pt;
 		std::vector<double> phi;
 		std::vector<double> eta;
@@ -141,6 +157,8 @@ namespace RStream
 
 	void HStream::FillHranch(const char *name, const fastjet::PseudoJet &in)
 	{
+		Ltrace << "FillHranch...";
+		if (!fInit) return;
 		string s = name;
 		s += "pt";
 		FillHranch(s.c_str(), in.perp());
@@ -164,13 +182,36 @@ namespace RStream
 			FillHranch(s.c_str(), int(0));
 	}
 
+	void HStream::FillHranch(const char *name, const Pythia8::Particle &in)
+	{
+		Ltrace << "FillHranch...";
+		if (!fInit) return;
+		string s = name;
+		s += "pt";
+		FillHranch(s.c_str(), in.pT());
+		s = name;
+		s += "phi";
+		FillHranch(s.c_str(), in.phi());
+		s = name;
+		s += "eta";
+		FillHranch(s.c_str(), in.eta());
+		s = name;
+		s += "rap";
+		FillHranch(s.c_str(), in.y());
+		s = name;
+		s += "m";
+		FillHranch(s.c_str(), in.m());
+	}
+
 	void HStream::FillHranch(const char *name, const vector<double> &in)
 	{
+		Ltrace << "FillHranch...";
+		if (!fInit) return;
 		string sname = fName + "_" + name;
 		TH1 *b = (TH1*)fList->FindObject(sname.c_str());
 		if (b == 0)
 		{
-			b = CreateH(sname);
+			b = CreateH(sname.c_str());
 		}
 		if (b == 0) return;
 		for (unsigned int i = 0; i < in.size(); ++i)
@@ -181,11 +222,13 @@ namespace RStream
 
 	void HStream::FillHranch(const char *name, const vector<int> &in)
 	{
+		Ltrace << "FillHranch...";
+		if (!fInit) return;
 		string sname = fName + "_" + name;
 		TH1 *b = (TH1*)fList->FindObject(sname.c_str());
 		if (b == 0)
 		{
-			b = CreateH(sname);
+			b = CreateH(sname.c_str());
 		}
 		if (b == 0) return;
 		for (unsigned int i = 0; i < in.size(); ++i)
@@ -196,11 +239,13 @@ namespace RStream
 
 	void HStream::FillHranch(const char *name, const double &in)
 	{
+		Ltrace << "FillHranch...";
+		if (!fInit) return;
 		string sname = fName + "_" + name;
 		TH1 *b = (TH1*)fList->FindObject(sname.c_str());
 		if (b == 0)
 		{
-			b = CreateH(sname);
+			b = CreateH(sname.c_str());
 		}
 		if (b == 0) return;
 		b->Fill(in);
@@ -208,11 +253,13 @@ namespace RStream
 
 	void HStream::FillHranch(const char *name, const int &in)
 	{
+		Ltrace << "FillHranch...";
+		if (!fInit) return;
 		string sname = fName + "_" + name;
 		TH1 *b = (TH1*)fList->FindObject(sname.c_str());
 		if (b == 0)
 		{
-			b = CreateH(sname);
+			b = CreateH(sname.c_str());
 		}
 		if (b == 0) return;
 		b->Fill(in);
@@ -220,11 +267,13 @@ namespace RStream
 
 	void HStream::FillHranch(const char *name, const unsigned long &in)
 	{
+		Ltrace << "FillHranch...";
+		if (!fInit) return;
 		string sname = fName + "_" + name;
 		TH1 *b = (TH1*)fList->FindObject(sname.c_str());
 		if (b == 0)
 		{
-			b = CreateH(sname);
+			b = CreateH(sname.c_str());
 		}
 		if (b == 0) return;
 		b->Fill(in);
@@ -232,72 +281,80 @@ namespace RStream
 
 	HStream& operator<<(HStream& out, const char *bname)
 	{
-	   out.fCurrentName = bname;
-	   // std::cout << "current name is " << out.fCurrentName << std::endl;
-	   return out;
+		out.fCurrentName = bname;
+		// Ltrace << "current name is " << out.fCurrentName;
+		return out;
 	}
 
 	HStream& operator<<(HStream& out, const std::string &bname)
 	{
-	   out.fCurrentName = bname;
-	   // std::cout << "current name is " << out.fCurrentName << std::endl;
-	   return out;
+		out.fCurrentName = bname;
+		// Ltrace << "current name is " << out.fCurrentName;
+		return out;
 	}
 
 	HStream& operator<<(HStream& out, const std::vector<fastjet::PseudoJet> &in)
 	{
-	   assert(out.fCurrentName.size() > 0);
-	   out.FillHranch(out.fCurrentName.c_str(), in);
-	   out.fCurrentName = "";
-	   return out;
+		if (out.fCurrentName.size() < 1) return out;
+		out.FillHranch(out.fCurrentName.c_str(), in);
+		out.fCurrentName = "";
+		return out;
 	}
 
 	HStream& operator<<(HStream& out, const std::vector<double> &in)
 	{
-	   assert(out.fCurrentName.size() > 0);
-	   out.FillHranch(out.fCurrentName.c_str(), in);
-	   out.fCurrentName = "";
-	   return out;
+		if (out.fCurrentName.size() < 1) return out;
+		out.FillHranch(out.fCurrentName.c_str(), in);
+		out.fCurrentName = "";
+		return out;
 	}
 
 	HStream& operator<<(HStream& out, const std::vector<int> &in)
 	{
-	   assert(out.fCurrentName.size() > 0);
-	   out.FillHranch(out.fCurrentName.c_str(), in);
-	   out.fCurrentName = "";
-	   return out;
+		if (out.fCurrentName.size() < 1) return out;
+		out.FillHranch(out.fCurrentName.c_str(), in);
+		out.fCurrentName = "";
+		return out;
 	}
 
 	HStream& operator<<(HStream& out, const fastjet::PseudoJet &in)
 	{
-	   assert(out.fCurrentName.size() > 0);
-	   out.FillHranch(out.fCurrentName.c_str(), in);
-	   out.fCurrentName = "";
-	   return out;
+		if (out.fCurrentName.size() < 1) return out;
+		out.FillHranch(out.fCurrentName.c_str(), in);
+		out.fCurrentName = "";
+		return out;
+	}
+
+	HStream& operator<<(HStream& out, const Pythia8::Particle &in)
+	{
+		if (out.fCurrentName.size() < 1) return out;
+		out.FillHranch(out.fCurrentName.c_str(), in);
+		out.fCurrentName = "";
+		return out;
 	}
 
 	HStream& operator<<(HStream& out, const double &in)
 	{
-	   assert(out.fCurrentName.size() > 0);
-	   out.FillHranch(out.fCurrentName.c_str(), in);
-	   out.fCurrentName = "";
-	   return out;
+		if (out.fCurrentName.size() < 1) return out;
+		out.FillHranch(out.fCurrentName.c_str(), in);
+		out.fCurrentName = "";
+		return out;
 	}
 
 	HStream& operator<<(HStream& out, const int &in)
 	{
-	   assert(out.fCurrentName.size() > 0);
-	   out.FillHranch(out.fCurrentName.c_str(), in);
-	   out.fCurrentName = "";
-	   return out;
+		if (out.fCurrentName.size() < 1) return out;
+		out.FillHranch(out.fCurrentName.c_str(), in);
+		out.fCurrentName = "";
+		return out;
 	}
 
 	HStream& operator<<(HStream& out, const unsigned long &in)
 	{
-	   assert(out.fCurrentName.size() > 0);
-	   out.FillHranch(out.fCurrentName.c_str(), in);
-	   out.fCurrentName = "";
-	   return out;
+		if (out.fCurrentName.size() < 1) return out;
+		out.FillHranch(out.fCurrentName.c_str(), in);
+		out.fCurrentName = "";
+		return out;
 	}
 
 	HStream& operator <<(HStream& out, std::ostream& (*os)(std::ostream&))

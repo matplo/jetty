@@ -287,7 +287,7 @@ namespace SysUtil
 		std::ifstream fin(fname);
 		if (!fin)
 		{
-			Ldebug << "[Args::readConfig:e] unable to read from config file:" << fname;
+			Lwarn << "[Args::readConfig] unable to read from config file:" << fname;
 			return;
 		}
 		while (std::getline(fin, str))
@@ -320,13 +320,20 @@ namespace SysUtil
 	void Args::_init_logging()
 	{
 		_instance_counter += 1;
-		LogUtil::blog_set_severity();
+
+		// cout << "[Args::_init_logging] instance:" << _instance_counter << " current severity: " << LogUtil::current_blog_severity() << endl;
+
+		LogUtil::blog_set_severity(LogUtil::current_blog_severity());
 
 		if (isSet("--debug"))
-			LogUtil::blog_set_severity(boost::log::trivial::debug);
+		{
+			if (LogUtil::current_blog_severity() > boost::log::trivial::debug)
+				LogUtil::blog_set_severity(boost::log::trivial::debug);
+		}
 
 		if (isSet("--trace"))
-			LogUtil::blog_set_severity(boost::log::trivial::trace);
+			if (LogUtil::current_blog_severity() > boost::log::trivial::trace)
+				LogUtil::blog_set_severity(boost::log::trivial::trace);
 	}
 
 };

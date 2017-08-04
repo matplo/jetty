@@ -67,8 +67,11 @@ int run_pythia_wrapper (const std::string &s)
 		for (unsigned int ip = 0; ip < event.size(); ip++)
 		{
 			if (event[ip].isFinal())
+			{
 				if (TMath::Abs(event[ip].eta()) < 1.)
 					hpT->Fill(event[ip].pT(), 1./event[ip].pT());
+				hstream << "part" << event[ip].pT();
+			}
 		}
 	}
 	pythia.stat();

@@ -27,13 +27,18 @@ namespace keywords = boost::log::keywords;
 
 namespace LogUtil
 {
-	static bool common_attributes_added = false;
-	void blog_set_severity(int level)
+	bool common_attributes_added = false;
+	boost::log::trivial::severity_level current_severity = boost::log::trivial::info;
+
+	boost::log::trivial::severity_level current_blog_severity() { return current_severity;}
+
+	void blog_set_severity(boost::log::trivial::severity_level level)
 	{
 		logging::core::get()->set_filter
 		(
 			logging::trivial::severity >= level
 		);
+		current_severity = level;
 		//boost::log::add_console_log(std::cout, boost::log::keywords::format = "[%TimeStamp%] %Message%");
 
 		if (common_attributes_added == false)

@@ -6,9 +6,11 @@
 
 //#define BOOST_LOG_DYN_LINK 1
 
+
 namespace LogUtil
 {
-	void blog_set_severity(int level = boost::log::trivial::info);
+	boost::log::trivial::severity_level current_blog_severity();
+	void blog_set_severity(boost::log::trivial::severity_level level = boost::log::trivial::info);
 	std::string env_path_jetty(const char *fname);
 }
 
