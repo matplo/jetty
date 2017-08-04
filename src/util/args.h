@@ -24,6 +24,10 @@ namespace SysUtil
 		double 			getD(const char *what, const double defret = 0.0) const;
 		int 			getI(const char *what, const int 	defret = 0  ) const;
 
+		std::string     get (const std::string &what) const;
+		double 			getD(const std::string &what, const double 	defret = 0.0) const;
+		int 			getI(const std::string &what, const int 	defret = 0  ) const;
+
 		template <class T>
 		void 			add(const char *what, const T &value);
 		void 			add(const char *what);

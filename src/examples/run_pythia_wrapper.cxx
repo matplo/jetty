@@ -9,6 +9,8 @@
 #include "util/looputil.h"
 #include "util/blog.h"
 
+#include "util/rstream/hstream.h"
+
 #include <TFile.h>
 #include <TTree.h>
 #include <TH1F.h>
@@ -31,6 +33,11 @@ int run_pythia_wrapper (const std::string &s)
 	if (args.isSet("--dry")) return 0;
 
 	PyUtil::PythiaWrapper pywrap(args.asString());
+	if (!pywrap.initialized())
+	{
+		Lwarn << "PYTHIA not initialized. Stop Here.";
+		return 1;
+	}
 	PyUtil::Args &pyargs      = *pywrap.args();
 	Pythia8::Pythia &pythia = *pywrap.pythia();
 	auto &event             = pythia.event;
@@ -38,6 +45,12 @@ int run_pythia_wrapper (const std::string &s)
 	pywrap.outputFile()->cd();
 	TTree *tk = new TTree("kine", "kine");
 	TH1F *hpT = new TH1F("hpT", "pT;p_{T} (GeV/#it{c});counts", 50, 0, 100);
+
+	RStream::HStream hstream;
+	if (args.isSet("--hconfig"))
+	{
+		hstream.Init(args.get("--hconfig").c_str(), true);
+	}
 
 	// this is where the event loop section starts
 	auto nEv = pyargs.getI("Main:numberOfEvents");

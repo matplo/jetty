@@ -106,16 +106,31 @@ namespace SysUtil
 		return sret;
 	}
 
+	string Args::get(const string &what) const
+	{
+		return get(what.c_str());
+	}
+
 	double Args::getD(const char *what, const double defret) const
 	{
 		if (isSet(what) == false) return defret;
 		return StrUtil::str_to_double(get(what).c_str(), defret);
 	}
 
+	double Args::getD(const string &what, const double defret) const
+	{
+		return getD(what.c_str(), defret);
+	}
+
 	int Args::getI(const char *what, const int defret) const
 	{
 		if (isSet(what) == false) return defret;
 		return StrUtil::str_to_int(get(what).c_str(), defret);
+	}
+
+	int Args::getI(const string &what, const int defret) const
+	{
+		return getI(what.c_str(), defret);
 	}
 
 	void Args::add(const char *what)

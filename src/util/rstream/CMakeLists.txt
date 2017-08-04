@@ -3,6 +3,7 @@ set(NAME_LIB ${MODULE})
 
 set(SOURCES_LIB
     tstream.cxx
+    hstream.cxx
 )
 
 # Headers from sources
