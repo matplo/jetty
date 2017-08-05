@@ -7,12 +7,19 @@
 #include <TH2F.h>
 #include <TH1F.h>
 #include <TFile.h>
+#include <TClass.h>
+#include <TSystem.h>
 
 #include "util/pythia/pyutil.h"
 #include "util/blog.h"
 #include "util/strutil.h"
+#include "util/sysutil.h"
+
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
 
 #include <boost/algorithm/string.hpp>
+namespace balgor = boost::algorithm;
 
 using namespace std;
 
@@ -139,6 +146,7 @@ namespace RStream
 			if (p.first.size() < 1) continue;
 			if (p.first[0] != '#')
 			{
+				Ldebug << "first:" << p.first;
 				auto h = CreateH(p.first);
 				if (h)
 					Linfo << "created " << h->GetName() << " : " << p.second << " at " << h;
@@ -147,6 +155,71 @@ namespace RStream
 					Linfo << "created " << h2->GetName() << " : " << p.second << " at " << h2;
 			}
 		}
+	}
+
+	TH1 *HStream::CloneH1FromFile(const char* sname, const char* setting)
+	{
+		TH1 *h = 0;
+		string _setting(setting);
+		vector<string> _settings;
+		balgor::split(_settings, _setting, boost::is_any_of(":"));
+		if (_settings.size() < 3)
+			return h;
+		auto _stitle   = _settings[0];
+		string _sfname = (gSystem->ExpandPathName(_settings[1].c_str()));
+		auto _shname   = _settings[2];
+		if (!fs::exists(fs::path(_sfname)))
+		{
+			Ldebug << "[" << _sfname << "] path does not exist ";
+			return h;
+		}
+		_sfname = fs::canonical(_sfname).string();
+		string _sname = fName + "_" + sname;
+		vector<string> _hpaths;
+		balgor::split(_hpaths, _shname, boost::is_any_of("/"));
+		Ltrace << "getting ... h: " << _shname << " from: " << _sfname;
+		TFile *_fin = new TFile(_sfname.c_str());
+		if (!_fin)
+		{
+			Ldebug << "unable to create TFile from " << _sfname;
+			return h;
+		}
+		TH1 *_hread = 0;
+		TDirectory *_d = (TDirectoryFile*)_fin;
+		TObject *_o = 0;
+		for ( auto &_s : _hpaths)
+		{
+			_o =_d->Get(_s.c_str());
+			if (!_o)
+			{
+				Ltrace << "object: " << _s.c_str() << " not in TFile " << _fin->GetName();
+				break;
+			}
+			string _oclass = _o->IsA()->GetName();
+			Ltrace << _o << " " << _oclass;
+			if (_oclass == "TDirectoryFile")
+			{
+				_d = (TDirectoryFile*)_d->Get(_s.c_str());
+				continue;
+			}
+			if (balgor::contains(_oclass, "TH1"))
+			{
+				_hread = (TH1*)_d->Get(_s.c_str());
+			}
+		}
+		if (_hread)
+		{
+			fOutputFile->cd();
+			h = (TH1*)_hread->Clone(_sname.c_str());
+			h->SetDirectory(fOutputFile);
+			fList->Add(h);
+		}
+		if (_fin)
+		{
+			_fin->Close();
+			delete _fin;
+		}
+		return h;
 	}
 
 	TH1 *HStream::CreateH(const char *sname)
@@ -159,20 +232,23 @@ namespace RStream
 			Lwarn << sname << " histogram is not configured";
 			return h;
 		}
-		else
-		{
-			Linfo << "creating histogram for " << sname;
-		}
 		vector<string> settings;
 		string setting = args.get(sname);
-		boost::algorithm::split(settings, setting, boost::is_any_of("#"));
+		balgor::split(settings, setting, boost::is_any_of("#"));
 		if (settings.size()<1)
 		{
 			Ldebug << "commented ? " << setting;
 			return h;
 		}
 		setting = settings[0];
-		boost::algorithm::split(settings, setting, boost::is_any_of(","));
+		if (balgor::contains(setting, ":"))
+		{
+			h = CloneH1FromFile(sname, setting.c_str());
+			if (!h)
+				Ldebug << "failed: h from " << setting << " at " << h;
+			return h;
+		}
+		balgor::split(settings, setting, boost::is_any_of(","));
 		if (settings.size() != 4)
 		{
 			Ldebug << "1D: ignored definition when building histograms : " << args.get(sname);
@@ -184,6 +260,7 @@ namespace RStream
 		auto _nbins  = StrUtil::str_to_int   (settings[1].c_str(), 1);
 		auto _xmin   = StrUtil::str_to_double(settings[2].c_str(), 0);
 		auto _xmax   = StrUtil::str_to_double(settings[3].c_str(), 1);
+		Linfo << "creating 1D histogram for " << sname << " ...";
 		h = new TH1F(_sname.c_str(), _stitle.c_str(), _nbins, _xmin, _xmax);
 		fList->Add(h);
 		return h;
@@ -199,20 +276,16 @@ namespace RStream
 			Lwarn << sname << " histogram is not configured";
 			return h;
 		}
-		else
-		{
-			Linfo << "creating histogram for " << sname;
-		}
 		vector<string> settings;
 		string setting = args.get(sname);
-		boost::algorithm::split(settings, setting, boost::is_any_of("#"));
+		balgor::split(settings, setting, boost::is_any_of("#"));
 		if (settings.size()<1)
 		{
 			Ldebug << "commented ? " << setting;
 			return h;
 		}
 		setting = settings[0];
-		boost::algorithm::split(settings, setting, boost::is_any_of(","));
+		balgor::split(settings, setting, boost::is_any_of(","));
 		if (settings.size() != 7)
 		{
 			Ldebug << "2D: ignored definition when building histograms : " << args.get(sname);
@@ -227,6 +300,7 @@ namespace RStream
 		auto _nbinsy = StrUtil::str_to_int   (settings[4].c_str(), 1);
 		auto _ymin   = StrUtil::str_to_double(settings[5].c_str(), 0);
 		auto _ymax   = StrUtil::str_to_double(settings[6].c_str(), 1);
+		Linfo << "creating 2D histogram for " << sname << " ...";
 		h = new TH2F(_sname.c_str(), _stitle.c_str(), _nbins, _xmin, _xmax, _nbinsy, _ymin, _ymax);
 		fList->Add(h);
 		return h;
@@ -268,7 +342,7 @@ namespace RStream
 		s = name;
 		s += "rap";
 		FillHranch(s.c_str(), rap);
-		s = name;
+		s = name;;
 		s += "m";
 		FillHranch(s.c_str(), m);
 		s = name;

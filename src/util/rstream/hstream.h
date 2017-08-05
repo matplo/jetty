@@ -38,6 +38,8 @@ namespace RStream
 		TH2* CreateH2(const char *sname);
 		TH2* CreateH2(const std::string &sname) {return CreateH2(sname.c_str());}
 
+		TH1 *CloneH1FromFile(const char *sname, const char *setting);
+
 		void FillHranch(const char *name, const Pythia8::Particle &in);
 		void FillHranch(const char *name, const fastjet::PseudoJet &in);
 		void FillHranch(const char *name, const double &in);

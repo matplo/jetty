@@ -30,7 +30,6 @@ int run_pythia_wrapper (const std::string &s)
 		return 0;
 	}
 	Linfo << args.asString("[pythia_run_wrapper:status]");
-	if (args.isSet("--dry")) return 0;
 
 	PyUtil::PythiaWrapper pywrap(args.asString());
 	if (!pywrap.initialized())
