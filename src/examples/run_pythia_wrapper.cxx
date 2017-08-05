@@ -49,7 +49,7 @@ int run_pythia_wrapper (const std::string &s)
 	RStream::HStream hstream;
 	if (args.isSet("--hconfig"))
 	{
-		hstream.Init("other_name", args.get("--hconfig").c_str(), true, pywrap.outputFile());
+		hstream.Init("h", args.get("--hconfig").c_str(), true, pywrap.outputFile());
 		hstream.SkipUndefined(!args.isSet("--debug"));
 	}
 
@@ -72,9 +72,11 @@ int run_pythia_wrapper (const std::string &s)
 				if (TMath::Abs(event[ip].eta()) < 1.)
 					hpT->Fill(event[ip].pT(), 1./event[ip].pT());
 				hstream << "part_" << event[ip];
-				hstream << "undefined_" << event[ip];
+				//hstream << "undefined_" << event[ip];
 				double pt_eta[] = {event[ip].pT(), event[ip].eta()};
 				hstream << "part_pt_eta" << pt_eta;
+				double pt_rap[] = {event[ip].pT(), event[ip].y()};
+				hstream << "part_pt_rap" << pt_rap;
 			}
 		}
 	}
