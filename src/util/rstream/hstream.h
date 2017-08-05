@@ -18,11 +18,11 @@ namespace RStream
 	{
 	public:
 		HStream();
-		HStream(const char *sconfig, bool file_config = false);
-		HStream(const char *name, const char *sconfig, bool file_config = false);
+		HStream(const char *sconfig, bool file_config, TFile *fout = 0);
+		HStream(const char *name, const char *sconfig, bool file_config, TFile *fout = 0);
 
-		bool Init(const char *sconfig, bool file_config = false);
-		bool Init(const char *name, const char *sconfig, bool file_config = false);
+		bool Init(const char *sconfig, bool file_config, TFile *fout = 0);
+		bool Init(const char *name, const char *sconfig, bool file_config, TFile *fout = 0);
 
 		bool Initialized() {return fInit;}
 
@@ -64,7 +64,9 @@ namespace RStream
 		std::string fCurrentName;
 		std::string fConfigString;
 		TFile *fOutputFile;
+		bool fFileOwner;
 		bool fInit;
+		void CreateHistograms();
 	};
 };
 

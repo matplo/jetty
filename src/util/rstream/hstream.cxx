@@ -8,6 +8,9 @@
 
 #include "util/pythia/pyutil.h"
 #include "util/blog.h"
+#include "util/strutil.h"
+
+#include <boost/algorithm/string.hpp>
 
 using namespace std;
 
@@ -19,36 +22,42 @@ namespace RStream
 		, fCurrentName("")
 		, fConfigString("")
 		, fOutputFile(0)
+		, fFileOwner(false)
 		, fInit(false)
 	{
 
 	}
-	HStream::HStream(const char *sconfig, bool file_config)
+
+	HStream::HStream(const char *sconfig, bool file_config, TFile *fout)
 		: fName("h")
 		, fList()
 		, fCurrentName("")
 		, fConfigString(sconfig)
 		, fOutputFile(0)
+		, fFileOwner(false)
+		, fInit(false)
 	{
-		fInit = Init(fName.c_str(), sconfig, file_config);
+		fInit = Init(fName.c_str(), sconfig, file_config, fout);
 	}
 
-	HStream::HStream(const char *name, const char *sconfig, bool file_config)
+	HStream::HStream(const char *name, const char *sconfig, bool file_config, TFile *fout)
 		: fName(name)
 		, fList()
 		, fCurrentName("")
 		, fConfigString(sconfig)
 		, fOutputFile(0)
+		, fFileOwner(false)
+		, fInit(false)
 	{
-		fInit = Init(name, sconfig, file_config);
+		fInit = Init(name, sconfig, file_config, fout);
 	}
 
-	bool HStream::Init(const char *sconfig, bool file_config)
+	bool HStream::Init(const char *sconfig, bool file_config, TFile *fout)
 	{
-		return Init(fName.c_str(), sconfig, file_config);
+		return Init(fName.c_str(), sconfig, file_config, fout);
 	}
 
-	bool HStream::Init(const char *name, const char *sconfig, bool file_config)
+	bool HStream::Init(const char *name, const char *sconfig, bool file_config, TFile *fout)
 	{
 		fInit = false;
 		fName = name;
@@ -60,27 +69,56 @@ namespace RStream
 			fConfigString = args.asString();
 		}
 		SysUtil::Args args(fConfigString);
-		fOutputFile = new TFile(args.get("output_file").c_str(), "recreate");
+		if (fout)
+			fOutputFile = fout;
+		else
+		{
+			Linfo << "creating new histogram file:" << args.get("output_file");
+			fOutputFile = new TFile(args.get("output_file").c_str(), "recreate");
+			fFileOwner = true;
+		}
 		if (fOutputFile)
 		{
 			fList = new TList();
 			fList->SetOwner(kFALSE);
 			fInit = true;
+			CreateHistograms();
+		}
+		else
+		{
+			Lerror << "creating new histogram file failed:" << args.get("output_file");
 		}
 		return fInit;
 	}
 
 	HStream::~HStream()
 	{
+		if (fFileOwner)
+		{
+			fOutputFile->cd();
+			fList->Write();
+		}
 		if (fList)
 		{
 			delete fList;
 		}
-		if (fOutputFile)
+		if (fOutputFile && fFileOwner)
 		{
 			fOutputFile->Write();
 			fOutputFile->Close();
 			delete fOutputFile;
+		}
+	}
+
+	void HStream::CreateHistograms()
+	{
+		if (!fInit) return;
+		SysUtil::Args args(fConfigString);
+		for (auto &p : args.pairs())
+		{
+			auto h = CreateH(p.first);
+			if (h)
+				Linfo << "created " << p.first << " : " << p.second << " at " << h;
 		}
 	}
 
@@ -98,21 +136,28 @@ namespace RStream
 		{
 			Linfo << "creating histogram for " << sname;
 		}
-		auto _sname = args.get(sname);
-		auto _stitle = args.get(_sname + "_title");
-		auto _nbins = args.getI(_sname + "_nbins");
-		auto _xmin = args.getD(_sname + "_xmin");
-		auto _xmax = args.getD(_sname + "_xmax");
+		vector<string> settings;
+		string setting = args.get(sname);
+		boost::algorithm::split(settings, setting, boost::is_any_of(","));
+		if (settings.size() < 4)
+		{
+			Lwarn << " incorrect histogram definition: " << args.get(sname);
+			return h;
+		}
+		auto _stitle = settings[0];
+		auto _nbins  = StrUtil::str_to_int   (settings[1].c_str(), 1);
+		auto _xmin   = StrUtil::str_to_double(settings[2].c_str(), 0);
+		auto _xmax   = StrUtil::str_to_double(settings[3].c_str(), 1);
 
 		fOutputFile->cd();
-		h = new TH1F(_sname.c_str(), _stitle.c_str(), _nbins, _xmin, _xmax);
+		h = new TH1F(sname, _stitle.c_str(), _nbins, _xmin, _xmax);
 		fList->Add(h);
 		return h;
 	}
 
 	void HStream::FillHranch(const char *name, const vector<fastjet::PseudoJet> &in)
 	{
-		Ltrace << "FillHranch...";
+		Ltrace << "FillHranch... " << name;
 		if (!fInit) return;
 		std::vector<double> pt;
 		std::vector<double> phi;
@@ -157,7 +202,7 @@ namespace RStream
 
 	void HStream::FillHranch(const char *name, const fastjet::PseudoJet &in)
 	{
-		Ltrace << "FillHranch...";
+		Ltrace << "FillHranch... " << name;
 		if (!fInit) return;
 		string s = name;
 		s += "pt";
@@ -184,7 +229,7 @@ namespace RStream
 
 	void HStream::FillHranch(const char *name, const Pythia8::Particle &in)
 	{
-		Ltrace << "FillHranch...";
+		Ltrace << "FillHranch... " << name;
 		if (!fInit) return;
 		string s = name;
 		s += "pt";
@@ -205,7 +250,7 @@ namespace RStream
 
 	void HStream::FillHranch(const char *name, const vector<double> &in)
 	{
-		Ltrace << "FillHranch...";
+		Ltrace << "FillHranch... " << name;
 		if (!fInit) return;
 		string sname = fName + "_" + name;
 		TH1 *b = (TH1*)fList->FindObject(sname.c_str());
@@ -222,7 +267,7 @@ namespace RStream
 
 	void HStream::FillHranch(const char *name, const vector<int> &in)
 	{
-		Ltrace << "FillHranch...";
+		Ltrace << "FillHranch... " << name;
 		if (!fInit) return;
 		string sname = fName + "_" + name;
 		TH1 *b = (TH1*)fList->FindObject(sname.c_str());
@@ -239,7 +284,7 @@ namespace RStream
 
 	void HStream::FillHranch(const char *name, const double &in)
 	{
-		Ltrace << "FillHranch...";
+		Ltrace << "FillHranch... " << name;
 		if (!fInit) return;
 		string sname = fName + "_" + name;
 		TH1 *b = (TH1*)fList->FindObject(sname.c_str());
@@ -253,7 +298,7 @@ namespace RStream
 
 	void HStream::FillHranch(const char *name, const int &in)
 	{
-		Ltrace << "FillHranch...";
+		Ltrace << "FillHranch... " << name;
 		if (!fInit) return;
 		string sname = fName + "_" + name;
 		TH1 *b = (TH1*)fList->FindObject(sname.c_str());
@@ -267,7 +312,7 @@ namespace RStream
 
 	void HStream::FillHranch(const char *name, const unsigned long &in)
 	{
-		Ltrace << "FillHranch...";
+		Ltrace << "FillHranch... " << name;
 		if (!fInit) return;
 		string sname = fName + "_" + name;
 		TH1 *b = (TH1*)fList->FindObject(sname.c_str());
