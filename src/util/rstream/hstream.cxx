@@ -74,7 +74,8 @@ namespace RStream
 		SysUtil::Args args(fConfigString);
 		if (args.isSet("name"))
 		{
-			fName = args.get("name");
+			if (fName == "h")
+				fName = args.get("name");
 		}
 		if (fout)
 			fOutputFile = fout;

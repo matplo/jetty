@@ -49,7 +49,7 @@ int run_pythia_wrapper (const std::string &s)
 	RStream::HStream hstream;
 	if (args.isSet("--hconfig"))
 	{
-		hstream.Init(args.get("--hconfig").c_str(), true, pywrap.outputFile());
+		hstream.Init("other_name", args.get("--hconfig").c_str(), true, pywrap.outputFile());
 		hstream.SkipUndefined(!args.isSet("--debug"));
 	}
 
