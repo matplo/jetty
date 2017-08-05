@@ -24,7 +24,9 @@ namespace RStream
 		bool Init(const char *sconfig, bool file_config, TFile *fout = 0);
 		bool Init(const char *name, const char *sconfig, bool file_config, TFile *fout = 0);
 
-		bool Initialized() {return fInit;}
+		bool Initialized() { return fInit; }
+		void SkipUndefined(bool flag) { fSkipUndefined=flag; }
+		bool SkipUndefined() { return fSkipUndefined; }
 
 		virtual ~HStream();
 
@@ -65,6 +67,7 @@ namespace RStream
 		std::string fConfigString;
 		TFile *fOutputFile;
 		bool fFileOwner;
+		bool fSkipUndefined;
 		bool fInit;
 		void CreateHistograms();
 	};

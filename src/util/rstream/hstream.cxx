@@ -24,6 +24,7 @@ namespace RStream
 		, fOutputFile(0)
 		, fFileOwner(false)
 		, fInit(false)
+		, fSkipUndefined(false)
 	{
 
 	}
@@ -36,6 +37,7 @@ namespace RStream
 		, fOutputFile(0)
 		, fFileOwner(false)
 		, fInit(false)
+		, fSkipUndefined(false)
 	{
 		fInit = Init(fName.c_str(), sconfig, file_config, fout);
 	}
@@ -48,6 +50,7 @@ namespace RStream
 		, fOutputFile(0)
 		, fFileOwner(false)
 		, fInit(false)
+		, fSkipUndefined(false)
 	{
 		fInit = Init(name, sconfig, file_config, fout);
 	}
@@ -69,6 +72,10 @@ namespace RStream
 			fConfigString = args.asString();
 		}
 		SysUtil::Args args(fConfigString);
+		if (args.isSet("name"))
+		{
+			fName = args.get("name");
+		}
 		if (fout)
 			fOutputFile = fout;
 		else
@@ -118,7 +125,7 @@ namespace RStream
 		{
 			auto h = CreateH(p.first);
 			if (h)
-				Linfo << "created " << p.first << " : " << p.second << " at " << h;
+				Linfo << "created " << h->GetName() << " : " << p.second << " at " << h;
 		}
 	}
 
@@ -141,7 +148,7 @@ namespace RStream
 		boost::algorithm::split(settings, setting, boost::is_any_of(","));
 		if (settings.size() < 4)
 		{
-			Lwarn << " incorrect histogram definition: " << args.get(sname);
+			Linfo << "ignored definition when building histograms : " << args.get(sname);
 			return h;
 		}
 		auto _stitle = settings[0];
@@ -149,8 +156,9 @@ namespace RStream
 		auto _xmin   = StrUtil::str_to_double(settings[2].c_str(), 0);
 		auto _xmax   = StrUtil::str_to_double(settings[3].c_str(), 1);
 
+		string _sname = fName + "_" + sname;
 		fOutputFile->cd();
-		h = new TH1F(sname, _stitle.c_str(), _nbins, _xmin, _xmax);
+		h = new TH1F(_sname.c_str(), _stitle.c_str(), _nbins, _xmin, _xmax);
 		fList->Add(h);
 		return h;
 	}
@@ -254,9 +262,9 @@ namespace RStream
 		if (!fInit) return;
 		string sname = fName + "_" + name;
 		TH1 *b = (TH1*)fList->FindObject(sname.c_str());
-		if (b == 0)
+		if (b == 0 && fSkipUndefined == false)
 		{
-			b = CreateH(sname.c_str());
+			b = CreateH(name);
 		}
 		if (b == 0) return;
 		for (unsigned int i = 0; i < in.size(); ++i)
@@ -271,9 +279,9 @@ namespace RStream
 		if (!fInit) return;
 		string sname = fName + "_" + name;
 		TH1 *b = (TH1*)fList->FindObject(sname.c_str());
-		if (b == 0)
+		if (b == 0 && fSkipUndefined == false)
 		{
-			b = CreateH(sname.c_str());
+			b = CreateH(name);
 		}
 		if (b == 0) return;
 		for (unsigned int i = 0; i < in.size(); ++i)
@@ -288,9 +296,9 @@ namespace RStream
 		if (!fInit) return;
 		string sname = fName + "_" + name;
 		TH1 *b = (TH1*)fList->FindObject(sname.c_str());
-		if (b == 0)
+		if (b == 0 && fSkipUndefined == false)
 		{
-			b = CreateH(sname.c_str());
+			b = CreateH(name);
 		}
 		if (b == 0) return;
 		b->Fill(in);
@@ -302,9 +310,9 @@ namespace RStream
 		if (!fInit) return;
 		string sname = fName + "_" + name;
 		TH1 *b = (TH1*)fList->FindObject(sname.c_str());
-		if (b == 0)
+		if (b == 0 && fSkipUndefined == false)
 		{
-			b = CreateH(sname.c_str());
+			b = CreateH(name);
 		}
 		if (b == 0) return;
 		b->Fill(in);
@@ -316,9 +324,9 @@ namespace RStream
 		if (!fInit) return;
 		string sname = fName + "_" + name;
 		TH1 *b = (TH1*)fList->FindObject(sname.c_str());
-		if (b == 0)
+		if (b == 0 && fSkipUndefined == false)
 		{
-			b = CreateH(sname.c_str());
+			b = CreateH(name);
 		}
 		if (b == 0) return;
 		b->Fill(in);
