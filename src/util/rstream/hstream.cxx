@@ -124,9 +124,13 @@ namespace RStream
 		SysUtil::Args args(fConfigString);
 		for (auto &p : args.pairs())
 		{
-			auto h = CreateH(p.first);
-			if (h)
-				Linfo << "created " << h->GetName() << " : " << p.second << " at " << h;
+			if (p.first.size() < 1) continue;
+			if (p.first[0] != '#')
+			{
+				auto h = CreateH(p.first);
+				if (h)
+					Linfo << "created " << h->GetName() << " : " << p.second << " at " << h;
+			}
 		}
 	}
 
