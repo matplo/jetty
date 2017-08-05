@@ -73,9 +73,12 @@ int run_pythia_wrapper (const std::string &s)
 					hpT->Fill(event[ip].pT(), 1./event[ip].pT());
 				hstream << "part_" << event[ip];
 				hstream << "undefined_" << event[ip];
+				double pt_eta[] = {event[ip].pT(), event[ip].eta()};
+				hstream << "part_pt_eta" << pt_eta;
 			}
 		}
 	}
+	hstream.Scale(pythia.info.sigmaGen() / pythia.info.weightSum());
 	pythia.stat();
 	Linfo << "Generation done.";
 

@@ -3,6 +3,8 @@
 #include <limits>
 
 #include <TList.h>
+#include <TH1.h>
+#include <TH2F.h>
 #include <TH1F.h>
 #include <TFile.h>
 
@@ -118,6 +120,16 @@ namespace RStream
 		}
 	}
 
+	void HStream::Scale(double scale)
+	{
+		for (unsigned int i = 0; i < fList->GetEntries(); i++)
+		{
+			TH1 *h = (TH1*)fList->At(i);
+			h->Sumw2();
+			h->Scale(scale);
+		}
+	}
+
 	void HStream::CreateHistograms()
 	{
 		if (!fInit) return;
@@ -130,6 +142,9 @@ namespace RStream
 				auto h = CreateH(p.first);
 				if (h)
 					Linfo << "created " << h->GetName() << " : " << p.second << " at " << h;
+				auto h2 = CreateH2(p.first);
+				if (h2)
+					Linfo << "created " << h2->GetName() << " : " << p.second << " at " << h2;
 			}
 		}
 	}
@@ -150,24 +165,72 @@ namespace RStream
 		}
 		vector<string> settings;
 		string setting = args.get(sname);
-		boost::algorithm::split(settings, setting, boost::is_any_of(","));
-		if (settings.size() < 4)
+		boost::algorithm::split(settings, setting, boost::is_any_of("#"));
+		if (settings.size()<1)
 		{
-			Linfo << "ignored definition when building histograms : " << args.get(sname);
+			Ldebug << "commented ? " << setting;
 			return h;
 		}
+		setting = settings[0];
+		boost::algorithm::split(settings, setting, boost::is_any_of(","));
+		if (settings.size() != 4)
+		{
+			Ldebug << "1D: ignored definition when building histograms : " << args.get(sname);
+			return h;
+		}
+		string _sname = fName + "_" + sname;
+		fOutputFile->cd();
 		auto _stitle = settings[0];
 		auto _nbins  = StrUtil::str_to_int   (settings[1].c_str(), 1);
 		auto _xmin   = StrUtil::str_to_double(settings[2].c_str(), 0);
 		auto _xmax   = StrUtil::str_to_double(settings[3].c_str(), 1);
-
-		string _sname = fName + "_" + sname;
-		fOutputFile->cd();
 		h = new TH1F(_sname.c_str(), _stitle.c_str(), _nbins, _xmin, _xmax);
 		fList->Add(h);
 		return h;
 	}
 
+	TH2 *HStream::CreateH2(const char *sname)
+	{
+		TH2 *h = 0;
+		if (!fInit) return h;
+		SysUtil::Args args(fConfigString);
+		if (args.isSet(sname) == false)
+		{
+			Lwarn << sname << " histogram is not configured";
+			return h;
+		}
+		else
+		{
+			Linfo << "creating histogram for " << sname;
+		}
+		vector<string> settings;
+		string setting = args.get(sname);
+		boost::algorithm::split(settings, setting, boost::is_any_of("#"));
+		if (settings.size()<1)
+		{
+			Ldebug << "commented ? " << setting;
+			return h;
+		}
+		setting = settings[0];
+		boost::algorithm::split(settings, setting, boost::is_any_of(","));
+		if (settings.size() != 7)
+		{
+			Ldebug << "2D: ignored definition when building histograms : " << args.get(sname);
+			return h;
+		}
+		string _sname = fName + "_" + sname;
+		fOutputFile->cd();
+		auto _stitle = settings[0];
+		auto _nbins  = StrUtil::str_to_int   (settings[1].c_str(), 1);
+		auto _xmin   = StrUtil::str_to_double(settings[2].c_str(), 0);
+		auto _xmax   = StrUtil::str_to_double(settings[3].c_str(), 1);
+		auto _nbinsy = StrUtil::str_to_int   (settings[4].c_str(), 1);
+		auto _ymin   = StrUtil::str_to_double(settings[5].c_str(), 0);
+		auto _ymax   = StrUtil::str_to_double(settings[6].c_str(), 1);
+		h = new TH2F(_sname.c_str(), _stitle.c_str(), _nbins, _xmin, _xmax, _nbinsy, _ymin, _ymax);
+		fList->Add(h);
+		return h;
+	}
 	void HStream::FillHranch(const char *name, const vector<fastjet::PseudoJet> &in)
 	{
 		Ltrace << "FillHranch... " << name;
@@ -309,6 +372,20 @@ namespace RStream
 		b->Fill(in);
 	}
 
+	void HStream::FillHranch(const char *name, const double in[2])
+	{
+		Ltrace << "FillHranch... " << name;
+		if (!fInit) return;
+		string sname = fName + "_" + name;
+		TH2 *b = (TH2*)fList->FindObject(sname.c_str());
+		if (b == 0 && fSkipUndefined == false)
+		{
+			b = CreateH2(name);
+		}
+		if (b == 0) return;
+		b->Fill(in[0], in[1]);
+	}
+
 	void HStream::FillHranch(const char *name, const int &in)
 	{
 		Ltrace << "FillHranch... " << name;
@@ -392,6 +469,14 @@ namespace RStream
 	}
 
 	HStream& operator<<(HStream& out, const double &in)
+	{
+		if (out.fCurrentName.size() < 1) return out;
+		out.FillHranch(out.fCurrentName.c_str(), in);
+		out.fCurrentName = "";
+		return out;
+	}
+
+	HStream& operator<<(HStream& out, const double in[2])
 	{
 		if (out.fCurrentName.size() < 1) return out;
 		out.FillHranch(out.fCurrentName.c_str(), in);
