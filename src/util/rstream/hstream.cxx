@@ -24,7 +24,7 @@ namespace RStream
 		, fOutputFile(0)
 		, fFileOwner(false)
 		, fInit(false)
-		, fSkipUndefined(false)
+		, fSkipUndefined(true)
 	{
 
 	}
@@ -37,7 +37,7 @@ namespace RStream
 		, fOutputFile(0)
 		, fFileOwner(false)
 		, fInit(false)
-		, fSkipUndefined(false)
+		, fSkipUndefined(true)
 	{
 		fInit = Init(fName.c_str(), sconfig, file_config, fout);
 	}
@@ -50,7 +50,7 @@ namespace RStream
 		, fOutputFile(0)
 		, fFileOwner(false)
 		, fInit(false)
-		, fSkipUndefined(false)
+		, fSkipUndefined(true)
 	{
 		fInit = Init(name, sconfig, file_config, fout);
 	}
