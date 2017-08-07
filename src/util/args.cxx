@@ -65,8 +65,8 @@ namespace SysUtil
 		_init_logging();
 	}
 
-	Args::Args(const string &s)
-		: _args(breakup(s.c_str(), ' '))
+	Args::Args(const string &s, const char bchar)
+		: _args(breakup(s.c_str(), bchar))
 	{
 		_init_logging();
 	}
@@ -254,17 +254,10 @@ namespace SysUtil
 		ostringstream ss;
 		if (breaklines)
 		{
+			ss << pre;
 			for (unsigned int i = 0; i < _args.size(); i++)
 			{
-				if (_args[i][0]=='-' || i == 0)
-				{
-					ss << endl;
-					ss << pre << " " << _args[i];
-				}
-				else
-				{
-					ss << " " << _args[i];
-				}
+				ss << _args[i] << endl;
 			}
 		}
 		else
@@ -312,6 +305,63 @@ namespace SysUtil
 				{
 					Ldebug << " - adding setting " << sarg << " " << s << std::endl;
 					add(s);
+				}
+			}
+		}
+	}
+
+	void Args::readConfigLines(const char *fname)
+	{
+		Ldebug << "[Args::readConfig] present:" << asString();
+		Ldebug << "[Args::readConfig] file " << fname;
+		std::string str;
+		std::ifstream fin(fname);
+		if (!fin)
+		{
+			Lwarn << "[Args::readConfig] unable to read from config file:" << fname;
+			return;
+		}
+		while (std::getline(fin, str))
+		{
+			std::string s = boost::trim_left_copy(str);
+			auto found = s.find("!");
+			if (found != std::string::npos)
+				s = s.substr(0, found);
+			//boost::erase_all(s, " ");
+			if (s.size() > 0)
+			{
+				std::string sarg = s;
+				auto eqf = sarg.find("=");
+				if (eqf != std::string::npos)
+					sarg = sarg.substr(0, eqf);
+				sarg = boost::trim_left_copy(sarg);
+				if (isSet(sarg))
+				{
+					Ldebug << " - setting already present - ignoring entry: " << s << std::endl;
+				}
+				else
+				{
+					Ldebug << " - adding setting " << sarg << " " << s << std::endl;
+					string sval = "";
+					auto pieces = breakup(s.c_str(), '=');
+					if (pieces.size() > 0)
+						sarg = pieces[0];
+					if (pieces.size() > 1)
+						sval = pieces[1];
+					boost::trim_left(sarg);
+					boost::trim_left(sval);
+					Ldebug << " - sarg = " << sarg << " val = " << sval;
+					if (sarg.size() > 0)
+					{
+						if (sval.size() > 0)
+						{
+							add(sarg, sval);
+						}
+						else
+						{
+							set(sarg);
+						}
+					}
 				}
 			}
 		}

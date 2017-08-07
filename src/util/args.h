@@ -12,7 +12,7 @@ namespace SysUtil
 	public:
 		Args(int argc, char **argv);
 		Args(const std::vector<std::string> &v);
-		Args(const std::string &s);
+		Args(const std::string &s, const char bchar = ' ');
 		Args(const Args &v);
 		Args();
 		virtual ~Args();
@@ -52,6 +52,7 @@ namespace SysUtil
 		static std::vector<std::string> breakup(const char *cs, const char marker = ',');
 
 		void 			readConfig(const char *fname);
+		void 			readConfigLines(const char *fname);
 
 	protected:
 		void				_convert(int argc, char **argv);
@@ -61,7 +62,7 @@ namespace SysUtil
 		void 				_dump_logged_arguments();
 		static unsigned int _instance_counter;
 
-		std::vector<std::string> _args;
+		std::vector<std::string> _args; // keep all in a string
 		static std::vector<std::string> _args_logged;
 	};
 

@@ -5,6 +5,27 @@
 
 namespace StrUtil
 {
+	void replace_substring(std::string& this_s, const std::string& old_s, const std::string& new_s)
+	{
+		std::string::size_type pos = 0u;
+		while((pos = this_s.find(old_s, pos)) != std::string::npos)
+		{
+			this_s.replace(pos, old_s.length(), new_s);
+			pos += new_s.length();
+		}
+	}
+
+	std::string replace_substring_copy(std::string& this_s, const std::string& old_s, const std::string& new_s)
+	{
+		std::string copy_s(this_s);
+		std::string::size_type pos = 0u;
+		while((pos = copy_s.find(old_s, pos)) != std::string::npos)
+		{
+			copy_s.replace(pos, old_s.length(), new_s);
+			pos += new_s.length();
+		}
+		return copy_s;
+	}
 
 	double str_to_double(const char *str, double defret)
 	{

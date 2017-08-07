@@ -14,6 +14,7 @@
 #include "util/blog.h"
 #include "util/strutil.h"
 #include "util/sysutil.h"
+#include "util/args.h"
 
 #include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
@@ -77,10 +78,11 @@ namespace RStream
 		if (file_config)
 		{
 			SysUtil::Args args;
-			args.readConfig(sconfig);
-			fConfigString = args.asString();
+			args.readConfigLines(sconfig);
+			fConfigString = args.asString("", true); // break lines
+			Linfo << fConfigString;
 		}
-		SysUtil::Args args(fConfigString);
+		SysUtil::Args args(fConfigString, '\n');
 		if (args.isSet("name"))
 		{
 			if (fName == "h")
@@ -140,13 +142,13 @@ namespace RStream
 	void HStream::CreateHistograms()
 	{
 		if (!fInit) return;
-		SysUtil::Args args(fConfigString);
+		SysUtil::Args args(fConfigString, '\n');
 		for (auto &p : args.pairs())
 		{
 			if (p.first.size() < 1) continue;
 			if (p.first[0] != '#')
 			{
-				Ldebug << "first:" << p.first;
+				Ldebug << "first:" << p.first << " second:" << p.second;
 				auto h = CreateH(p.first);
 				if (h)
 					Linfo << "created " << h->GetName() << " : " << p.second << " at " << h;
@@ -211,6 +213,8 @@ namespace RStream
 		{
 			fOutputFile->cd();
 			h = (TH1*)_hread->Clone(_sname.c_str());
+			Linfo << "reset histogram: " << h->GetName();
+			h->Reset();
 			h->SetDirectory(fOutputFile);
 			fList->Add(h);
 		}
@@ -226,7 +230,7 @@ namespace RStream
 	{
 		TH1 *h = 0;
 		if (!fInit) return h;
-		SysUtil::Args args(fConfigString);
+		SysUtil::Args args(fConfigString, '\n');
 		if (args.isSet(sname) == false)
 		{
 			Lwarn << sname << " histogram is not configured";
@@ -237,7 +241,7 @@ namespace RStream
 		balgor::split(settings, setting, boost::is_any_of("#"));
 		if (settings.size()<1)
 		{
-			Ldebug << "commented ? " << setting;
+			Ltrace << "commented ? " << setting;
 			return h;
 		}
 		setting = settings[0];
@@ -245,13 +249,13 @@ namespace RStream
 		{
 			h = CloneH1FromFile(sname, setting.c_str());
 			if (!h)
-				Ldebug << "failed: h from " << setting << " at " << h;
+				Ltrace << "failed: h from " << setting << " at " << h;
 			return h;
 		}
 		balgor::split(settings, setting, boost::is_any_of(","));
 		if (settings.size() != 4)
 		{
-			Ldebug << "1D: ignored definition when building histograms : " << args.get(sname);
+			Ltrace << "1D: ignored definition when building histograms : " << args.get(sname);
 			return h;
 		}
 		string _sname = fName + "_" + sname;
@@ -270,7 +274,7 @@ namespace RStream
 	{
 		TH2 *h = 0;
 		if (!fInit) return h;
-		SysUtil::Args args(fConfigString);
+		SysUtil::Args args(fConfigString, '\n');
 		if (args.isSet(sname) == false)
 		{
 			Lwarn << sname << " histogram is not configured";
@@ -281,14 +285,14 @@ namespace RStream
 		balgor::split(settings, setting, boost::is_any_of("#"));
 		if (settings.size()<1)
 		{
-			Ldebug << "commented ? " << setting;
+			Ltrace << "commented ? " << setting;
 			return h;
 		}
 		setting = settings[0];
 		balgor::split(settings, setting, boost::is_any_of(","));
 		if (settings.size() != 7)
 		{
-			Ldebug << "2D: ignored definition when building histograms : " << args.get(sname);
+			Ltrace << "2D: ignored definition when building histograms : " << args.get(sname);
 			return h;
 		}
 		string _sname = fName + "_" + sname;

@@ -49,7 +49,7 @@ int run_pythia_wrapper (const std::string &s)
 	if (args.isSet("--hconfig"))
 	{
 		hstream.Init("h", args.get("--hconfig").c_str(), true, pywrap.outputFile());
-		hstream.SkipUndefined(!args.isSet("--debug"));
+		hstream.SkipUndefined(!args.isSet("--trace"));
 	}
 
 	// this is where the event loop section starts

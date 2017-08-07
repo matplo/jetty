@@ -22,5 +22,4 @@ namespace SysUtil
 		std::vector<std::string> v;
 		return v;
 	}
-
 }
