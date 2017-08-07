@@ -40,5 +40,12 @@ namespace PyUtil
 
 	int has_beam_mother(const Pythia8::Particle &p);
 
+	bool is_prompt_photon(const int i, const Pythia8::Event &event);
+	bool is_decay_photon(const int i, const Pythia8::Event &event);
+
+	int z0_index(const Pythia8::Event &event);
+	std::vector<int> prompt_photon_indexes(const Pythia8::Event &event);
+	std::vector<int> decay_photon_indexes(const Pythia8::Event &event);
+
 };
 #endif // __PYUTIL__HH

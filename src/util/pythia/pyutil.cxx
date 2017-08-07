@@ -217,4 +217,46 @@ namespace PyUtil
 		return im_sum;
 	}
 
+	// test based on Josh's code
+	bool is_prompt_photon(const int i, const Pythia8::Event &event)
+	{
+		return (event[i].isFinal() && event[i].id() == 22 && event[i].status() != 91);
+	}
+
+	// test based on Josh's code
+	bool is_decay_photon(const int i, const Pythia8::Event &event)
+	{
+		return (event[i].isFinal() && event[i].id() == 22 && event[i].status() == 91);
+	}
+
+	std::vector<int> prompt_photon_indexes(const Pythia8::Event &event)
+	{
+		std::vector<int> ret;
+		for (unsigned int i = 0; i < event.size(); ++i)
+		{
+			if (is_prompt_photon(i, event)) ret.push_back(i);
+		}
+		return ret;
+	}
+
+	std::vector<int> decay_photon_indexes(const Pythia8::Event &event)
+	{
+		std::vector<int> ret;
+		for (unsigned int i = 0; i < event.size(); ++i)
+		{
+			if (is_decay_photon(i, event)) ret.push_back(i);
+		}
+		return ret;
+	}
+
+	// from pythia examples
+	// Loop over particles in event. Find last Z0 copy. -- ok for Z0 processes
+	// - not OK if multiple Z0's in the event
+	int z0_index(const Pythia8::Event &event)
+	{
+		int iZ = -1;
+		for (unsigned int i = 0; i < event.size(); ++i)
+			if (event[i].id() == 23) iZ = i;
+		return iZ;
+	}
 };
