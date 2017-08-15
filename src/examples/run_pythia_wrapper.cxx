@@ -112,7 +112,9 @@ int run_pythia_wrapper (const std::string &s)
 			}
 		}
 	} // end event loop
-	hstream.Scale(pythia.info.sigmaGen() / pythia.info.weightSum());
+	double _scale = pythia.info.sigmaGen() / pythia.info.weightSum();
+	Ltrace << "Scaling with " << _scale;
+	hstream.Scale(_scale);
 	pythia.stat();
 	Linfo << "Generation done.";
 

@@ -63,7 +63,6 @@ namespace RStream
 		friend HStream& operator<<(HStream& out, const unsigned long &in);
 		// template<class T>
 		// friend HStream& operator<<(HStream& out, const T &val);
-		friend HStream& operator<<(HStream& out, const double &val);
 
 		friend HStream& operator <<(HStream& out, std::ostream& (*os)(std::ostream&));
 

@@ -89,13 +89,16 @@ namespace RStream
 				fName = args.get("name");
 		}
 		if (fout)
+		{
 			fOutputFile = fout;
+		}
 		else
 		{
 			Linfo << "creating new histogram file:" << args.get("output_file");
 			fOutputFile = new TFile(args.get("output_file").c_str(), "recreate");
 			fFileOwner = true;
 		}
+		Ltrace << "fOutputFile at: " << fOutputFile;
 		if (fOutputFile)
 		{
 			fList = new TList();
@@ -120,6 +123,7 @@ namespace RStream
 		if (fList)
 		{
 			delete fList;
+			fList = 0x0;
 		}
 		if (fOutputFile && fFileOwner)
 		{
@@ -131,10 +135,14 @@ namespace RStream
 
 	void HStream::Scale(double scale)
 	{
+		Ltrace << "list at: " << fList;
+		if (fList == 0x0) return;
 		for (unsigned int i = 0; i < fList->GetEntries(); i++)
 		{
+			Ltrace << "h #" << i << endl;
 			TH1 *h = (TH1*)fList->At(i);
 			h->Sumw2();
+			Ltrace << "scaling h: " << h->GetName() << " by " << scale;
 			h->Scale(scale);
 		}
 	}

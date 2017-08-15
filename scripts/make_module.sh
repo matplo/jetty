@@ -23,6 +23,51 @@ function abspath()
   esac
 }
 
+function os_linux()
+{
+        _system=$(uname -a | cut -f 1 -d " ")
+        if [ $_system == "Linux" ]; then
+                echo "yes"
+        else
+                echo
+        fi
+}
+
+function os_darwin()
+{
+        _system=$(uname -a | cut -f 1 -d " ")
+        if [ $_system == "Darwin" ]; then
+                echo "yes"
+        else
+                echo
+        fi
+}
+
+function host_pdsf()
+{
+        _system=$(uname -n | cut -c 1-4)
+        if [ $_system == "pdsf" ]; then
+                echo "yes"
+        else
+                echo
+        fi
+}
+
+function sedi()
+{
+        [ $(os_darwin) ] && sed -i " " $@
+        [ $(os_linux)  ] && sed -i'' $@
+}
+
+function n_cores()
+{
+        local _ncores="1"
+        [ $(os_darwin) ] && local _ncores=$(system_profiler SPHardwareDataType | grep "Number of Cores" | cut -f 2 -d ":" | sed 's| ||')
+        [ $(os_linux) ] && local _ncores=$(lscpu | grep "CPU(s):" | head -n 1 | cut -f 2 -d ":" | sed 's| ||g')
+        #[ ${_ncores} -gt "1" ] && retval=$(_ncores-1)
+        echo ${_ncores}
+}
+
 savedir=$PWD
 
 THISFILE=`abspath $BASH_SOURCE`
@@ -87,10 +132,10 @@ if [ $dopatch == 1 ]; then
     exit 1
   fi
   if [ -f $modfile ]; then
-    sed -i "" -e "s|JDIR2PATCH|$JETTYDIR|g" $modfile 2&>/dev/null
+    sedi "s|JDIR2PATCH|$JETTYDIR|g" $modfile
     echo "[i] patched $modfile"
   else
-    echo "[e] nothing patched. $modfile does not exist."
+ echo "[e] nothing patched. $modfile does not exist."
   fi
 fi
 
@@ -121,10 +166,10 @@ echo "[i] working with "$modfile
 
 mkdir -p $outdir
 cp $XDIR/config/module_template $modfile
-sed -i "" -e "s|par1|$JETTYDIR|g" $modfile
-sed -i "" -e "s|par2|$version|g" $modfile
-# sed -i "" -e "s/par1/${JETTYDIR}/" $modfile
-# sed -i "" -e "s/par2/${version}/" $modfile
+sedi "s|par1|$JETTYDIR|g" $modfile
+sedi "s|par2|$version|g" $modfile
+# sedi "s/par1/${JETTYDIR}/" $modfile
+# sedi "s/par2/${version}/" $modfile
 
 echo "if { [ module-info mode load ] } {" >> $modfile
 mpaths=`module -t avail 2>&1 | grep : | sed "s|:||g"`

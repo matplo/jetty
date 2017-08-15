@@ -1,6 +1,7 @@
 #include "scanhard.h"
 
 #include <boost/accumulators/accumulators.hpp>
+#include <boost/serialization/array_wrapper.hpp> // boost 1.64 needs this (changed from 1.63 - known issue - check later)
 #include <boost/accumulators/statistics.hpp>
 #include <boost/accumulators/statistics/variance.hpp>
 #include <algorithm>
