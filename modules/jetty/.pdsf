@@ -11,21 +11,8 @@ prepend-path LD_LIBRARY_PATH JDIR2PATCH/lib
 prepend-path DYLD_LIBRARY_PATH JDIR2PATCH/lib
 prepend-path PATH JDIR2PATCH/bin
 prepend-path PATH JDIR2PATCH/scripts
+set-alias jetty_cd "cd JDIR2PATCH"
 if { [ module-info mode load ] } {
-module use /project/projectdirs/alice/software/modulefiles
-module use /usr/share/modules/3.2.10/Modules/versions
-module use /usr/share/modules/3.2.10/Modules/3.2.10/modulefiles
-module use /usr/common/usg/Modules/modulefiles
-module use /usr/syscom/nsg/modulefiles
-module use /usr/syscom/nsg/opt/modulefiles
-module load modules
-module load nsg/1.2.0
-module load SGE/8.1.2
-module load git/2.2.1
-module load gcc/4.8.1
-module load cmake/3.5.2
-module load boost/1.54.0
-module load alice/root/v6.04.02
-module load alice/pythia8/v8226
-module load alice/fastjet/v3.0.6
+module use /project/projectdirs/alice/ploskon/software/hepsoft/modules
+module load hepsoft/1
 }
