@@ -14,4 +14,4 @@ function build()
     make install
 }
 
-run_build
+exec_build_tool
