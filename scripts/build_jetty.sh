@@ -1,48 +1,22 @@
 #!/bin/bash
 
-args=$@
-function is_arg_set
+cd $(dirname $BASH_SOURCE)
+
+[ ! -f ./bt.sh ] && wget https://raw.github.com/matplo/buildtools/master/bt.sh
+[ ! -f ./bt.sh ] && echo "[i] no bt.sh - stop here." && exit 1
+
+export BT_config=./build_jetty.cfg
+source ~/devel/buildtools/bt.sh "$@"
+#source ./bt.sh "$@"
+
+function build()
 {
-        for i in $args ; do
-            if [[ $i == $1 ]] ; then
-                return 0 #this is true
-            fi
-        done
-        return 1 #this is false
+	cd ${BT_build_dir}
+	echo "[i] building sources at ${BT_src_dir}"
+    cmake -DCMAKE_INSTALL_PREFIX=${BT_install_dir} -DCMAKE_BUILD_TYPE=${BT_build_type} ${BT_src_dir}
+    [ ${BT_clean} ] && make clean
+    make -j $(n_cores) VERBOSE=$BT_verbose
+    make install
 }
 
-savedir=$PWD
-
-if [ -z $JETTYDIR ]; then
-  echo "[e] JETTYDIR dir not set..."
-  exit
-fi
-
-if [ -d $JETTYDIR ]; then
-  cd $JETTYDIR
-
-  if is_arg_set "realclean" ;
-  then
-    rm -rf $JETTYDIR/include/* $JETTYDIR/lib/* $JETTYDIR/bin/*
-  fi
-
-  for pack in src
-  do
-    bdir=$JETTYDIR/.build/$pack
-    if is_arg_set "realclean" ;
-    then
-    	rm -rf $bdir
-    fi
-    mkdir -p $bdir
-    cd $bdir
-    debug="-DCMAKE_BUILD_TYPE=Release"
-    #cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo
-    #is_arg_set "o3" && export CXXFLAGS=-O3 # Release does it
-    is_arg_set "debug" && debug=-DCMAKE_BUILD_TYPE=Debug
-    cmake -DCMAKE_INSTALL_PREFIX=$JETTYDIR $debug $JETTYDIR/$pack
-    is_arg_set "clean" && make clean
-    is_arg_set "verbose" && verbose="VERBOSE=1"
-    make $verbose && make install
-  done
-fi
-cd $savedir
+exec_build_tool
