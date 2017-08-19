@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd $(dirname $BASH_SOURCE)
-BT_config=./jetty.cfg
+BT_config=./build_jetty.cfg
 source $HOME/devel/buildtools/bt.sh "$@"
 
 function build()
