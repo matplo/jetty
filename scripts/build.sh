@@ -2,9 +2,9 @@
 
 BT_name=jetty
 BT_version=1.0
-BT_module_paths="~/Software/hepsoft/modules"
+BT_module_paths="~/software/hepsoft/modules"
 BT_modules="cmake boost cgal hepmc lhapdf root fastjet pythia8"
-BT_install_dir=~/software/${BT_name}/${BT_version}
+BT_install_dir=${BT_script_dir}/../${BT_name}_${BT_version}
 BT_build_type=Release
 BT_src_dir=${BT_script_dir}/../src
 BT_module_dir=~/software/${BT_name}/modules/${BT_name}
