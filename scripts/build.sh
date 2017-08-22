@@ -2,12 +2,18 @@
 
 BT_name=jetty
 BT_version=1.0
-BT_module_paths=~/devel/hepsoft/modules
-BT_modules=hepsoft/1
+BT_module_paths="/devel/hepsoft/modules ~/Software/hepsoft/modules"
+BT_modules="boost cmake root fastjet"
 BT_install_dir=~/software/${BT_name}/${BT_version}
 BT_build_type=Release
 BT_src_dir=${BT_script_dir}/../src
 BT_module_dir=~/software/${BT_name}/modules/${BT_name}
+
+function download()
+{
+	separator "download"
+	echo "[i] no dowload installing from the source directly..."
+}
 
 function build()
 {
