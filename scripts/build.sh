@@ -2,14 +2,14 @@
 
 BT_name=jetty
 BT_version=1.0
-BT_module_paths="~/software/hepsoft/modules"
-[ $(host_pdsf) ] && BT_module_paths="/project/projectdirs/alice/ploskon/software/hepsoft/modules"
-BT_modules="hepsoft"
+[ ! $(host_pdsf) ] && add_prereq_module_paths~/software/hepsoft/modules
+[ $(host_pdsf) ] && add_prereq_module_paths /project/projectdirs/alice/ploskon/software/hepsoft/modules
+add_prereq_modules hepsoft
 BT_install_dir=${BT_script_dir}/../${BT_name}_${BT_version}
 BT_build_type=Release
 BT_src_dir=${BT_script_dir}/../src
 BT_module_dir=${BT_script_dir}/../modules/${BT_name}
-BT_do_preload_modules="yes"
+BT_do_preload_modules="no"
 
 function download()
 {
