@@ -11,11 +11,7 @@ BT_src_dir=${BT_script_dir}/../src
 BT_module_dir=${BT_script_dir}/../modules/${BT_name}
 BT_do_preload_modules="no"
 
-function download()
-{
-	separator "download"
-	echo "[i] no dowload installing from the source directly..."
-}
+BT_disable_download=yes
 
 function build()
 {
