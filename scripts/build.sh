@@ -2,7 +2,7 @@
 
 BT_name=jetty
 BT_version=1.0
-[ ! $(host_pdsf) ] && add_prereq_module_paths~/software/hepsoft/modules
+[ ! $(host_pdsf) ] && add_prereq_module_paths ~/software/hepsoft/modules
 [ $(host_pdsf) ] && add_prereq_module_paths /project/projectdirs/alice/ploskon/software/hepsoft/modules
 add_prereq_modules hepsoft
 BT_install_dir=${BT_script_dir}/../${BT_name}_${BT_version}
