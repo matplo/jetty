@@ -150,8 +150,10 @@ int run_spectra (const std::string &s)
 					continue;
 				if (TMath::Abs(j.eta()) > maxEta - R)
 					continue;
-				hstream << "jet_pt_eta" << j.eta();
+				double pt_eta[] = {j.pt(), j.eta()};
+				hstream << "jet_pt_eta" << pt_eta;
 				hstream << "jet_pt_atlas" << j.pt();
+				hstream << "jet_pt" << j.pt();
 			} // jets loop
 
 		}
