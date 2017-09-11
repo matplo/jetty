@@ -50,8 +50,8 @@ int run_spectra (const std::string &s)
 	pywrap.outputFile()->cd();
 	TTree *tk = new TTree("kine", "kine");
 	TH1F *hpT = new TH1F("hpT", "pT;p_{T} (GeV/#it{c});counts", 50, 0, 100);
-	TNtuple *gntuple = new TNtuple("gntuple", "gntuple", "gpT:geta:gphi");
-	TNtuple *ghntuple = new TNtuple("ghntuple", "ghntuple", "gpT:geta:gphi:hpT:heta:hphi:dphi");
+	//TNtuple *gntuple = new TNtuple("gntuple", "gntuple", "gpT:geta:gphi");
+	//TNtuple *ghntuple = new TNtuple("ghntuple", "ghntuple", "gpT:geta:gphi:hpT:heta:hphi:dphi");
 
 	RStream::HStream hstream;
 	if (args.isSet("--hconfig"))
