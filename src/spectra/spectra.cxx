@@ -50,8 +50,10 @@ int run_spectra (const std::string &s)
 	pywrap.outputFile()->cd();
 	TTree *tk = new TTree("kine", "kine");
 	TH1F *hpT = new TH1F("hpT", "pT;p_{T} (GeV/#it{c});counts", 50, 0, 100);
-	//TNtuple *gntuple = new TNtuple("gntuple", "gntuple", "gpT:geta:gphi");
-	//TNtuple *ghntuple = new TNtuple("ghntuple", "ghntuple", "gpT:geta:gphi:hpT:heta:hphi:dphi");
+	TNtuple *nt_parts = new TNtuple("nt_parts", "nt_parts", "pT:y:eta:phi");
+	TNtuple *nt_gamma = new TNtuple("nt_gamma", "nt_gamma", "pT:y:eta:phi");
+	TNtuple *nt_z0 = new TNtuple("nt_z0", "nt_z0", "pT:y:eta:phi");
+	TNtuple *nt_jets = new TNtuple("nt_jets", "nt_jets", "pT:y:eta:phi");
 
 	RStream::HStream hstream;
 	if (args.isSet("--hconfig"))
@@ -98,6 +100,11 @@ int run_spectra (const std::string &s)
 			auto photons = PyUtil::prompt_photon_indexes(event);
 			for (auto &ipho : photons)
 			{
+				if (TMath::Abs(event[ipho].eta()) < maxEta)
+				{
+					if (event[ipho].pT() > 0.5)
+						nt_gamma->Fill(event[ipho].pT(), event[ipho].y(), event[ipho].eta(), event[ipho].phi());
+				}
 				if (TMath::Abs(event[ipho].eta()) < 1.)
 					hstream << "photon_pt_cms" << event[ipho].pT();
 				if (TMath::Abs(event[ipho].eta()) < 0.35)
@@ -109,6 +116,11 @@ int run_spectra (const std::string &s)
 		{
 			auto iZ0 = PyUtil::z0_index(event);
 			hstream << "z0_pt_atlas" << event[iZ0].pT();
+			if (TMath::Abs(event[iZ0].eta()) < maxEta)
+			{
+				if (event[iZ0].pT() > 0.5)
+					nt_z0->Fill(event[iZ0].pT(), event[iZ0].y(), event[iZ0].eta(), event[iZ0].phi());
+			}
 		}
 
 		if (jets_flag)
@@ -134,6 +146,8 @@ int run_spectra (const std::string &s)
 
 					if (TMath::Abs(event[ip].eta()) < maxEta)
 					{
+						if (event[ip].pT() > 0.5)
+							nt_parts->Fill(event[ip].pT(), event[ip].y(), event[ip].eta(), event[ip].phi());
 						fj::PseudoJet p(event[ip].px(), event[ip].py(), event[ip].pz(), event[ip].e());
 						p.set_user_index(ip);
 						parts.push_back(p);
@@ -150,6 +164,7 @@ int run_spectra (const std::string &s)
 					continue;
 				if (TMath::Abs(j.eta()) > maxEta - R)
 					continue;
+				nt_jets->Fill(j.pt(), j.rap(), j.eta(), j.phi());
 				double pt_eta[] = {j.pt(), j.eta()};
 				hstream << "jet_pt_eta" << pt_eta;
 				hstream << "jet_pt_atlas" << j.pt();
