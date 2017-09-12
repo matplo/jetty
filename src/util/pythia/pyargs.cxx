@@ -158,6 +158,18 @@ namespace PyUtil
 			add("SoftQCD:nonDiffractive=on"); //        ! Nondiffractive (inelastic)
 		}
 
+		if (isSet("--z0"))
+		{
+			add("HardQCD:all=off");
+			add("PromptPhoton:all=off");
+			add("SoftQCD:all=off");
+			set("PhaseSpace:pTHatMin",0.0);
+			set("PhaseSpace:pTHatMax", -1.0);
+			add("WeakSingleBoson:ffbar2gmZ=on");
+			set("PhaseSpace:mHatMin", 70);
+			set("PhaseSpace:mHatMax", 110);
+		}
+
 		if (isSet("Beams:eA") || isSet("Beams:eB"))
 		{
 			add("Beams:frameType=2");
