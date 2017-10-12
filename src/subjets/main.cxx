@@ -1,6 +1,7 @@
 #include <util/args.h>
 #include "run_pythia.h"
 #include "run_jets.h"
+#include "run_test.h"
 
 int main ( int argc, char *argv[] )
 {
@@ -16,6 +17,11 @@ int main ( int argc, char *argv[] )
 	if (args.isSet("--jets"))
 	{
 		rv = run_jets(args.asString());
+	}
+
+	if (args.isSet("--testrun"))
+	{
+		rv = run_test(args.asString());
 	}
 
 	return rv;
