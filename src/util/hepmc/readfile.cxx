@@ -63,11 +63,11 @@ HepMC::PdfInfo* ReadHepMCFile::GetPDFinfo()
 	return 0x0;
 }
 
-HepMC::WeightContainer&  ReadHepMCFile::GetWeightContainer()
+HepMC::WeightContainer* ReadHepMCFile::GetWeightContainer()
 {
-	if (fEvent) return fEvent->weights();
+	if (fEvent) return &(fEvent->weights());
 	Lerror << "No event - unable to read PDF info";
-	return HepMC::WeightContainer();
+	return 0x0;
 }
 
 bool ReadHepMCFile::ReadHepMCFile::NextEvent()
@@ -87,7 +87,7 @@ std::list<HepMC::GenVertex*> ReadHepMCFile::Vertices()
 {
 	fVertices.clear();
 	if (!fEvent)
-		Lerror << "No event - unable to read vertices..."
+		Lerror << "No event - unable to read vertices...";
 	for ( HepMC::GenEvent::vertex_iterator v = fEvent->vertices_begin(); v != fEvent->vertices_end(); ++v )
 	{
 		fVertices.push_back(*v);
@@ -95,15 +95,15 @@ std::list<HepMC::GenVertex*> ReadHepMCFile::Vertices()
 	return fVertices;
 }
 
-std::vector<HepMC::GenParticle*> ReadHepMCFile::HepMCParticles(bool only_final = true)
+std::vector<HepMC::GenParticle*> ReadHepMCFile::HepMCParticles(bool only_final)
 {
 	fParticles.clear();
 	if (!fEvent)
-		Lerror << "No event - unable to read particles..."
+		Lerror << "No event - unable to read particles...";
 	for ( HepMC::GenEvent::particle_iterator p = fEvent->particles_begin();
 		p != fEvent->particles_end(); ++p )
 	{
-		const HepMC::GenParticle* pmc = *p;
+		HepMC::GenParticle* pmc = *p;
 		if (only_final)
 		{
 			if ( !pmc->end_vertex() && pmc->status() == 1 )

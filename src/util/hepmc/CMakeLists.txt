@@ -14,10 +14,12 @@ string(REPLACE ".cxx" ".h" HEADERS_LIB "${SOURCES_LIB}")
 string(REPLACE ".cxx" ".h" HEADERS_EXE "${SOURCES_EXE}")
 
 add_library(${NAME_LIB} SHARED ${SOURCES_LIB})
-target_include_directories(${NAME_LIB} PUBLIC ${HEPMC_INCLUDE_DIRS})
+target_include_directories(${NAME_LIB} PUBLIC ${HEPMC_INCLUDE_DIRS} ${ROOT_INCLUDE_DIR} ${FASTJET_DIR}/include)
+target_link_libraries( ${NAME_LIB} ${PROJECT_NAME}Util ${HEPMC_LIBRARIES} ${ROOT_LIBRARIES})
 
 add_executable(${NAME_EXE} ${SOURCES_EXE})
-target_link_libraries( ${NAME_EXE} ${NAME_LIB} ${HEPMC_LIBRARIES})
+message(STATUS "HEPMC libs: ${HEPMC_LIBRARIES}")
+target_link_libraries( ${NAME_EXE} ${NAME_LIB} ${HEPMC_LIBRARIES} ${ROOT_LIBRARIES})
 
 install(TARGETS ${NAME_EXE} RUNTIME DESTINATION bin)
 install(TARGETS ${NAME_LIB} LIBRARY DESTINATION lib COMPONENT library)

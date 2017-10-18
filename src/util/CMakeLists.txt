@@ -25,7 +25,7 @@ add_subdirectory(rstream)
 add_subdirectory(pythia)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
-find_package(HepMC REQUIRED fio)
+find_package(HepMC REQUIRED HepMC HepMCfio)
 if (HEPMC_FOUND)
 	add_subdirectory(hepmc)
 else()
