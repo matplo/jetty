@@ -2,7 +2,9 @@
 #include "run_pythia.h"
 #include "run_jets.h"
 #include "run_test.h"
-
+#ifdef USE_HEPMC
+#include "run_hepmc.h"
+#endif
 int main ( int argc, char *argv[] )
 {
 	int rv = 0;
@@ -18,6 +20,13 @@ int main ( int argc, char *argv[] )
 	{
 		rv = run_jets(args.asString());
 	}
+
+#ifdef USE_HEPMC
+	if (args.isSet("--hepmc"))
+	{
+		rv = run_hepmc(args.asString());
+	}
+#endif
 
 	if (args.isSet("--testrun"))
 	{

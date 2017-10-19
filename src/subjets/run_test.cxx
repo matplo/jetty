@@ -97,49 +97,49 @@ int run_test (const std::string &s)
 					parts.push_back(p);
 				}
 			}
+		} // end of the particle loop
 
-			fj::JetDefinition jet_def(fj::antikt_algorithm, R);
-			fj::ClusterSequence cs(parts, jet_def);
-			auto jets = fj::sorted_by_pt(cs.inclusive_jets());
-			for (auto j : jets)
+		fj::JetDefinition jet_def(fj::antikt_algorithm, R);
+		fj::ClusterSequence cs(parts, jet_def);
+		auto jets = fj::sorted_by_pt(cs.inclusive_jets());
+		for (auto j : jets)
+		{
+			if (TMath::Abs(j.eta()) > maxEta - R)
+				continue;
+
+			if (j.perp() < jptcut)
+				continue;
+			if (j.perp() > jptcutmax)
+				continue;
+
+			jts << "xsec" << wxsec;
+			jts << "icode" << icode;
+			jts << "xsec_code" << xsec_code;
+
+			hpT->Fill(j.perp());
+			he->Fill(j.e());
+			jts << "j" << j;
+
+			// auto sj_info = new JettyFJUtils::SJInfo(&j, sjR);
+			// j.set_user_info(sj_info);
+
+			fj::JetDefinition jet_def_sj(fj::antikt_algorithm, sjR);
+			fj::ClusterSequence cs_sj(j.constituents(), jet_def_sj);
+			auto sjs = fj::sorted_by_pt(cs_sj.inclusive_jets());
+
+			//auto sjs = sj_info->subjets();
+			jts << "subj" << sjs;
+			for (auto sj : sjs)
 			{
-				if (TMath::Abs(j.eta()) > maxEta - R)
-					continue;
-
-				if (j.perp() < jptcut)
-					continue;
-				if (j.perp() > jptcutmax)
-					continue;
-
-				jts << "xsec" << wxsec;
-				jts << "icode" << icode;
-				jts << "xsec_code" << xsec_code;
-
-				hpT->Fill(j.perp());
-				he->Fill(j.e());
-				jts << "j" << j;
-
-				// auto sj_info = new JettyFJUtils::SJInfo(&j, sjR);
-				// j.set_user_info(sj_info);
-
-				fj::JetDefinition jet_def_sj(fj::antikt_algorithm, sjR);
-				fj::ClusterSequence cs_sj(j.constituents(), jet_def_sj);
-				auto sjs = fj::sorted_by_pt(cs_sj.inclusive_jets());
-
-				//auto sjs = sj_info->subjets();
-				jts << "subj" << sjs;
-				for (auto sj : sjs)
-				{
-					hz->Fill(sj.perp() / j.perp());
-					hze->Fill(sj.e() / j.e());
-				}
-
-				jts << "nsj" << sjs.size();
-
-				jts << endl;
+				hz->Fill(sj.perp() / j.perp());
+				hze->Fill(sj.e() / j.e());
 			}
-		}
-	}
+
+			jts << "nsj" << sjs.size();
+
+			jts << endl;
+		} // end of the jet loop
+	} // end of the event loop
 
 	if (hpT->GetEntries() > 0)
 	{

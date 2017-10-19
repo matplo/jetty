@@ -23,6 +23,9 @@ public:
 	HepMC::WeightContainer*  			GetWeightContainer();
 	std::list<HepMC::GenVertex*> 		Vertices();
 	std::vector<HepMC::GenParticle*> 	HepMCParticles(bool only_final = true);
+	std::vector<fastjet::PseudoJet> 	PseudoJetParticles(bool only_final = true);
+
+	long int 							CurrentEventNumber() { return fCurrentEvent;}
 
 private:
 	HepMC::IO_GenEvent fIn;

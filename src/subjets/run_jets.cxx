@@ -121,73 +121,73 @@ int run_jets (const std::string &s)
 					parts.push_back(p);
 				}
 			}
-
-			fj::JetDefinition jet_def(fj::antikt_algorithm, R);
-			fj::ClusterSequence cs(parts, jet_def);
-			auto jets = fj::sorted_by_pt(cs.inclusive_jets());
-			for (auto j : jets)
-			{
-				if (j.perp() < jptcut)
-					continue;
-				if (j.perp() > jptcutmax)
-					continue;
-				if (TMath::Abs(j.eta()) > maxEta - R)
-					continue;
-
-				jts << "xsec" << wxsec;
-				jts << "icode" << icode;
-				jts << "xsec_code" << xsec_code;
-				jts << "nsigma" << nsigma;
-				jts << "nsigma_code" << nsigma_code;
-				jts << "hard_mean" << hard_mean;
-				jts << "hard_std_dev" << hard_std_dev;
-				jts << "hard_n_std_dev" << hard_n_std_dev;
-
-				hpT->Fill(j.perp());
-				jts << "j" << j;
-
-				auto sj_info = new JettyFJUtils::SJInfo(&j, sjR);
-				j.set_user_info(sj_info);
-
-				auto sjs = sj_info->subjets();
-				jts << "subj" << sjs;
-				for (auto sj : sjs)
-					hz->Fill(sj.perp() / j.perp());
-
-				jts << "nsj" << sjs.size();
-
-				if (sjs.size() < 1)
-				{
-					sjs.push_back(j);
-				}
-				if (sjs.size() < 2)
-				{
-					sjs.push_back(fj::PseudoJet(0,0,0,0));
-				}
-
-				jts << "sj_0" << sjs[0];
-				jts << "sj_1" << sjs[1];
-				jts << "sj_dR" << sjs[0].delta_R(sjs[1]);
-				jts << "sj_dpt" << sjs[0].perp() - sjs[1].perp();
-				jts << "sj_delta" << (sjs[0].perp() - sjs[1].perp()) / j.perp();
-				jts << "sj_delta_sum" << (sjs[0].perp() - sjs[1].perp()) / (sjs[0].perp() + sjs[1].perp());
-				jts << "sj_zg" << TMath::Min(sjs[0].perp(), sjs[1].perp()) / j.perp();
-				//auto zs   = sj_info->z();
-				jts << "z" << sj_info->z();
-
-				//auto rm  = sj_info->rm();
-				jts << "rm" << sj_info->rm();
-
-				//auto zg  = sj_info->sd_zg();
-				jts << "sd_zg" << sj_info->sd_zg();
-				jts << "sd_dR" << sj_info->sd_dR();
-				jts << "sd_mu" << sj_info->sd_mu();
-				jts << endl;
-
-				// delete sj_info; deleted when deleting jets
-			}
 		}
-	}
+
+		fj::JetDefinition jet_def(fj::antikt_algorithm, R);
+		fj::ClusterSequence cs(parts, jet_def);
+		auto jets = fj::sorted_by_pt(cs.inclusive_jets());
+		for (auto j : jets)
+		{
+			if (j.perp() < jptcut)
+				continue;
+			if (j.perp() > jptcutmax)
+				continue;
+			if (TMath::Abs(j.eta()) > maxEta - R)
+				continue;
+
+			jts << "xsec" << wxsec;
+			jts << "icode" << icode;
+			jts << "xsec_code" << xsec_code;
+			jts << "nsigma" << nsigma;
+			jts << "nsigma_code" << nsigma_code;
+			jts << "hard_mean" << hard_mean;
+			jts << "hard_std_dev" << hard_std_dev;
+			jts << "hard_n_std_dev" << hard_n_std_dev;
+
+			hpT->Fill(j.perp());
+			jts << "j" << j;
+
+			auto sj_info = new JettyFJUtils::SJInfo(&j, sjR);
+			j.set_user_info(sj_info);
+
+			auto sjs = sj_info->subjets();
+			jts << "subj" << sjs;
+			for (auto sj : sjs)
+				hz->Fill(sj.perp() / j.perp());
+
+			jts << "nsj" << sjs.size();
+
+			if (sjs.size() < 1)
+			{
+				sjs.push_back(j);
+			}
+			if (sjs.size() < 2)
+			{
+				sjs.push_back(fj::PseudoJet(0,0,0,0));
+			}
+
+			jts << "sj_0" << sjs[0];
+			jts << "sj_1" << sjs[1];
+			jts << "sj_dR" << sjs[0].delta_R(sjs[1]);
+			jts << "sj_dpt" << sjs[0].perp() - sjs[1].perp();
+			jts << "sj_delta" << (sjs[0].perp() - sjs[1].perp()) / j.perp();
+			jts << "sj_delta_sum" << (sjs[0].perp() - sjs[1].perp()) / (sjs[0].perp() + sjs[1].perp());
+			jts << "sj_zg" << TMath::Min(sjs[0].perp(), sjs[1].perp()) / j.perp();
+			//auto zs   = sj_info->z();
+			jts << "z" << sj_info->z();
+
+			//auto rm  = sj_info->rm();
+			jts << "rm" << sj_info->rm();
+
+			//auto zg  = sj_info->sd_zg();
+			jts << "sd_zg" << sj_info->sd_zg();
+			jts << "sd_dR" << sj_info->sd_dR();
+			jts << "sd_mu" << sj_info->sd_mu();
+			jts << endl;
+
+			// delete sj_info; deleted when deleting jets
+		} // end of the jet loop
+	} //end of the event loop
 
 	if (hpT->GetEntries() > 0)
 		hz->Scale(1./hpT->GetEntries(), "width");

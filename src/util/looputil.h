@@ -25,6 +25,8 @@ namespace LoopUtil
 
 	        void Update(Long64_t nup = 1)
 	        {
+	        	if (fN > 0)
+	        	{
 	                fSw->Stop();
 	                fNCalls = fNCalls + nup;
 	                Double_t frac = (1.*fNCalls)/fN;
@@ -57,12 +59,32 @@ namespace LoopUtil
 	                        fSw->Stop();
 	                        return;
 	                }
+	            }
+	            else
+	            {
+	                fSw->Stop();
+	                fNCalls = fNCalls + nup;
+	                if (fSw->RealTime() - fOldRTime > 1 || fNCalls == 1)
+	                {
+                        fTperIt.push_back(1. * fSw->RealTime() / fNCalls);
+                        double sum = std::accumulate(fTperIt.begin(), fTperIt.end(), 0.0);
+                        double mean_t_per_it = sum / fTperIt.size();
+                        Double_t fh = TMath::Floor(fSw->RealTime() / 60. / 60.);
+                        Double_t fm = TMath::Floor(fSw->RealTime() / 60. - fh * 60.);
+                        Double_t fs = fSw->RealTime() - fh * 60. * 60. - fm * 60.;
+                        TString sela = TString::Format("%02d:%02d:%02d", Int_t(fh), Int_t(fm), Int_t(fs));
+                        std::cout << "\r[i] event #" << fNCalls+1 << " " << TString::Format("T:%s                       \r", sela.Data()); std::cout.flush();
+                        fOldRTime = fSw->RealTime();
+	                }
+	            }
 	        }
 
 	        ~TPbar()
 	        {
 	                delete fSw;
 	        }
+
+	        Long64_t NCalls() {return fNCalls;}
 
 	private:
 	        Long64_t fN;

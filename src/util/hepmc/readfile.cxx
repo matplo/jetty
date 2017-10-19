@@ -14,6 +14,8 @@
 #include <iostream>
 using namespace std;
 
+namespace fj = fastjet;
+
 //useful code from
 // $HEPMCDIR/share/HepMC/examples/example_UsingIterators.cc
 // and
@@ -119,3 +121,29 @@ std::vector<HepMC::GenParticle*> ReadHepMCFile::HepMCParticles(bool only_final)
 	return fParticles;
 }
 
+std::vector<fj::PseudoJet> ReadHepMCFile::PseudoJetParticles(bool only_final)
+{
+	fPseudoJets.clear();
+	if (!fEvent)
+		Lerror << "No event - unable to read particles...";
+	for ( HepMC::GenEvent::particle_iterator p = fEvent->particles_begin();
+		p != fEvent->particles_end(); ++p )
+	{
+		HepMC::GenParticle* pmc = *p;
+		HepMC::FourVector vpmc = pmc->momentum();
+		if (only_final)
+		{
+			if ( !pmc->end_vertex() && pmc->status() == 1 )
+			{
+				fj::PseudoJet psj(vpmc.px(), vpmc.py(), vpmc.pz(), vpmc.e());
+				fPseudoJets.push_back(psj);
+			}
+		}
+		else
+		{
+			fj::PseudoJet psj(vpmc.px(), vpmc.py(), vpmc.pz(), vpmc.e());
+			fPseudoJets.push_back(psj);
+		}
+	}
+	return fPseudoJets;
+}
