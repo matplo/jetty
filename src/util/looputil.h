@@ -76,6 +76,7 @@ namespace LoopUtil
                         std::cout << "\r[i] event #" << fNCalls+1 << " " << TString::Format("T:%s                       \r", sela.Data()); std::cout.flush();
                         fOldRTime = fSw->RealTime();
 	                }
+	                fSw->Start(kFALSE);
 	            }
 	        }
 
