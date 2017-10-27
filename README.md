@@ -12,7 +12,7 @@ Jets with pythia &amp; fastjet &amp; root sandbox
 
  - uses GIT
  - installs to `<dir_where_downloaded>/jetty_1.0`
- - makes a module file [module package](http://modules.sourceforge.net) in `<dir_where_downloaded>/modules` - depends on modules as in [HEPSOFT](https://github.com/matplo/hepsoft)
+ - makes a module file (see [module package](http://modules.sourceforge.net)) in `<dir_where_downloaded>/modules` - depends on modules as in [HEPSOFT](https://github.com/matplo/hepsoft)
 
 ```bash
 $ <dir_where_downloaded>/scripts/build_jetty.sh --build --module
