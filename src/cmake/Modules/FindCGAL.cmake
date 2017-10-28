@@ -24,12 +24,11 @@ else(CGAL_INCLUDE_DIR AND CGAL_LIBRARIES)
                  $ENV{CGAL_ROOT}/lib64)
     else()
     find_path(CGAL_INCLUDE_DIR CGAL/basic.h
-              HINTS
               /usr/local/include
               /usr/include)
 
     find_library(CGAL_LIBRARIES NAMES CGAL libCGAL
-                 HINTS
+                 PATHS
                  /usr/lib
                  /usr/lib64
                  /usr/local/lib
