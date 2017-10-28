@@ -1,89 +1,56 @@
-#
-# The following module is based on FindVTK.cmake
-#
+# - Find CGAL
+# Find the CGAL includes and client library
+# This module defines
+#  CGAL_INCLUDE_DIR, where to find CGAL.h
+#  CGAL_LIBRARIES, the libraries needed to use CGAL.
+#  CGAL_FOUND, If false, do not try to use CGAL.
 
-# - Find a CGAL installation or binary tree.
-# The following variables are set if CGAL is found.  If CGAL is not
-# found, CGAL_FOUND is set to false.
-#
-#  CGAL_FOUND         - Set to true when CGAL is found.
-#  CGAL_USE_FILE      - CMake file to use CGAL.
-#
+if(CGAL_INCLUDE_DIR AND CGAL_LIBRARIES)
+   set(CGAL_FOUND TRUE)
 
-# Construct consitent error messages for use below.
-set(CGAL_DIR_DESCRIPTION "directory containing CGALConfig.cmake. This is either the binary directory where CGAL was configured or PREFIX/lib/CGAL for an installation.")
-set(CGAL_DIR_MESSAGE     "CGAL not found.  Set the CGAL_DIR cmake variable or environment variable to the ${CGAL_DIR_DESCRIPTION}")
- 
-if ( NOT CGAL_DIR )
-  
-  # Get the system search path as a list.
-  if(UNIX)
-    string(REGEX MATCHALL "[^:]+" CGAL_DIR_SEARCH1 "$ENV{PATH}")
-  else()
-    string(REGEX REPLACE "\\\\" "/" CGAL_DIR_SEARCH1 "$ENV{PATH}")
-  endif()
-  
-  string(REGEX REPLACE "/;" ";" CGAL_DIR_SEARCH2 "${CGAL_DIR_SEARCH1}")
+else(CGAL_INCLUDE_DIR AND CGAL_LIBRARIES)
+  if ((IS_DIRECTORY ${CGAL_ROOT}) OR (IS_DIRECTORY $ENV{CGAL_DIR}))
+    message(STATUS "Preferring the environment CGAL settings over system installation...")
+    find_path(CGAL_INCLUDE_DIR CGAL/basic.h
+              $ENV{CGAL_DIR}/include
+              ${CGAL_ROOT}/include)
 
-  # Construct a set of paths relative to the system search path.
-  set(CGAL_DIR_SEARCH "")
-  
-  foreach(dir ${CGAL_DIR_SEARCH2})
-  
-    set(CGAL_DIR_SEARCH ${CGAL_DIR_SEARCH} ${dir}/../lib/CGAL )
-      
-  endforeach()
+    find_library(CGAL_LIBRARIES NAMES CGAL libCGAL
+                 PATHS
+                 $ENV{CGAL_DIR}/lib
+                 ${CGAL_ROOT}/lib
+                 $ENV{CGAL_DIR}/lib64
+                 ${CGAL_ROOT}/lib64)
 
+  else((IS_DIRECTORY ${CGAL_ROOT}) OR (IS_DIRECTORY $ENV{CGAL_DIR}))
 
-  #
-  # Look for an installation or build tree.
-  #
-  find_path(CGAL_DIR CGALConfig.cmake
+  find_path(CGAL_INCLUDE_DIR CGAL/basic.h
+            $ENV{CGAL_DIR}/include
+            ${CGAL_ROOT}/include
+            /usr/include
+            /usr/local/include)
 
-    # Look for an environment variable CGAL_DIR.
-    $ENV{CGAL_DIR}
+  find_library(CGAL_LIBRARIES NAMES CGAL libCGAL
+               PATHS
+               $ENV{CGAL_DIR}/lib
+               ${CGAL_ROOT}/lib
+               /usr/lib
+               /usr/local/lib
+               /usr/lib/CGAL
+               /usr/lib64
+               /usr/local/lib64
+               /usr/lib64/CGAL)
+  endif((IS_DIRECTORY ${CGAL_ROOT}) OR (IS_DIRECTORY $ENV{CGAL_DIR}))
 
-    # Look in places relative to the system executable search path.
-    ${CGAL_DIR_SEARCH}
+  mark_as_advanced(CGAL_INCLUDE_DIR CGAL_LIBRARIES)
 
-    # Look in standard UNIX install locations.
-    /usr/local/lib/CGAL
-    /usr/lib/CGAL
+endif(CGAL_INCLUDE_DIR AND CGAL_LIBRARIES)
 
-    # Read from the CMakeSetup registry entries.  It is likely that
-    # CGAL will have been recently built.
-    [HKEY_CURRENT_USER\\Software\\Kitware\\CMakeSetup\\Settings\\StartPath;WhereBuild1]
-    [HKEY_CURRENT_USER\\Software\\Kitware\\CMakeSetup\\Settings\\StartPath;WhereBuild2]
-    [HKEY_CURRENT_USER\\Software\\Kitware\\CMakeSetup\\Settings\\StartPath;WhereBuild3]
-    [HKEY_CURRENT_USER\\Software\\Kitware\\CMakeSetup\\Settings\\StartPath;WhereBuild4]
-    [HKEY_CURRENT_USER\\Software\\Kitware\\CMakeSetup\\Settings\\StartPath;WhereBuild5]
-    [HKEY_CURRENT_USER\\Software\\Kitware\\CMakeSetup\\Settings\\StartPath;WhereBuild6]
-    [HKEY_CURRENT_USER\\Software\\Kitware\\CMakeSetup\\Settings\\StartPath;WhereBuild7]
-    [HKEY_CURRENT_USER\\Software\\Kitware\\CMakeSetup\\Settings\\StartPath;WhereBuild8]
-    [HKEY_CURRENT_USER\\Software\\Kitware\\CMakeSetup\\Settings\\StartPath;WhereBuild9]
-    [HKEY_CURRENT_USER\\Software\\Kitware\\CMakeSetup\\Settings\\StartPath;WhereBuild10]
-
-    # Help the user find it if we cannot.
-    DOC "The ${CGAL_DIR_DESCRIPTION}"
-  )
-  
-endif()
-
-if ( CGAL_DIR )
-  
-  if ( EXISTS "${CGAL_DIR}/CGALConfig.cmake" )
-    include( "${CGAL_DIR}/CGALConfig.cmake" )
-    set( CGAL_FOUND TRUE )
-  endif()
-
-endif()
-
-if( NOT CGAL_FOUND)
-  if(CGAL_FIND_REQUIRED)
-    MESSAGE(FATAL_ERROR ${CGAL_DIR_MESSAGE})
-  else()
-    if(NOT CGAL_FIND_QUIETLY)
-      MESSAGE(STATUS ${CGAL_DIR_MESSAGE})
-    endif()
-  endif()
-endif()
+if(CGAL_INCLUDE_DIR AND CGAL_LIBRARIES)
+  message(STATUS "CGAL_INCLUDE_DIR=${CGAL_INCLUDE_DIR}")
+  message(STATUS "CGAL_LIBRARIES=${CGAL_LIBRARIES}")
+  set(CGAL_FOUND TRUE)
+else(CGAL_INCLUDE_DIR AND CGAL_LIBRARIES)
+  set(CGAL_FOUND FALSE)
+  message(STATUS "CGAL not found.")
+endif(CGAL_INCLUDE_DIR AND CGAL_LIBRARIES)
