@@ -33,9 +33,8 @@ else()
 endif()
 
 find_package(CGAL)
-if (HEPMC_FOUND)
+if (CGAL_FOUND)
 	add_subdirectory(voronoi)
 else()
 	message(WARNING "CGAL not found - part of util will not be compiled")
 endif()
-

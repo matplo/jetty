@@ -17,11 +17,14 @@ add_library(${NAME_LIB} SHARED ${SOURCES_LIB})
 target_include_directories(${NAME_LIB} PUBLIC ${HEPMC_INCLUDE_DIRS} ${ROOT_INCLUDE_DIR} ${FASTJET_DIR}/include)
 target_link_libraries( ${NAME_LIB} ${PROJECT_NAME}Util ${HEPMC_LIBRARIES} ${ROOT_LIBRARIES})
 
-add_executable(${NAME_EXE} ${SOURCES_EXE})
-message(STATUS "HEPMC libs: ${HEPMC_LIBRARIES}")
-target_link_libraries( ${NAME_EXE} ${NAME_LIB} ${HEPMC_LIBRARIES} ${ROOT_LIBRARIES} ${PROJECT_NAME}HepMCUtil)
+if (HEPMC_FOUND)
+	add_executable(${NAME_EXE} ${SOURCES_EXE})
+	target_link_libraries( ${NAME_EXE} ${NAME_LIB} ${HEPMC_LIBRARIES} ${ROOT_LIBRARIES} ${PROJECT_NAME}HepMCUtil)
+	install(TARGETS ${NAME_EXE} RUNTIME DESTINATION bin)
+else()
+	message(WARNING "HepMC not found - ${NAME_EXE} part of util will not be compiled")
+endif()
 
-install(TARGETS ${NAME_EXE} RUNTIME DESTINATION bin)
 install(TARGETS ${NAME_LIB} LIBRARY DESTINATION lib COMPONENT library)
 
 install(FILES ${HEADERS_LIB} DESTINATION include/${MODULE})
