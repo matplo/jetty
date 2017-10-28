@@ -14,14 +14,14 @@ else(CGAL_INCLUDE_DIR AND CGAL_LIBRARIES)
     find_path(CGAL_INCLUDE_DIR CGAL/basic.h
               HINTS
               $ENV{CGAL_DIR}/include
-              ${CGAL_ROOT}/include)
+              $ENV{CGAL_ROOT}/include)
 
     find_library(CGAL_LIBRARIES NAMES CGAL libCGAL
                  PATHS
                  $ENV{CGAL_DIR}/lib
-                 ${CGAL_ROOT}/lib
+                 $ENV{CGAL_ROOT}/lib
                  $ENV{CGAL_DIR}/lib64
-                 ${CGAL_ROOT}/lib64)
+                 $ENV{CGAL_ROOT}/lib64)
   endif((IS_DIRECTORY ${CGAL_ROOT}) OR (IS_DIRECTORY $ENV{CGAL_DIR}))
 
   mark_as_advanced(CGAL_INCLUDE_DIR CGAL_LIBRARIES)
