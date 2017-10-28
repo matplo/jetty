@@ -22,7 +22,7 @@ else(CGAL_INCLUDE_DIR AND CGAL_LIBRARIES)
                  $ENV{CGAL_DIR}/lib64
                  ${CGAL_ROOT}/lib64)
 
-  else((IS_DIRECTORY ${CGAL_ROOT}) OR (IS_DIRECTORY $ENV{CGAL_DIR}))
+  else()
 
   find_path(CGAL_INCLUDE_DIR CGAL/basic.h
             $ENV{CGAL_DIR}/include
@@ -40,6 +40,7 @@ else(CGAL_INCLUDE_DIR AND CGAL_LIBRARIES)
                /usr/lib64
                /usr/local/lib64
                /usr/lib64/CGAL)
+
   endif((IS_DIRECTORY ${CGAL_ROOT}) OR (IS_DIRECTORY $ENV{CGAL_DIR}))
 
   mark_as_advanced(CGAL_INCLUDE_DIR CGAL_LIBRARIES)
