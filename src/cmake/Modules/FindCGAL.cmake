@@ -12,6 +12,7 @@ else(CGAL_INCLUDE_DIR AND CGAL_LIBRARIES)
   if ((IS_DIRECTORY ${CGAL_ROOT}) OR (IS_DIRECTORY $ENV{CGAL_DIR}))
     message(STATUS "Preferring the environment CGAL settings over system installation...")
     find_path(CGAL_INCLUDE_DIR CGAL/basic.h
+              HINTS
               $ENV{CGAL_DIR}/include
               ${CGAL_ROOT}/include)
 
@@ -25,6 +26,7 @@ else(CGAL_INCLUDE_DIR AND CGAL_LIBRARIES)
   else()
 
   find_path(CGAL_INCLUDE_DIR CGAL/basic.h
+            HINTS
             $ENV{CGAL_DIR}/include
             ${CGAL_ROOT}/include
             /usr/include
