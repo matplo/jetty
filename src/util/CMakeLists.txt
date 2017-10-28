@@ -31,3 +31,11 @@ if (HEPMC_FOUND)
 else()
 	message(WARNING "HepMC not found - part of util will not be compiled")
 endif()
+
+find_package(CGAL)
+if (HEPMC_FOUND)
+	add_subdirectory(voronoi)
+else()
+	message(WARNING "CGAL not found - part of util will not be compiled")
+endif()
+
