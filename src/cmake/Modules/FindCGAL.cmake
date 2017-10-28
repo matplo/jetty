@@ -17,7 +17,7 @@ else(CGAL_INCLUDE_DIR AND CGAL_LIBRARIES)
               $ENV{CGAL_ROOT}/include)
 
     find_library(CGAL_LIBRARIES NAMES CGAL libCGAL
-                 PATHS
+                 HINTS
                  $ENV{CGAL_DIR}/lib
                  $ENV{CGAL_ROOT}/lib
                  $ENV{CGAL_DIR}/lib64
