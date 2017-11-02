@@ -106,6 +106,22 @@ namespace SysUtil
 		return sret;
 	}
 
+	string Args::get(const char *what, const char *defret) const
+	{
+		string sret = get(what);
+		if (sret.size() <= 0)
+			sret = defret;
+		return sret;
+	}
+
+	string Args::get(const string &what, const string &defret) const
+	{
+		string sret = get(what);
+		if (sret.size() <= 0)
+			sret = defret;
+		return sret;
+	}
+
 	string Args::get(const string &what) const
 	{
 		return get(what.c_str());

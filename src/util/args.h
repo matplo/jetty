@@ -21,10 +21,12 @@ namespace SysUtil
 		bool 			isSet(const std::string &what) const;
 
 		std::string     get (const char *what) const;
+		std::string     get (const char *what, const char *defret) const;
 		double 			getD(const char *what, const double defret = 0.0) const;
 		int 			getI(const char *what, const int 	defret = 0  ) const;
 
 		std::string     get (const std::string &what) const;
+		std::string     get (const std::string &what, const std::string &defret) const;
 		double 			getD(const std::string &what, const double 	defret = 0.0) const;
 		int 			getI(const std::string &what, const int 	defret = 0  ) const;
 
