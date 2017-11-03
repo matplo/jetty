@@ -26,7 +26,7 @@ int main ( int argc, char *argv[] )
 	if (args.isSet("--dry")) return 0;
 
 	// create the output root file
-	string outfname = args.get("--output");
+	string outfname = args.get("--output", "pythia_gen_hepmc.dat");
 	HepMC::IO_GenEvent hepmc_output(outfname.c_str(), std::ios::out);
 
 	// initialize pythia with a config and command line args
