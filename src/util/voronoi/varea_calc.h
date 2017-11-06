@@ -32,16 +32,17 @@ namespace VoronoiUtil
 	typedef CGAL::Polygon_2<CGAL::Exact_predicates_inexact_constructions_kernel>
 		polygon_t;
 
-	void voronoi_insert_alice_tpc(
+	void voronoi_insert_det_eta_max(
 		voronoi_diagram_t &diagram,
 		std::map<voronoi_diagram_t::Face_handle, size_t> &face_index,
-		const std::vector<point_2d_t> particle_pseudorapidity_azimuth)
+		const std::vector<point_2d_t> particle_pseudorapidity_azimuth,
+		const double &det_eta_max)
 	{
 		for (std::vector<point_2d_t>::const_iterator iterator =
 				 particle_pseudorapidity_azimuth.begin();
 			 iterator != particle_pseudorapidity_azimuth.end();
 			 iterator++) {
-			// Reflect at ALICE TPC boundary of |eta| = 0.9, to
+			// Reflect at the boundary of |eta| = det_eta_max, to
 			// cut-off the tesselation at the boundary condition via
 			// "mirror tracks"
 			for (int j = -1; j <= 1; j++) {
@@ -50,7 +51,7 @@ namespace VoronoiUtil
 				// boundary condition
 				for (int k = -1; k <= 1; k++) {
 					const point_2d_t
-						p(iterator->x() * (1 - 2 * (j & 1)) + j * (2 * 0.9),
+						p(iterator->x() * (1 - 2 * (j & 1)) + j * (2 * det_eta_max),
 						  iterator->y() + k * (2 * M_PI));
 					const voronoi_diagram_t::Face_handle
 						handle = diagram.insert(p);
@@ -62,16 +63,30 @@ namespace VoronoiUtil
 		}
 	}
 
+	void voronoi_insert_alice_tpc(
+		voronoi_diagram_t &diagram,
+		std::map<voronoi_diagram_t::Face_handle, size_t> &face_index,
+		const std::vector<point_2d_t> particle_pseudorapidity_azimuth)
+	{
+		voronoi_insert_det_eta_max(diagram,
+		                           face_index,
+		                           particle_pseudorapidity_azimuth,
+		                           0.9);
+	}
+
 	void voronoi_area_incident(
 		std::vector<double> &particle_area,
 		std::vector<std::set<size_t> > &particle_incident,
-		const std::vector<point_2d_t> particle_pseudorapidity_azimuth)
+		const std::vector<point_2d_t> particle_pseudorapidity_azimuth,
+		const double &det_eta_max)
 	{
 		voronoi_diagram_t diagram;
 		std::map<voronoi_diagram_t::Face_handle, size_t> face_index;
 
-		voronoi_insert_alice_tpc(diagram, face_index,
-								 particle_pseudorapidity_azimuth);
+		voronoi_insert_det_eta_max(diagram,
+		                           face_index,
+		                           particle_pseudorapidity_azimuth,
+		                           det_eta_max);
 
 		particle_area.clear();
 		particle_incident = std::vector<std::set<size_t> >(
@@ -125,16 +140,30 @@ namespace VoronoiUtil
 		}
 	}
 
+	void voronoi_area_incident_alice_tpc(
+		std::vector<double> &particle_area,
+		std::vector<std::set<size_t> > &particle_incident,
+		const std::vector<point_2d_t> particle_pseudorapidity_azimuth)
+	{
+		voronoi_area_incident(particle_area,
+		                      particle_incident,
+		                      particle_pseudorapidity_azimuth,
+		                      0.9);
+	}
+
 	void voronoi_polygon(
 		std::vector<TPolyLine> &polyline,
 		const std::vector<point_2d_t> &
-		particle_pseudorapidity_azimuth)
+		particle_pseudorapidity_azimuth,
+		const double &det_eta_max)
 	{
 		voronoi_diagram_t diagram;
 		std::map<voronoi_diagram_t::Face_handle, size_t> face_index;
 
-		voronoi_insert_alice_tpc(diagram, face_index,
-								 particle_pseudorapidity_azimuth);
+		voronoi_insert_det_eta_max(diagram,
+		                           face_index,
+		                           particle_pseudorapidity_azimuth,
+		                           det_eta_max);
 
 		// Extract the Voronoi cells as polygon and calculate the
 		// area associated with individual particles
