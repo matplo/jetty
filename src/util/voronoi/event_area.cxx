@@ -129,7 +129,7 @@ namespace VoronoiUtil
 								// 		<< " neighbour to particle : " << *it;
 							}
 						}
-						if (has_particle_neighbour > 2)
+						if (has_particle_neighbour == 0)
 						{
 							fValidGhosts.insert(fValidGhosts.end(), _p_and_g[i]);
 							Ltrace << "keeping ghost " << _p_and_g[i].x() << ":" << _p_and_g[i].y()
