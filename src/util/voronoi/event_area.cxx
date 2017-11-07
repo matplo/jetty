@@ -16,6 +16,25 @@ namespace VoronoiUtil
 		Linfo << "   dnghosts/deta   : " << fNGhosts;
 		Linfo << "   fixed nghosts   : " << fFixedNGhosts;
 		Linfo << "   min. ghost area : " << fMinGhostArea;
+
+		unsigned int nghosts = 0;
+		double ngh2 = TMath::Sqrt(NGhosts() * Eta() * 2.);
+		double eta_step = 2. * Eta() / ngh2;
+		double phi_step = 2. * TMath::Pi() / ngh2;
+		for (double eta = -Eta(); eta < Eta(); eta = eta + eta_step)
+		{
+			for (double phi = -TMath::Pi(); phi < TMath::Pi(); phi = phi + phi_step)
+			{
+				nghosts++;
+			}
+		}
+		Linfo << "   nghosts calc       : " << nghosts;
+	}
+
+	double EventAreaSetup::Acceptance()
+	{
+		if (fMaxEta == 0) return 1.e-6;
+		return fMaxEta * 2. * 2. * TMath::Pi();
 	}
 
 	void EventArea::TotalArea(double &particle_area, double &ghost_area)
@@ -29,63 +48,107 @@ namespace VoronoiUtil
 			else
 				ghost_area = ghost_area + fParticleArea[i];
 		}
+		Ldebug << "particle area : " << particle_area << " ghost area : " << ghost_area << " => sum : " << particle_area + ghost_area;
+		Ldebug << "fractions particle area : " << particle_area / fSetup.Acceptance()
+			<< " ghost area : " << ghost_area / fSetup.Acceptance()
+			<< " => sum : " << (particle_area + ghost_area ) / fSetup.Acceptance();
+	}
+
+	void EventArea::AddGhosts()
+	{
+		double deta = fSetup.Eta() * 2.;
+		Long64_t nghosts = fSetup.NGhosts() * deta;
+		if (fSetup.FixedNGhosts())
+			nghosts = fSetup.NGhosts();
+		//for (Long64_t i = 0; i < nghosts; i++)
+		//{
+		//	double eta = 2. * gRandom->Rndm() * fSetup.Eta() - fSetup.Eta();
+		//	double phi = 2. * gRandom->Rndm() * TMath::Pi();
+		//	fGhosts.push_back( VoronoiUtil::point_2d_t(eta, phi) );
+		//}
+		double ngh2 = TMath::Sqrt(fSetup.NGhosts() * deta);
+		double eta_step = 2. * fSetup.Eta() / ngh2;
+		double phi_step = 2. * TMath::Pi() / ngh2;
+		for (double eta = -fSetup.Eta(); eta < fSetup.Eta(); eta = eta + eta_step)
+		{
+			for (double phi = -TMath::Pi(); phi < TMath::Pi(); phi = phi + phi_step)
+			{
+				double _eta = eta + gRandom->Rndm() * eta_step / 4.;
+				double _phi = phi + gRandom->Rndm() * phi_step / 4.;
+				fGhosts.push_back( VoronoiUtil::point_2d_t(_eta, _phi) );
+			}
+		}
+		Ldebug << "nghosts added : " << fGhosts.size();
 	}
 
 	EventArea::EventArea(const EventAreaSetup &setup, const std::vector<VoronoiUtil::point_2d_t> &particles, bool use_ghosts)
-		: fParticles()
+		: fSetup(setup)
+		, fParticles()
 		, fParticlesAndGhosts()
 		, fGhosts()
 		, fValidGhosts()
 		, fParticleArea()
 		, fParticleIncident()
 		{
+			Ldebug << " --- " << __FUNCTION__;
 			fParticles.insert(fParticles.end(), particles.begin(), particles.end());
 			fParticlesAndGhosts.insert(fParticlesAndGhosts.end(), particles.begin(), particles.end());
 			if (use_ghosts == false)
 			{
-				VoronoiUtil::voronoi_area_incident(fParticleArea, fParticleIncident, fParticlesAndGhosts, setup.Eta());
+				VoronoiUtil::voronoi_area_incident(fParticleArea, fParticleIncident, fParticlesAndGhosts, fSetup.Eta());
 			}
 			else
 			{
-				AddGhosts(setup);
+				AddGhosts();
 
 				std::vector<double> _parea;
 				std::vector<std::set<size_t> > _p_incident;
 				std::vector<VoronoiUtil::point_2d_t> _p_and_g;
 				_p_and_g.insert(_p_and_g.end(), particles.begin(), particles.end());
 				_p_and_g.insert(_p_and_g.end(), fGhosts.begin(), fGhosts.end());
-				VoronoiUtil::voronoi_area_incident(_parea, _p_incident, _p_and_g, setup.Eta());
+				VoronoiUtil::voronoi_area_incident(_parea, _p_incident, _p_and_g, fSetup.Eta());
 
 				for (unsigned int i = fParticles.size(); i < _parea.size(); i++)
 				{
-					if (_parea[i] > setup.MinGhostArea())
+					if (_parea[i] > fSetup.MinGhostArea())
 					{
+						Ltrace << "keeping ghost " << _p_and_g[i].x() << ":" << _p_and_g[i].y()
+								<< " with area " << _parea[i] << " > " << fSetup.MinGhostArea();
 						fValidGhosts.insert(fValidGhosts.end(), _p_and_g[i]);
+					}
+					else
+					{
+						int has_particle_neighbour = 0;
+						for (std::set<size_t>::iterator it=_p_incident[i].begin(); it!=_p_incident[i].end(); ++it)
+						{
+							if (*it < fParticles.size())
+							{
+								has_particle_neighbour += 1;
+								// Ltrace << "keeping ghost " << _p_and_g[i].x() << ":" << _p_and_g[i].y()
+								// 		<< " with area " << _parea[i]
+								// 		<< " neighbour to particle : " << *it;
+							}
+						}
+						if (has_particle_neighbour > 2)
+						{
+							fValidGhosts.insert(fValidGhosts.end(), _p_and_g[i]);
+							Ltrace << "keeping ghost " << _p_and_g[i].x() << ":" << _p_and_g[i].y()
+									<< " with area " << _parea[i]
+									<< " neighbour to n-particles : " << has_particle_neighbour;
+						}
 					}
 				}
 				Ldebug << "valid nghosts : " << fValidGhosts.size();
+				Ldebug << "n particles : " << fParticles.size();
 				fParticlesAndGhosts.insert(fParticlesAndGhosts.end(), fValidGhosts.begin(), fValidGhosts.end());
-				VoronoiUtil::voronoi_area_incident(fParticleArea, fParticleIncident, fParticlesAndGhosts, setup.Eta());
+				Ldebug << "n particles + v.ghosts : " << fParticlesAndGhosts.size();
+				VoronoiUtil::voronoi_area_incident(fParticleArea, fParticleIncident, fParticlesAndGhosts, fSetup.Eta());
 			}
 		}
 
-	void EventArea::AddGhosts(const EventAreaSetup &setup)
-	{
-		double deta = setup.Eta() * 2.;
-		Long64_t nghosts = setup.NGhosts() * deta;
-		if (setup.FixedNGhosts())
-			nghosts = setup.NGhosts();
-		for (Long64_t i = 0; i < nghosts; i++)
-		{
-			double eta = 2. * gRandom->Rndm() * setup.Eta() - setup.Eta();
-			double phi = 2. * gRandom->Rndm() * TMath::Pi();
-			fGhosts.push_back( VoronoiUtil::point_2d_t(eta, phi) );
-		}
-		Ldebug << "nghosts added : " << fGhosts.size();
-	}
-
 	EventArea::EventArea(const std::vector<VoronoiUtil::point_2d_t> &particles, double _etamax)
-		: fParticles()
+		: fSetup(_etamax)
+		, fParticles()
 		, fParticlesAndGhosts()
 		, fGhosts()
 		, fValidGhosts()
@@ -106,7 +169,8 @@ namespace VoronoiUtil
 		}
 
 	EventArea::EventArea(const EventAreaSetup &setup, const std::vector<VoronoiUtil::point_2d_t> &particles, const std::vector<VoronoiUtil::point_2d_t> &ghosts)
-		: fParticles()
+		: fSetup(setup)
+		, fParticles()
 		, fParticlesAndGhosts()
 		, fGhosts()
 		, fValidGhosts()
@@ -122,17 +186,31 @@ namespace VoronoiUtil
 			std::vector<VoronoiUtil::point_2d_t> _p_and_g;
 			_p_and_g.insert(_p_and_g.end(), particles.begin(), particles.end());
 			_p_and_g.insert(_p_and_g.end(), ghosts.begin(), ghosts.end());
-			VoronoiUtil::voronoi_area_incident(_parea, _p_incident, _p_and_g, setup.Eta());
+			VoronoiUtil::voronoi_area_incident(_parea, _p_incident, _p_and_g, fSetup.Eta());
 
 			for (unsigned int i = fParticles.size(); i < _parea.size(); i++)
 			{
-				if (_parea[i] > setup.MinGhostArea())
+				if (_parea[i] > fSetup.MinGhostArea())
 				{
 					fValidGhosts.insert(fValidGhosts.end(), _p_and_g[i]);
 				}
+				else
+				{
+					bool has_particle_neighbour = false;
+					for (std::set<size_t>::iterator it=_p_incident[i].begin(); it!=_p_incident[i].end(); ++it)
+					{
+						if (*it < fParticles.size())
+						{
+							has_particle_neighbour = true;
+							fValidGhosts.insert(fValidGhosts.end(), _p_and_g[i]);
+							break;
+						}
+					}
+				}
 			}
+
 			fParticlesAndGhosts.insert(fParticlesAndGhosts.end(), fValidGhosts.begin(), fValidGhosts.end());
-			VoronoiUtil::voronoi_area_incident(fParticleArea, fParticleIncident, fParticlesAndGhosts, setup.Eta());
+			VoronoiUtil::voronoi_area_incident(fParticleArea, fParticleIncident, fParticlesAndGhosts, fSetup.Eta());
 		}
 
 };

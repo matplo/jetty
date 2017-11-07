@@ -75,8 +75,8 @@ int test2 ( int argc, char *argv[] )
 	while (f.NextEvent())
 	{
 		pbar.Update();
-		Ldebug << "number of particles:" << f.HepMCParticles(false).size();
-		Ldebug << "number of final particles:" << f.HepMCParticles(true).size();
+		// Ldebug << "number of particles:" << f.HepMCParticles(false).size();
+		// Ldebug << "number of final particles:" << f.HepMCParticles(true).size();
 
 		std::vector<HepMC::GenParticle*> particles = f.HepMCParticles(true);
 		std::vector<VoronoiUtil::point_2d_t> particle_reco_area_estimation;
@@ -85,13 +85,13 @@ int test2 ( int argc, char *argv[] )
 		{
 			const HepMC::GenParticle *p = *iterator;
 			HepMC::FourVector v4 = p->momentum();
-			Ltrace << "eta of a particle: " << v4.eta();
+			// Ltrace << "eta of a particle: " << v4.eta();
 			if (TMath::Abs(v4.eta()) < etamax)
 				particle_reco_area_estimation.push_back( VoronoiUtil::point_2d_t(v4.eta(), v4.phi()));
 		}
 
 		double multiplicity = double(particle_reco_area_estimation.size());
-		Ldebug << "multiplicity of final particles in |eta| <" << etamax << " :" << multiplicity;
+		//Ldebug << "multiplicity of final particles in |eta| <" << etamax << " :" << multiplicity;
 		hpmult->Fill(pbar.NCalls() % 100, multiplicity);
 
 		double total_reco_area = 0.0;

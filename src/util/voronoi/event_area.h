@@ -8,11 +8,20 @@ namespace VoronoiUtil
 	class EventAreaSetup
 	{
 	public:
-		EventAreaSetup(double max_eta = 1, int n_ghosts = 100, double min_ghost_area = 0.01, bool fixed_nghosts = false)
+		EventAreaSetup(double max_eta = 1, int n_ghosts = 100, double min_ghost_area = 0.001, bool fixed_nghosts = false)
 			: fMaxEta(max_eta)
 			, fNGhosts(n_ghosts)
 			, fMinGhostArea(min_ghost_area)
 			, fFixedNGhosts(fixed_nghosts)
+			{
+				;
+			}
+
+		EventAreaSetup(const EventAreaSetup &s)
+			: fMaxEta(s.fMaxEta)
+			, fNGhosts(s.fNGhosts)
+			, fMinGhostArea(s.fMinGhostArea)
+			, fFixedNGhosts(s.fFixedNGhosts)
 			{
 				;
 			}
@@ -22,7 +31,7 @@ namespace VoronoiUtil
 		int		NGhosts() 		const {return fNGhosts;}
 		double  MinGhostArea() 	const {return fMinGhostArea;}
 		bool	FixedNGhosts() 	const {return fFixedNGhosts;}
-
+		double 	Acceptance();
 		void Dump();
 
 		virtual ~EventAreaSetup()
@@ -88,7 +97,8 @@ namespace VoronoiUtil
 
 	private:
 		EventArea() {;}
-		void AddGhosts(const EventAreaSetup &setup);
+		void AddGhosts();
+		EventAreaSetup 							fSetup;
 		std::vector<VoronoiUtil::point_2d_t> 	fParticles;
 		std::vector<VoronoiUtil::point_2d_t> 	fParticlesAndGhosts;
 		std::vector<VoronoiUtil::point_2d_t> 	fGhosts;
