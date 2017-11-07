@@ -1,0 +1,99 @@
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+voronoi_area_incident_etamax_1.root 		:hpmult :p  : title=hpmult
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+voronoi_area_incident_etamax_1.root 		:hpareaM :p  : title=area per particle
+#logx 1
+#logy 1
+#x multiplicity
+#y area
+#xrange 50,3e3
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+voronoi_area_incident_etamax_1.root 		:hptotareaM :p e1: title=occupied area
+voronoi_area_incident_etamax_1.root 		:hptotareaghostM :p e1: title=empty area
+#x multiplicity
+#y area
+#logx 0
+#logy 0
+#miny 0
+#maxy PI*2*1.8+6
+##line 0,PI*2*1.8,3e3,PI*2*1.8,4,1
+#line 0,PI*2*2.0,3e3,PI*2*2.0,4,1
+##comment 0.2,0.67,0.2,0.67 tx_size=0.03 item=Total acceptance = 2 x #pi x 2 x 0.9
+#comment 0.2,0.67,0.2,0.67 tx_size=0.03 item=Total acceptance = 2 x #pi x 2 x 1.0
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+#x multiplicity
+#y area / total
+#miny 0
+#maxy 2
+#line 0,1,3e3,1,4,1
+#comment 0.2,0.57,0.2,0.57 tx_size=0.03 item=Total acceptance = 2 x #pi x 2 x |#eta|
+
+voronoi_area_incident_etamax_3.root 		:hptotareasfractionM :hidden noleg  : title=occupied |#eta|<3.0
+#graph x0 l
+voronoi_area_incident_etamax_1.root 		:hptotareasfractionM :p : title=occupied |#eta|<1.0
+#voronoi_area_incident_etamax_1.root 		:hptotareaghostfractionM :p : title=ghost |#eta|<1.0
+voronoi_area_incident_etamax_2.root 		:hptotareasfractionM :p : title=occupied |#eta|<2.0
+#voronoi_area_incident_etamax_2.root 		:hptotareaghostfractionM :p : title=ghost |#eta|<2.0
+voronoi_area_incident_etamax_3.root 		:hptotareasfractionM :p   : title=occupied |#eta|<3.0
+voronoi_area_incident_etamax_4.root 		:hptotareasfractionM :p   : title=occupied |#eta|<4.0
+voronoi_area_incident_etamax_4_fixed_nghost_100.root 		:hptotareasfractionM :p   : title=occupied |#eta|<4.0 (N_{g}=100)
+voronoi_area_incident_etamax_4_fixed_nghost_200.root 		:hptotareasfractionM :p   : title=occupied |#eta|<4.0 (N_{g}=200)
+voronoi_area_incident_etamax_1_fixed_nghost_50.root 		:hptotareasfractionM :p   : title=occupied |#eta|<1.0 (N_{g}=50)
+#grid xy
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+#x dN/d#eta
+#y fraction = area / total acceptance
+#miny 0
+#maxy 2
+#line 0,1,200,1,4,1
+#comment 0.2,0.57,0.2,0.57 tx_size=0.03 item=Total acceptance = 2 x #pi x 2 x |#eta|
+#grid xy
+#xrange 0,200
+
+/Users/ploskon/devel/jetty/tests/voronoi_area_incident_etamax_1_nghost_eta_50.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 1 dN_{g}/d#eta=50
+#/Users/ploskon/devel/jetty/tests/voronoi_area_incident_etamax_1_nghost_eta_50.root 		:hptotareaghostfractionMdeta :p  : title=#Epsilon |#eta| < 1 dN_{g}/d#eta=50
+/Users/ploskon/devel/jetty/tests/voronoi_area_incident_etamax_2_nghost_eta_50.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=50
+#/Users/ploskon/devel/jetty/tests/voronoi_area_incident_etamax_2_nghost_eta_50.root 		:hptotareaghostfractionMdeta :p  : title=#Epsilon |#eta| < 2 dN_{g}/d#eta=50
+/Users/ploskon/devel/jetty/tests/voronoi_area_incident_etamax_2_nghost_eta_100.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=100
+#/Users/ploskon/devel/jetty/tests/voronoi_area_incident_etamax_2_nghost_eta_100.root 		:hptotareaghostfractionMdeta :p  : title=#Epsilon |#eta| < 2 dN_{g}/d#eta=100
+voronoi_area_incident_t2_etamax_2_nghost_eta_100.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=100
+#voronoi_area_incident_t2_etamax_2_nghost_eta_100.root 		:hptotareaghostfractionMdeta :p  : title=#Epsilon |#eta| < 2 dN_{g}/d#eta=100
+voronoi_area_incident_t2_etamax_2_nghost_eta_200.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=200
+voronoi_area_incident_t2_etamax_2_nghost_eta_20.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=20
+voronoi_area_incident_t2_etamax_2_nghost_eta_50.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=50
+voronoi_area_incident_t2_etamax_2_nghost_eta_400.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=400
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+#x dN/d#eta
+#y fraction = area / total acceptance
+#miny 0
+#maxy 2
+#line 0,1,200,1,4,1
+#comment 0.2,0.57,0.2,0.57 tx_size=0.03 item=Total acceptance = 2 x #pi x 2 x |#eta|
+#grid xy
+#xrange 0,200
+
+voronoi_area_incident_t2_etamax_2_nghost_eta_100.root 		:hptotareasfractionMdeta :p  : title=#Epsilon |#eta| < 2 dN_{g}/d#eta=100
