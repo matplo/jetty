@@ -23,6 +23,8 @@ namespace VoronoiUtil
 		double  MinGhostArea() 	const {return fMinGhostArea;}
 		bool	FixedNGhosts() 	const {return fFixedNGhosts;}
 
+		void Dump();
+
 		virtual ~EventAreaSetup()
 			{
 				;
@@ -47,6 +49,9 @@ namespace VoronoiUtil
 		std::vector<VoronoiUtil::point_2d_t> Particles() const {return fParticles;}
 		std::vector<VoronoiUtil::point_2d_t> Ghosts() const {return fGhosts;}
 		std::vector<VoronoiUtil::point_2d_t> ValidGhosts() const {return fValidGhosts;}
+
+		std::vector<double> 				 	ParticleAreas() const {return fParticleArea;}
+		std::vector<std::set<size_t> > 			ParticleIncidents() const {return fParticleIncident;}
 
 		double ParticleArea(unsigned int i)
 			{
@@ -78,6 +83,8 @@ namespace VoronoiUtil
 				std::set<size_t> _set;
 				return _set;
 			}
+
+		void TotalArea(double &particle_area, double &ghost_area);
 
 	private:
 		EventArea() {;}
