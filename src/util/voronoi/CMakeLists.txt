@@ -3,6 +3,7 @@ set(NAME_LIB ${MODULE})
 
 set(SOURCES_LIB
     varea_calc.cxx
+    event_area.cxx
 )
 
 set(SOURCES_EXE main.cxx)
