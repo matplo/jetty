@@ -49,6 +49,13 @@ int test2 ( int argc, char *argv[] )
 	double min_ghost_area = args.getD("--min-ghost-area", 0.0);
 	Linfo << "minimum ghost area : " << min_ghost_area;
 
+	bool random_flag = args.isSet("--random");
+	Linfo << "random_flag : " << random_flag;
+	if (random_flag == true)
+	{
+		string ext = StrUtil::sT("_random.root");
+		boost::algorithm::replace_last(sfoutputname, ".root", ext);
+	}
 	VoronoiUtil::EventAreaSetup ea_setup(etamax, TMath::Abs(args.getI("--nghost-eta", 100)), min_ghost_area, args.isSet("--fixed_nghosts"));
 	ea_setup.Dump();
 
@@ -87,7 +94,18 @@ int test2 ( int argc, char *argv[] )
 			HepMC::FourVector v4 = p->momentum();
 			// Ltrace << "eta of a particle: " << v4.eta();
 			if (TMath::Abs(v4.eta()) < etamax)
-				particle_reco_area_estimation.push_back( VoronoiUtil::point_2d_t(v4.eta(), v4.phi()));
+			{
+				if (random_flag == false)
+				{
+					particle_reco_area_estimation.push_back( VoronoiUtil::point_2d_t(v4.eta(), v4.phi()));
+				}
+				else
+				{
+					double eta = 2. * gRandom->Rndm() * etamax - etamax;
+					double phi = 2. * gRandom->Rndm() * TMath::Pi() - TMath::Pi();
+					particle_reco_area_estimation.push_back( VoronoiUtil::point_2d_t(eta, phi) );
+				}
+			}
 		}
 
 		double multiplicity = double(particle_reco_area_estimation.size());

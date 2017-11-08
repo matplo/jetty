@@ -98,6 +98,7 @@ namespace VoronoiUtil
 	private:
 		EventArea() {;}
 		void AddGhosts();
+		void AddGhostsAbsolute();
 		EventAreaSetup 							fSetup;
 		std::vector<VoronoiUtil::point_2d_t> 	fParticles;
 		std::vector<VoronoiUtil::point_2d_t> 	fParticlesAndGhosts;

@@ -1,0 +1,112 @@
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+#x dN/d#eta
+#y fraction = area / total acceptance
+#miny 0
+#maxy 2
+#line 0,1,200,1,4,1
+#comment 0.2,0.57,0.2,0.57 tx_size=0.03 item=Total acceptance = 2 x #pi x 2 x |#eta|
+#grid xy
+#xrange 0,200
+voronoi_ecm_1000_nghost_eta_200.root : hptotareasfractionMdeta :p  : title=1.0 TeV #Omega |#eta| < 1 dN_{g}/d#eta=200
+voronoi_ecm_2500_nghost_eta_200.root : hptotareasfractionMdeta :p  : title=2.5 TeV #Omega |#eta| < 1 dN_{g}/d#eta=200
+voronoi_ecm_5000_nghost_eta_200.root : hptotareasfractionMdeta :p  : title=5.0 TeV #Omega |#eta| < 1 dN_{g}/d#eta=200
+voronoi_ecm_7000_nghost_eta_200.root : hptotareasfractionMdeta :p  : title=7.0 TeV #Omega |#eta| < 1 dN_{g}/d#eta=200
+
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+#x dN/d#eta
+#y fraction = area / total acceptance
+#miny 0
+#maxy 2
+#line 0,1,200,1,4,1
+#comment 0.2,0.57,0.2,0.57 tx_size=0.03 item=Total acceptance = 2 x #pi x 2 x |#eta|
+#grid xy
+#xrange 0,200
+voronoi_ecm_1000_nghost_eta_200_random.root : hptotareasfractionMdeta :graph x0 l  : title=1.0 TeV #Omega |#eta| < 1 dN_{g}/d#eta=200
+voronoi_ecm_2500_nghost_eta_200_random.root : hptotareasfractionMdeta :graph x0 l  : title=2.5 TeV #Omega |#eta| < 1 dN_{g}/d#eta=200
+voronoi_ecm_5000_nghost_eta_200_random.root : hptotareasfractionMdeta :graph x0 l  : title=5.0 TeV #Omega |#eta| < 1 dN_{g}/d#eta=200
+voronoi_ecm_7000_nghost_eta_200_random.root : hptotareasfractionMdeta :graph x0 l  : title=7.0 TeV #Omega |#eta| < 1 dN_{g}/d#eta=200
+
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+#x dN/d#eta
+#y fraction = area / total acceptance
+#miny 0
+#maxy 2
+#line 0,1,200,1,4,1
+#comment 0.2,0.57,0.2,0.57 tx_size=0.03 item=Total acceptance = 2 x #pi x 2 x |#eta|
+#grid xy
+#xrange 0,200
+voronoi_ecm_1000_jets_nghost_eta_200.root : hptotareasfractionMdeta :p  : title=1.0 TeV #Omega |#eta| < 1 dN_{g}/d#eta=200
+voronoi_ecm_2500_jets_nghost_eta_200.root : hptotareasfractionMdeta :p  : title=2.5 TeV #Omega |#eta| < 1 dN_{g}/d#eta=200
+voronoi_ecm_5000_jets_nghost_eta_200.root : hptotareasfractionMdeta :p  : title=5.0 TeV #Omega |#eta| < 1 dN_{g}/d#eta=200
+voronoi_ecm_7000_jets_nghost_eta_200.root : hptotareasfractionMdeta :p  : title=7.0 TeV #Omega |#eta| < 1 dN_{g}/d#eta=200
+
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+#x dN/d#eta
+#y fraction = area / total acceptance
+#miny 0
+#maxy 2
+#line 0,1,200,1,3,1
+#comment 0.2,0.57,0.2,0.57 tx_size=0.03 item=Total acceptance = 2 x #pi x 2 x |#eta|
+#grid xy
+#xrange 0,200
+voronoi_ecm_7000_nghost_eta_200.root : hptotareasfractionMdeta :p  : title=7.0 TeV #Omega |#eta| < 1 dN_{g}/d#eta=200
+voronoi_ecm_7000_nghost_eta_200_random.root : hptotareasfractionMdeta :graph x0 l : title=random
+voronoi_ecm_7000_jets_nghost_eta_200.root : hptotareasfractionMdeta :p : title=jets
+voronoi_ecm_7000_jets_nghost_eta_200_random.root : hptotareasfractionMdeta :graph x0 l : title=jets random
+
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+#x dN/d#eta
+#y fraction = area / total acceptance
+#miny 0
+#maxy 2
+#line 0,1,200,1,3,1
+#comment 0.2,0.57,0.2,0.57 tx_size=0.03 item=Total acceptance = 2 x #pi x 2 x |#eta|
+#grid xy
+#xrange 0,200
+voronoi_ecm_7000_nghost_eta_300.root : hptotareasfractionMdeta :p  : title=7.0 TeV #Omega |#eta| < 1 dN_{g}/d#eta=300
+voronoi_ecm_7000_nghost_eta_300_random.root : hptotareasfractionMdeta :graph x0 l : title=random
+voronoi_ecm_7000_jets_nghost_eta_300.root : hptotareasfractionMdeta :p : title=jets
+voronoi_ecm_7000_jets_nghost_eta_300_random.root : hptotareasfractionMdeta :graph x0 l : title=jets random
+
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+#x dN/d#eta
+#y #Omega = particle area / acceptance
+#miny 0
+#maxy 1
+##line 0,1,200,1,32,1
+#line 0,0.5,200,0.5,32,1
+##comment 0.2,0.57,0.2,0.57 tx_size=0.03 item=Total acceptance = 2 x #pi x 2 x |#eta|
+#comment 0.17,0.92,0.17,0.92 tx_size=0.03 item=#it{Note: per construction #Omega #approx 1/2}
+#legend 0.53,0.67,0.929,0.871 alpha=70
+#grid xy
+#xrange 0,200
+voronoi_ecm_7000_nghost_eta_0.root : hptotareasfractionMdeta :p  : title=7.0 TeV #Omega |#eta| < 1 dN_{g}/d#eta ~ dN/d#eta
+voronoi_ecm_7000_nghost_eta_0_random.root : hptotareasfractionMdeta :graph x0 l -k: title=random
+voronoi_ecm_7000_jets_nghost_eta_0.root : hptotareasfractionMdeta :p : title=jets
+voronoi_ecm_7000_jets_nghost_eta_0_random.root : hptotareasfractionMdeta :graph x0 l +l1 -k: title=jets random
+voronoi_ecm_7000_jets2_nghost_eta_0.root : hptotareasfractionMdeta :p : title=high-E jets
+voronoi_ecm_7000_jets2_nghost_eta_0_random.root : hptotareasfractionMdeta :graph x0 l +l1 -k: title=high-E jets random

@@ -70,12 +70,12 @@ voronoi_area_incident_etamax_1_fixed_nghost_50.root 		:hptotareasfractionM :p   
 #grid xy
 #xrange 0,200
 
-/Users/ploskon/devel/jetty/tests/voronoi_area_incident_etamax_1_nghost_eta_50.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 1 dN_{g}/d#eta=50
-#/Users/ploskon/devel/jetty/tests/voronoi_area_incident_etamax_1_nghost_eta_50.root 		:hptotareaghostfractionMdeta :p  : title=#Epsilon |#eta| < 1 dN_{g}/d#eta=50
-/Users/ploskon/devel/jetty/tests/voronoi_area_incident_etamax_2_nghost_eta_50.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=50
-#/Users/ploskon/devel/jetty/tests/voronoi_area_incident_etamax_2_nghost_eta_50.root 		:hptotareaghostfractionMdeta :p  : title=#Epsilon |#eta| < 2 dN_{g}/d#eta=50
-/Users/ploskon/devel/jetty/tests/voronoi_area_incident_etamax_2_nghost_eta_100.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=100
-#/Users/ploskon/devel/jetty/tests/voronoi_area_incident_etamax_2_nghost_eta_100.root 		:hptotareaghostfractionMdeta :p  : title=#Epsilon |#eta| < 2 dN_{g}/d#eta=100
+voronoi_area_incident_etamax_1_nghost_eta_50.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 1 dN_{g}/d#eta=50
+#voronoi_area_incident_etamax_1_nghost_eta_50.root 		:hptotareaghostfractionMdeta :p  : title=#Epsilon |#eta| < 1 dN_{g}/d#eta=50
+voronoi_area_incident_etamax_2_nghost_eta_50.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=50
+#voronoi_area_incident_etamax_2_nghost_eta_50.root 		:hptotareaghostfractionMdeta :p  : title=#Epsilon |#eta| < 2 dN_{g}/d#eta=50
+voronoi_area_incident_etamax_2_nghost_eta_100.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=100
+#voronoi_area_incident_etamax_2_nghost_eta_100.root 		:hptotareaghostfractionMdeta :p  : title=#Epsilon |#eta| < 2 dN_{g}/d#eta=100
 voronoi_area_incident_t2_etamax_2_nghost_eta_100.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=100
 #voronoi_area_incident_t2_etamax_2_nghost_eta_100.root 		:hptotareaghostfractionMdeta :p  : title=#Epsilon |#eta| < 2 dN_{g}/d#eta=100
 voronoi_area_incident_t2_etamax_2_nghost_eta_200.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=200
@@ -96,4 +96,39 @@ voronoi_area_incident_t2_etamax_2_nghost_eta_400.root 		:hptotareasfractionMdeta
 #grid xy
 #xrange 0,200
 
-voronoi_area_incident_t2_etamax_2_nghost_eta_100.root 		:hptotareasfractionMdeta :p  : title=#Epsilon |#eta| < 2 dN_{g}/d#eta=100
+voronoi_area_incident_t2_etamax_2_nghost_eta_10.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=10
+voronoi_area_incident_t2_etamax_2_nghost_eta_50.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=50
+voronoi_area_incident_t2_etamax_2_nghost_eta_100.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=100
+voronoi_area_incident_t2_etamax_2_nghost_eta_200.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=200
+voronoi_area_incident_t2_etamax_2_nghost_eta_350.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=350
+voronoi_area_incident_t2_etamax_2_nghost_eta_500.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=500
+voronoi_area_incident_t2_etamax_2_nghost_eta_750.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=750
+voronoi_area_incident_t2_etamax_2_nghost_eta_1000.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=1000
+
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+#x dN/d#eta
+#y fraction = area / total acceptance
+#miny 0
+#maxy 2
+#line 0,1,200,1,4,1
+#comment 0.2,0.57,0.2,0.57 tx_size=0.03 item=Total acceptance = 2 x #pi x 2 x |#eta|
+#grid xy
+#xrange 0,200
+
+mult_ghosts/voronoi_area_incident_t2_etamax_1_nghost_eta_100.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 1 dN_{g}/d#eta=100
+voronoi_area_incident_t2_etamax_1_nghost_eta_200.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 1 dN_{g}/d#eta=200
+mult_ghosts/voronoi_area_incident_t2_etamax_2_nghost_eta_100.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=100
+voronoi_area_incident_t2_etamax_2_nghost_eta_200.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=200
+mult_ghosts/voronoi_area_incident_t2_etamax_3_nghost_eta_100.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 3 dN_{g}/d#eta=100
+voronoi_area_incident_t2_etamax_3_nghost_eta_200.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 3 dN_{g}/d#eta=200
+mult_ghosts/voronoi_area_incident_t2_etamax_4_nghost_eta_100.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 4 dN_{g}/d#eta=100
+voronoi_area_incident_t2_etamax_4_nghost_eta_200.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 4 dN_{g}/d#eta=200
+
+mult_ghosts/voronoi_area_incident_t2_etamax_1_nghost_eta_1000.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 1 dN_{g}/d#eta=1000
+mult_ghosts/voronoi_area_incident_t2_etamax_2_nghost_eta_1000.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 2 dN_{g}/d#eta=1000
+mult_ghosts/voronoi_area_incident_t2_etamax_3_nghost_eta_1000.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 3 dN_{g}/d#eta=1000
+#voronoi_area_incident_t2_etamax_4_nghost_eta_1000.root 		:hptotareasfractionMdeta :p  : title=#Omega |#eta| < 4 dN_{g}/d#eta=1000
