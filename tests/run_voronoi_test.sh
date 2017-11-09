@@ -16,12 +16,12 @@ do
 	output_file="pythia_gen_hepmc_${ecm}.dat"
 	[ ! -e "${output_file}" ] && jettyGenPythiaHepMC --minbias --nev=1000 Beams:eCM=${ecm} --output=${output_file}
 	etamax=1.0
-	#jetty-voronoi-test --file=${output_file} --etamax=${etamax} --test2 --nev=1000 --nghost-eta=0 --output="voronoi_ecm_${ecm}.root"
-	#jetty-voronoi-test --file=${output_file} --etamax=${etamax} --test2 --nev=1000 --nghost-eta=0 --output="voronoi_ecm_${ecm}.root" --random
+	jetty-voronoi-test --file=${output_file} --etamax=${etamax} --test2 --nev=1000 --nghost-eta=0 --output="voronoi_ecm_${ecm}.root"
+	jetty-voronoi-test --file=${output_file} --etamax=${etamax} --test2 --nev=1000 --nghost-eta=0 --output="voronoi_ecm_${ecm}.root" --random
 	output_file="pythia_gen_hepmc_${ecm}_jets.dat"
 	[ ! -e "${output_file}" ] && jettyGenPythiaHepMC --nev=1000 Beams:eCM=${ecm} --output=${output_file} HardQCD:all=on PhaseSpace:pTHatMin=100
-	#jetty-voronoi-test --file=${output_file} --etamax=${etamax} --test2 --nev=1000 --nghost-eta=0 --output="voronoi_ecm_${ecm}_jets.root"
-	#jetty-voronoi-test --file=${output_file} --etamax=${etamax} --test2 --nev=1000 --nghost-eta=0 --output="voronoi_ecm_${ecm}_jets.root" --random
+	jetty-voronoi-test --file=${output_file} --etamax=${etamax} --test2 --nev=1000 --nghost-eta=0 --output="voronoi_ecm_${ecm}_jets.root"
+	jetty-voronoi-test --file=${output_file} --etamax=${etamax} --test2 --nev=1000 --nghost-eta=0 --output="voronoi_ecm_${ecm}_jets.root" --random
 
 	output_file="pythia_gen_hepmc_${ecm}_jets2.dat"
 	[ ! -e "${output_file}" ] && jettyGenPythiaHepMC --nev=1000 Beams:eCM=${ecm} --output=${output_file} HardQCD:all=on PhaseSpace:pTHatMin=1000

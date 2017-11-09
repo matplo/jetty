@@ -290,7 +290,10 @@ int test1 ( int argc, char *argv[] )
 	}
 
 	double acceptance = 2.*etamax*2.*TMath::Pi();
-	// hptotareasfractionM->Sumw2();
+	hptotareasfractionM->Sumw2();
+	hptotareasfractionMdeta->Sumw2();
+	hptotareaghostfractionM->Sumw2();
+	hptotareaghostfractionMdeta->Sumw2();
 	if (etamax>0)
 	{
 		hptotareasfractionM->Scale(1./acceptance);
