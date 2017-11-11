@@ -54,6 +54,13 @@ else()
   include_directories(${ROOT_INCLUDE_DIRS})
 endif()
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+find_package(HepMC REQUIRED HepMC HepMCfio)
+if (HEPMC_FOUND)
+	include_directories(${HEPMC_INCLUDE_DIRS})
+	add_definitions(-DUSE_HEPMC)
+endif()
+
 set(CMAKE_MACOSX_RPATH 1)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
@@ -64,3 +71,4 @@ add_subdirectory(subjets)
 add_subdirectory(gamma_h)
 add_subdirectory(spectra)
 add_subdirectory(gen)
+add_subdirectory(area)
