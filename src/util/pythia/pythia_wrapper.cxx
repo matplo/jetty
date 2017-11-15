@@ -89,6 +89,7 @@ namespace PyUtil
 	bool PythiaWrapper::_checkOutput()
 	{
 		auto args = fWrapper->get<PyUtil::Args>();
+		if (args->isSet("--no-wrapper-output")) return true;
 		string fname = _outputFileName();
 		// strange but yeah... kFALSE if the file exists
 		if (gSystem->AccessPathName(fname.c_str(), kFileExists) == kFALSE)
@@ -151,6 +152,12 @@ namespace PyUtil
 
 	void PythiaWrapper::_initOutput()
 	{
+		auto args = fWrapper->get<PyUtil::Args>();
+		if (args->isSet("--no-wrapper-output"))
+		{
+			Linfo << "--no-wrapper-output is set";
+			return;
+		}
 		string outfname = _outputFileName();
 		Linfo << "Output goes to: " << outfname;
 		TFile *fout = new TFile(outfname.c_str(), "RECREATE");
@@ -165,11 +172,11 @@ namespace PyUtil
 		bool retval = py->next();
 		if (!retval) return retval;
 
-		auto tn     = fWrapper->get<TNtuple>();
 		int xcode   = py->info.code();
 		double xsec = py->info.sigmaGen(xcode);
-		fNtuple->Fill(xsec, xcode);
-
+		auto tn     = fWrapper->get<TNtuple>();
+		if (tn)
+			tn->Fill(xsec, xcode);
 		return retval;
 	}
 
@@ -191,6 +198,8 @@ namespace PyUtil
 	void PythiaWrapper::_storeAverages()
 	{
 		auto fout = fWrapper->get<TFile>();
+		if (!fout) return;
+
 		fout->cd();
 		auto tdir = new TDirectory("histograms", "histograms");
 		auto h = new TH1F("pcodexsec", "pcodexsec", 500, -0.5, 500 - 0.5);
