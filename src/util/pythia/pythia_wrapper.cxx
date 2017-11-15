@@ -156,14 +156,16 @@ namespace PyUtil
 		if (args->isSet("--no-wrapper-output"))
 		{
 			Linfo << "--no-wrapper-output is set";
-			return;
 		}
-		string outfname = _outputFileName();
-		Linfo << "Output goes to: " << outfname;
-		TFile *fout = new TFile(outfname.c_str(), "RECREATE");
-		fout->cd();
-		fNtuple = new TNtuple("pystats", "pystats", "pxsec:pcode");
-		fWrapper->add(fout);
+		else
+		{
+			string outfname = _outputFileName();
+			Linfo << "Output goes to: " << outfname;
+			TFile *fout = new TFile(outfname.c_str(), "RECREATE");
+			fout->cd();
+			fNtuple = new TNtuple("pystats", "pystats", "pxsec:pcode");
+			fWrapper->add(fout);
+		}
 	}
 
 	bool PythiaWrapper::next()
