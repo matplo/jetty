@@ -1,5 +1,7 @@
-set(MODULE ${PROJECT_NAME}Wrapper)
+set(MODULE_NAME wrapper)
+set(MODULE ${PROJECT_NAME}_${MODULE_NAME})
 set(NAME_LIB ${MODULE})
+set(NAME_EXE ${MODULE}_exe)
 
 set(SOURCES_LIB
 	wraptype.cxx
@@ -23,6 +25,5 @@ add_executable(${NAME_EXE} ${SOURCES_EXE})
 target_link_libraries( ${NAME_EXE} ${NAME_LIB} )
 
 install(TARGETS ${NAME_EXE} RUNTIME DESTINATION bin)
-install(TARGETS ${NAME_LIB} LIBRARY DESTINATION lib COMPONENT library)
-
-install(FILES ${HEADERS_LIB} DESTINATION include/${MODULE})
+install(TARGETS ${NAME_LIB} LIBRARY DESTINATION lib)
+install(FILES ${HEADERS_LIB} DESTINATION include/${PROJECT_NAME}/${MODULE_NAME})

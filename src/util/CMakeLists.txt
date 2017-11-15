@@ -1,4 +1,5 @@
-set(MODULE ${PROJECT_NAME}Util)
+set(MODULE_NAME util)
+set(MODULE ${PROJECT_NAME}_${MODULE_NAME})
 set(NAME_LIB ${MODULE})
 
 set(SOURCES_LIB
@@ -17,8 +18,7 @@ target_include_directories(${NAME_LIB} PUBLIC ${PYTHIA8_DIR}/include ${ROOT_INCL
 target_link_libraries(${NAME_LIB} ${PYTHIA8_LDFLAGS} ${ROOT_LIBRARIES} ${FASTJET_LIBS})
 
 install(TARGETS ${NAME_LIB} LIBRARY DESTINATION lib)
-
-install(FILES ${HEADERS_LIB} DESTINATION include/${MODULE})
+install(FILES ${HEADERS_LIB} DESTINATION include/${PROJECT_NAME}/${MODULE_NAME})
 
 add_subdirectory(wrapper)
 add_subdirectory(rstream)

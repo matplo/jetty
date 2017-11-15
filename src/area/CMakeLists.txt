@@ -1,11 +1,12 @@
+set(MODULE_NAME area)
+set(MODULE ${PROJECT_NAME}_${MODULE_NAME})
+set(NAME_LIB ${MODULE})
+set(NAME_EXE ${MODULE}_exe)
+
 set(SOURCES_LIB
     simple.cxx
 )
-
-set(MODULE ${PROJECT_NAME}Area)
-set(NAME_LIB ${MODULE})
 set(SOURCES_EXE main.cxx)
-set(NAME_EXE ${MODULE}Exe)
 
 # Headers from sources
 string(REPLACE ".cxx" ".h" HEADERS_LIB "${SOURCES_LIB}")
@@ -17,17 +18,15 @@ if (HEPMC_FOUND)
 	target_include_directories(${NAME_LIB} PUBLIC ${HEPMC_INCLUDE_DIRS})
 	add_definitions(-DUSE_HEPMC)
 endif()
-target_link_libraries(${NAME_LIB} ${PYTHIA8_LDFLAGS} ${FASTJET_LIBS} libRecursiveTools.a ${ROOT_LIBRARIES} ${PROJECT_NAME}Util ${PROJECT_NAME}PythiaUtil ${PROJECT_NAME}VoronoiUtil)
+target_link_libraries(${NAME_LIB} ${PYTHIA8_LDFLAGS} ${FASTJET_LIBS} libRecursiveTools.a ${ROOT_LIBRARIES} ${PROJECT_NAME}_util ${PROJECT_NAME}_pythia_util ${PROJECT_NAME}_voronoi_util)
 if (HEPMC_FOUND)
-	target_link_libraries(${NAME_LIB} ${HEPMC_LIBRARIES} ${PROJECT_NAME}HepMCUtil)
+	target_link_libraries(${NAME_LIB} ${HEPMC_LIBRARIES} ${PROJECT_NAME}_hepmc_util)
 endif()
 
 add_executable(${NAME_EXE} ${SOURCES_EXE})
 target_include_directories(${NAME_EXE} PUBLIC ${ROOT_INCLUDE_DIR} ${FASTJET_DIR}/include ${PYTHIA8_DIR}/include)
-target_link_libraries(${NAME_EXE} ${NAME_LIB} jettyUtil)
+target_link_libraries(${NAME_EXE} ${NAME_LIB})
 
 install(TARGETS ${NAME_EXE} RUNTIME DESTINATION bin)
-
 install(TARGETS ${NAME_LIB} LIBRARY DESTINATION lib)
-
-install(FILES ${HEADERS_LIB} DESTINATION include/${MODULE})
+install(FILES ${HEADERS_LIB} DESTINATION include/${PROJECT_NAME}/${MODULE_NAME})
