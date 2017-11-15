@@ -136,6 +136,11 @@ namespace PyUtil
 		{
 			smodif = boost::str(boost::format("_eA_%1.0f_eB_%1.0f_eCM_XXXGeV_minbias_nEv_%d.root") % eA % eB % nEvent);
 		}
+
+		if (args->isSet("--inel"))
+		{
+			smodif = boost::str(boost::format("_eA_%1.0f_eB_%1.0f_eCM_XXXGeV_inel_nEv_%d.root") % eA % eB % nEvent);
+		}
 		// smodif = smodif.ReplaceAll("_eCM_XXX", TString::Format("_eCM_%1.0f", eCM));
 		boost::replace_all(smodif, "_eCM_XXX", boost::str(boost::format("_eCM_%1.0f") % eCM));
 		boost::replace_all(outfname, ".root", smodif);
