@@ -10,6 +10,7 @@ set(SOURCES_LIB
 	pythia_wrapper.cxx
 	presample.cxx
 	scanhard.cxx
+	pythia_pool.cxx
 )
 
 # Headers from sources

@@ -6,6 +6,7 @@ set(NAME_EXE ${MODULE}_exe)
 set(SOURCES_LIB
 	run_pythia.cxx
 	run_pythia_wrapper.cxx
+	run_pythia_pool.cxx
 	et.cxx
 )
 
