@@ -19,9 +19,12 @@ namespace PyUtil
 				return _instance;
 			}
 			void SetCommonSettings(const char *s);
+			void SetupECMs(double eA, double eB, int ndiv = 100);
 			Pythia8::Pythia * GetPythia(double eA, double eB, const char *new_settings = 0);
 
-			virtual ~PythiaPool() { DumpInfo(); }
+			virtual ~PythiaPool();
+			void WriteECMsToFile(const char *fname);
+
 		private:
 			PythiaPool() {;} // private construct
 			PythiaPool(const PythiaPool&) = delete; // non-copyable

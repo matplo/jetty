@@ -12,7 +12,9 @@
 #include <TFile.h>
 #include <TTree.h>
 #include <TH1F.h>
+#include <TF1.h>
 #include <TMath.h>
+#include <TRandom3.h>
 
 #include <string>
 #include <iostream>
@@ -38,13 +40,26 @@ int run_pythia_pool (const std::string &s)
 
 	PyUtil::PythiaPool &pypool = PyUtil::PythiaPool::Instance();
 	pypool.SetCommonSettings(args.asString().c_str());
+	double eA = args.getD("Beams:eA");
+	double eB = args.getD("Beams:eB");
+	if (eA == 0) eA = 5000.;
+	if (eB == 0) eB = 5000.;
+	pypool.SetupECMs(eA, eB, args.getD("--ndiv", 20));
+
+	//TRandom3 rndm;
+	TF1 fgaus("fgaus", "gaus", 0, 1.);
+	fgaus.SetParameter(0, 1.);
+	fgaus.SetParameter(1, 1.);
+	fgaus.SetParameter(2, 0.1);
 
 	auto nEv = args.getI("Main:numberOfEvents", 10);
 	LoopUtil::TPbar pbar(nEv);
 	for (unsigned int iE = 0; iE < nEv; iE++)
 	{
 		pbar.Update();
-		auto ppythia = pypool.GetPythia(1000.+iE, 1000.-iE);
+		double rndmA = fgaus.GetRandom() * eA ;
+		double rndmB = fgaus.GetRandom() * eB ;
+		auto ppythia = pypool.GetPythia(TMath::Abs(rndmA), TMath::Abs(rndmB));
 		if (!ppythia) break;
 		Pythia8::Pythia &pythia = *ppythia;
 		auto &event             = pythia.event;
@@ -84,6 +99,7 @@ int run_pythia_pool (const std::string &s)
 			}
 		}
 	} // end event loop
+	pypool.WriteECMsToFile("pypool_output.root");
 	Linfo << "Generation done.";
 
 	return 0;
