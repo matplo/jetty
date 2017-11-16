@@ -13,20 +13,24 @@ namespace PyUtil
 {
 	void PythiaPool::DumpInfo()
 	{
-		Linfo << "dumping pool info..." << _common_settings;
+		Linfo << "dumping pool info...";
 		Linfo << "... common settings: " << _common_settings;
-		Linfo << "... listing entries in the pool map: ";
-		for (Int_t ibx = 1; ibx < _eAeBmap->GetXaxis()->GetNbins(); ibx++)
-			for (Int_t iby = 1; iby < _eAeBmap->GetYaxis()->GetNbins(); iby++)
-			{
-				if (_eAeBmap->GetBinContent(ibx, iby) >0 || _eAeBmapW->GetBinContent(ibx, iby) > 0)
+		if (_eAeBmap)
+		{
+			Linfo << "... listing entries in the pool map: ";
+			for (Int_t ibx = 1; ibx < _eAeBmap->GetXaxis()->GetNbins(); ibx++)
+				for (Int_t iby = 1; iby < _eAeBmap->GetYaxis()->GetNbins(); iby++)
 				{
-					Linfo << "    ... : beam energies: " << _eAeBmap->GetXaxis()->GetBinCenter(ibx) << " >< " << _eAeBmap->GetYaxis()->GetBinCenter(iby);
-					Linfo << "    ...   n inst: " << _eAeBmap->GetBinContent(ibx, iby);
-					Linfo << "    ...   counts: " << _eAeBmapW->GetBinContent(ibx, iby);
+					if (_eAeBmap->GetBinContent(ibx, iby) >0 || _eAeBmapW->GetBinContent(ibx, iby) > 0)
+					{
+						Linfo << "    ... : beam energies: " << _eAeBmap->GetXaxis()->GetBinCenter(ibx) << " >< " << _eAeBmap->GetYaxis()->GetBinCenter(iby);
+						Linfo << "    ...   n inst: " << _eAeBmap->GetBinContent(ibx, iby);
+						if (_eAeBmapW)
+							Linfo << "    ...   counts: " << _eAeBmapW->GetBinContent(ibx, iby);
+					}
 				}
-			}
-		Linfo << "... done.";
+			Linfo << "... done.";
+		}
 	}
 
 	void PythiaPool::SetCommonSettings(const char *s)

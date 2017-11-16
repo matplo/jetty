@@ -170,6 +170,27 @@ namespace PyUtil
 			set("PhaseSpace:mHatMax", 110);
 		}
 
+		if (isSet("--hardQCD"))
+		{
+			add("HardQCD:all=on");
+		}
+
+		if (isSet("--promptPhoton"))
+		{
+			add("PromptPhoton:all=on");
+			// add("SoftQCD:all=off");
+		}
+
+		if (isSet("Next:numberShowEvent") == false)
+			set("Next:numberShowEvent", 0);
+
+		if (isSet("Next:numberShowInfo") == false)
+			set("Next:numberShowInfo", 0);
+		if (isSet("Next:numberShowProcess") == false)
+			set("Next:numberShowProcess", 0);
+		if (isSet("Next:numberCount") == false)
+			set("Next:numberCount", 0);
+
 		if (isSet("Beams:eA") || isSet("Beams:eB"))
 		{
 			add("Beams:frameType=2");
