@@ -38,12 +38,12 @@ int run_pythia_pool (const std::string &s)
 	Linfo << "photon flag : " << photons_flag;
 	Linfo << "z0 flag     : " << z0_flag;
 
-	PyUtil::PythiaPool &pypool = PyUtil::PythiaPool::Instance();
-	pypool.SetCommonSettings(args.asString().c_str());
 	double eA = args.getD("Beams:eA");
 	double eB = args.getD("Beams:eB");
 	if (eA == 0) eA = 5000.;
 	if (eB == 0) eB = 5000.;
+	PyUtil::PythiaPool &pypool = PyUtil::PythiaPool::Instance();
+	pypool.SetCommonSettings(args.asString().c_str());
 	pypool.SetupECMs(eA, eB, args.getD("--ndiv", 20));
 
 	//TRandom3 rndm;
