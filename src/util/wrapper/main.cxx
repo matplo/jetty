@@ -1,6 +1,6 @@
-#include "wrapper.h"
-#include "wrapperiterator.h"
-#include "wraptestclass.h"
+#include <jetty/util/wrapper/wrapper.h>
+#include <jetty/util/wrapper/wrapperiterator.h>
+#include <jetty/util/wrapper/wraptestclass.h>
 
 #include <iostream>
 
@@ -36,7 +36,7 @@ void test_wrapper()
 	std::vector<int> *vp = wr.get< std::vector<int> >();
 	std::vector<int> &avp = *vp;
 
-	std::cout << " vector size: " << avp.size() 
+	std::cout << " vector size: " << avp.size()
 				<<	" should be: " << v.size()
 				<< std::endl;
 
@@ -98,7 +98,7 @@ void test_wrapper()
 int main ( int argc, char *argv[] )
 {
 	for (unsigned int i = 0; i < 1e1; i++)
-	{		
+	{
 		if (i % 100000 == 0 && i > 0)
 		{
 			std::cout << i << std::endl;

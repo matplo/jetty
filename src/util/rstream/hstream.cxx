@@ -1,4 +1,4 @@
-#include "hstream.h"
+#include <jetty/util/rstream/hstream.h>
 
 #include <limits>
 
@@ -10,11 +10,11 @@
 #include <TClass.h>
 #include <TSystem.h>
 
-#include "util/pythia/pyutil.h"
-#include "util/blog.h"
-#include "util/strutil.h"
-#include "util/sysutil.h"
-#include "util/args.h"
+#include <jetty/util/pythia/pyutil.h>
+#include <jetty/util/blog.h>
+#include <jetty/util/strutil.h>
+#include <jetty/util/sysutil.h>
+#include <jetty/util/args.h>
 
 #include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;

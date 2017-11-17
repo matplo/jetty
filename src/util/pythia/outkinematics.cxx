@@ -1,4 +1,4 @@
-#include "outkinematics.h"
+#include <jetty/util/pythia/outkinematics.h>
 
 #include <Pythia8/Pythia.h>
 #include <iostream>
@@ -7,7 +7,7 @@
 #include <cmath>
 #include <string>
 
-#include "util/rstream/tstream.h"
+#include <jetty/util/rstream/tstream.h>
 
 namespace PyUtil
 {

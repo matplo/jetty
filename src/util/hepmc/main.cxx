@@ -1,6 +1,6 @@
-#include "readfile.h"
-#include "util/args.h"
-#include "util/blog.h"
+#include <jetty/util/hepmc/readfile.h>
+#include <jetty/util/args.h>
+#include <jetty/util/blog.h>
 
 int main ( int argc, char *argv[] )
 {

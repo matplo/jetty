@@ -1,5 +1,5 @@
-#include "util/args.h"
-#include "gamma_h.h"
+#include <jetty/util/args.h>
+#include <jetty/gamma_h/gamma_h.h>
 
 int main ( int argc, char *argv[] )
 {

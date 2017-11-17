@@ -1,8 +1,8 @@
-#include "util/args.h"
-#include "run_pythia.h"
-#include "run_pythia_wrapper.h"
-#include "run_pythia_pool.h"
-#include "et.h"
+#include <jetty/util/args.h>
+#include <jetty/examples/run_pythia.h>
+#include <jetty/examples/run_pythia_wrapper.h>
+#include <jetty/examples/run_pythia_pool.h>
+#include <jetty/examples/et.h>
 
 int main ( int argc, char *argv[] )
 {

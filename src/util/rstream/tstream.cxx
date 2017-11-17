@@ -1,11 +1,10 @@
-#include "tstream.h"
+#include <jetty/util/rstream/tstream.h>
+#include <jetty/util/pythia/pyutil.h>
 
 #include <limits>
 
 #include <TTree.h>
 #include <TBranch.h>
-
-#include "util/pythia/pyutil.h"
 
 using namespace std;
 

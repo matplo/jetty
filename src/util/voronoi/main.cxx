@@ -1,11 +1,10 @@
-#include "varea_calc.h"
-#include "event_area.h"
-
-#include <util/args.h>
-#include <util/blog.h>
-#include <util/strutil.h>
-#include <util/looputil.h>
-#include <util/hepmc/readfile.h>
+#include <jetty/util/voronoi/varea_calc.h>
+#include <jetty/util/voronoi/event_area.h>
+#include <jetty/util/args.h>
+#include <jetty/util/blog.h>
+#include <jetty/util/strutil.h>
+#include <jetty/util/looputil.h>
+#include <jetty/util/hepmc/readfile.h>
 
 #include <TFile.h>
 #include <TProfile.h>

@@ -1,7 +1,7 @@
-#include "pyutil.h"
-#include "util/strutil.h"
-#include "util/sysutil.h"
-#include "util/blog.h"
+#include <jetty/util/pythia/pyutil.h>
+#include <jetty/util/strutil.h>
+#include <jetty/util/sysutil.h>
+#include <jetty/util/blog.h>
 
 #include <Pythia8/Pythia.h>
 

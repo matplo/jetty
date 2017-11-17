@@ -1,7 +1,7 @@
-#include "pyargs.h"
-#include "pyutil.h"
-#include "util/sysutil.h"
-#include "util/blog.h"
+#include <jetty/util/pythia/pyargs.h>
+#include <jetty/util/pythia/pyutil.h>
+#include <jetty/util/sysutil.h>
+#include <jetty/util/blog.h>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>

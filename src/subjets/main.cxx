@@ -1,9 +1,9 @@
-#include <util/args.h>
-#include "run_pythia.h"
-#include "run_jets.h"
-#include "run_test.h"
+#include <jetty/util/args.h>
+#include <jetty/subjets/run_pythia.h>
+#include <jetty/subjets/run_jets.h>
+#include <jetty/subjets/run_test.h>
 #ifdef USE_HEPMC
-#include "run_hepmc.h"
+#include <jetty/subjets/run_hepmc.h>
 #endif
 int main ( int argc, char *argv[] )
 {

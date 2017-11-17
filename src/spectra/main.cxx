@@ -1,5 +1,5 @@
-#include "util/args.h"
-#include "spectra.h"
+#include <jetty/util/args.h>
+#include <jetty/spectra/spectra.h>
 
 int main ( int argc, char *argv[] )
 {

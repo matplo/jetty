@@ -10,29 +10,24 @@ set(SOURCES_LIB
 	blog.cxx
 )
 
-# Headers from sources
-string(REPLACE ".cxx" ".h" HEADERS_LIB "${SOURCES_LIB}")
+set_headers_lib(HEADERS_LIB SOURCES_LIB)
 
 add_library(${NAME_LIB} SHARED ${SOURCES_LIB})
 target_include_directories(${NAME_LIB} PUBLIC ${PYTHIA8_DIR}/include ${ROOT_INCLUDE_DIR} ${FASTJET_DIR}/include)
 target_link_libraries(${NAME_LIB} ${PYTHIA8_LDFLAGS} ${ROOT_LIBRARIES} ${FASTJET_LIBS})
 
-install(TARGETS ${NAME_LIB} LIBRARY DESTINATION lib)
-install(FILES ${HEADERS_LIB} DESTINATION include/${PROJECT_NAME}/${MODULE_NAME})
+install_targets_custom()
 
 add_subdirectory(wrapper)
 add_subdirectory(rstream)
 add_subdirectory(pythia)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
-find_package(HepMC REQUIRED HepMC HepMCfio)
 if (HEPMC_FOUND)
 	add_subdirectory(hepmc)
 else()
 	message(WARNING "HepMC not found - part of util will not be compiled")
 endif()
 
-find_package(CGAL)
 if (CGAL_FOUND)
 	add_subdirectory(voronoi)
 else()

@@ -1,7 +1,6 @@
-#include "crosssections.h"
-
-#include "util/strutil.h"
-#include "util/rstream/tstream.h"
+#include <jetty/util/pythia/crosssections.h>
+#include <jetty/util/strutil.h>
+#include <jetty/util/rstream/tstream.h>
 
 #include <fstream>
 #include <iostream>

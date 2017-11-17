@@ -1,8 +1,7 @@
-#include "event_area.h"
+#include <jetty/util/voronoi/event_area.h>
+#include <jetty/util/blog.h>
+
 #include <cmath>
-
-#include <util/blog.h>
-
 #include <TRandom.h>
 #include <TMath.h>
 

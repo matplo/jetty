@@ -1,7 +1,7 @@
-#include <util/args.h>
-#include <util/blog.h>
+#include <jetty/util/args.h>
+#include <jetty/util/blog.h>
 
-#include "simple.h"
+#include <jetty/area/simple.h>
 
 int main ( int argc, char *argv[] )
 {

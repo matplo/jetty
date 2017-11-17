@@ -1,13 +1,13 @@
-#include "run_test.h"
+#include <jetty/subjets/run_test.h>
 
-#include "util/pythia/pyargs.h"
-#include "util/pythia/pyutil.h"
-#include "util/pythia/pythia_wrapper.h"
-#include "util/pythia/crosssections.h"
+#include <jetty/util/pythia/pyargs.h>
+#include <jetty/util/pythia/pyutil.h>
+#include <jetty/util/pythia/pythia_wrapper.h>
+#include <jetty/util/pythia/crosssections.h>
 
-#include "util/looputil.h"
-#include "util/blog.h"
-#include "util/rstream/tstream.h"
+#include <jetty/util/looputil.h>
+#include <jetty/util/blog.h>
+#include <jetty/util/rstream/tstream.h>
 
 #include <Pythia8/Pythia.h>
 

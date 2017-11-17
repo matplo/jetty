@@ -1,4 +1,4 @@
-#include "fjutils.h"
+#include <jetty/subjets/fjutils.h>
 #include <fastjet/contrib/SoftDrop.hh>
 
 namespace fj = fastjet;

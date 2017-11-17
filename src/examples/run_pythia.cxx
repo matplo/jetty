@@ -1,9 +1,9 @@
-#include "run_pythia.h"
+#include <jetty/examples/run_pythia.h>
 
-#include "util/pythia/pyargs.h"
-#include "util/pythia/pyutil.h"
-#include "util/pythia/crosssections.h"
-#include "util/looputil.h"
+#include <jetty/util/pythia/pyargs.h>
+#include <jetty/util/pythia/pyutil.h>
+#include <jetty/util/pythia/crosssections.h>
+#include <jetty/util/looputil.h>
 
 #include <Pythia8/Pythia.h>
 

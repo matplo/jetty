@@ -1,11 +1,11 @@
-#include "run_hepmc.h"
-#include "fjutils.h"
+#include <jetty/subjets/run_hepmc.h>
+#include <jetty/subjets/fjutils.h>
 
-#include "util/args.h"
-#include "util/looputil.h"
-#include "util/blog.h"
-#include "util/rstream/tstream.h"
-#include "util/hepmc/readfile.h"
+#include <jetty/util/args.h>
+#include <jetty/util/looputil.h>
+#include <jetty/util/blog.h>
+#include <jetty/util/rstream/tstream.h>
+#include <jetty/util/hepmc/readfile.h>
 
 #include <fastjet/PseudoJet.hh>
 #include <fastjet/ClusterSequence.hh>

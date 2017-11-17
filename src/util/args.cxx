@@ -1,6 +1,7 @@
-#include "args.h"
-#include "strutil.h"
-#include "blog.h"
+#include <jetty/util/args.h>
+#include <jetty/util/strutil.h>
+#include <jetty/util/blog.h>
+
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
 

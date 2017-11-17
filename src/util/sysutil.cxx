@@ -1,6 +1,5 @@
-#include "sysutil.h"
-
-#include "blog.h"
+#include <jetty/util/sysutil.h>
+#include <jetty/util/blog.h>
 
 #include <string>
 #include <vector>

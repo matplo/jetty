@@ -1,4 +1,4 @@
-#include "blog.h"
+#include <jetty/util/blog.h>
 
 #include <boost/log/core.hpp>
 #include <boost/log/expressions.hpp>

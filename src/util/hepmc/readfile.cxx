@@ -1,6 +1,5 @@
-#include "readfile.h"
-
-#include "util/blog.h"
+#include <jetty/util/hepmc/readfile.h>
+#include <jetty/util/blog.h>
 
 #include <HepMC/IO_GenEvent.h>
 #include <HepMC/GenEvent.h>

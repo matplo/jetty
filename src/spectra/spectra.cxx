@@ -1,15 +1,15 @@
-#include "spectra.h"
+#include <jetty/spectra/spectra.h>
 
-#include "util/pythia/pythia_wrapper.h"
-#include "util/pythia/pyargs.h"
-#include "util/pythia/pyutil.h"
-#include "util/pythia/crosssections.h"
-#include "util/pythia/outkinematics.h"
+#include <jetty/util/pythia/pythia_wrapper.h>
+#include <jetty/util/pythia/pyargs.h>
+#include <jetty/util/pythia/pyutil.h>
+#include <jetty/util/pythia/crosssections.h>
+#include <jetty/util/pythia/outkinematics.h>
 
-#include "util/looputil.h"
-#include "util/blog.h"
+#include <jetty/util/looputil.h>
+#include <jetty/util/blog.h>
 
-#include "util/rstream/hstream.h"
+#include <jetty/util/rstream/hstream.h>
 
 #include <TFile.h>
 #include <TTree.h>
