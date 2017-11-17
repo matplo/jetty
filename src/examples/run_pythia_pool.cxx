@@ -38,32 +38,58 @@ int run_pythia_pool (const std::string &s)
 	Linfo << "photon flag : " << photons_flag;
 	Linfo << "z0 flag     : " << z0_flag;
 
-	double eA = args.getD("Beams:eA");
-	double eB = args.getD("Beams:eB");
-	if (eA == 0) eA = 5000.;
-	if (eB == 0) eB = 5000.;
+	double eA = args.getD("Beams:eA", 5000.);
+	double eB = args.getD("Beams:eB", 5000.);
+	args.set("Beams:eA", eA);
+	args.set("Beams:eB", eB);
+
 	PyUtil::PythiaPool &pypool = PyUtil::PythiaPool::Instance();
 	pypool.SetCommonSettings(args.asString().c_str());
-	pypool.SetupECMs(eA, eB, args.getD("--ndiv", 20));
+	pypool.SetupECMs(eA, eB, args.getD("--ndiv", 50));
 
 	//TRandom3 rndm;
 	TF1 fgaus("fgaus", "gaus", 0, 1.);
 	fgaus.SetParameter(0, 1.);
 	fgaus.SetParameter(1, 1.);
-	fgaus.SetParameter(2, 0.1);
+	fgaus.SetParameter(2, args.getD("--sigma-eloss", 0.1));
+
+	bool fixed_energy_flag = args.isSet("--fixed-energy");
 
 	auto nEv = args.getI("Main:numberOfEvents", 10);
+	if (nEv == 0) nEv = args.getI("--nev", 1);
+	args.set("Main:numberOfEvents", nEv);
+
+	Linfo << args.asString("[pythia_run_pool:status]");
+
 	LoopUtil::TPbar pbar(nEv);
 	for (unsigned int iE = 0; iE < nEv; iE++)
 	{
 		pbar.Update();
 		double rndmA = fgaus.GetRandom() * eA ;
 		double rndmB = fgaus.GetRandom() * eB ;
-		auto ppythia = pypool.GetPythia(TMath::Abs(rndmA), TMath::Abs(rndmB));
+		if (fixed_energy_flag)
+		{
+			rndmA = eA;
+			rndmB = eB;
+		}
+		if (rndmA < 10 || rndmB < 10)
+		{
+			Lwarn << "too small nucleon energy A=" << rndmA << " : B=" << rndmB;
+			continue;
+		}
+
+		auto ppythia = pypool.GetPythia(rndmA, rndmB);
 		if (!ppythia) break;
 		Pythia8::Pythia &pythia = *ppythia;
 		auto &event             = pythia.event;
 		if (pythia.next() == false) continue;
+
+		Linfo << "-";
+		Linfo << "total_et : " << PyUtil::total_et_from_final_particles(pythia);
+		TLorentzVector t = PyUtil::total_vector_final_particles(pythia);
+		Linfo << "total TLV : " << t.Px() << " " << t.Py() << " " << t.Pz() << " eT=" << t.Et();
+		TVector3 bv = t.BoostVector();
+		Linfo << " ... boost vector: mag=" << bv.Mag() << " px=" << bv.Px() << " py=" << bv.Py() << " pz=" << bv.Pz();
 
 		if (photons_flag)
 		{

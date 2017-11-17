@@ -1,6 +1,7 @@
 #include "pyutil.h"
 #include "util/strutil.h"
 #include "util/sysutil.h"
+#include "util/blog.h"
 
 #include <Pythia8/Pythia.h>
 
@@ -144,6 +145,94 @@ namespace PyUtil
 			}
 		}
 		return retval;
+	}
+
+	TParticle TParticleFromPythia(const Pythia8::Particle &p)
+	{
+		TParticle tp(
+					p.id(),
+					p.isFinal(),
+					p.mother1(),
+					p.mother2(),
+					p.daughter1(),
+					p.daughter2(),
+					p.px(),     // [GeV/c]
+					p.py(),     // [GeV/c]
+					p.pz(),     // [GeV/c]
+					p.e(),      // [GeV]
+					p.xProd(),  // [mm]
+					p.yProd(),  // [mm]
+					p.zProd(),  // [mm]
+					p.tProd()); // [mm/c]
+		tp.SetStatusCode(p.status());
+		return tp;
+	}
+
+	TLorentzVector TLVFromPythia(const Pythia8::Particle &p)
+	{
+		TLorentzVector tp;
+		tp.SetPxPyPzE(p.px(), p.py(), p.pz(), p.e());
+		return tp;
+	}
+
+	std::vector<TParticle> TParticlesFromPythia(const Pythia8::Pythia &py)
+	{
+		std::vector<TParticle> retv;
+		for (int i = 0; i < py.event.size(); i++)
+		{
+			const Pythia8::Particle &p = py.event[i];
+			TParticle tp(
+						p.id(),
+						p.isFinal(),
+						p.mother1(),
+						p.mother2(),
+						p.daughter1(),
+						p.daughter2(),
+						p.px(),     // [GeV/c]
+						p.py(),     // [GeV/c]
+						p.pz(),     // [GeV/c]
+						p.e(),      // [GeV]
+						p.xProd(),  // [mm]
+						p.yProd(),  // [mm]
+						p.zProd(),  // [mm]
+						p.tProd()); // [mm/c]
+			tp.SetStatusCode(p.status());
+			retv.push_back(tp);
+		}
+		return retv;
+	}
+
+	double total_et_from_final_particles(const Pythia8::Pythia &py, bool no_beam_particles)
+	{
+		double total_et = 0.0;
+		for (unsigned int ip = 0; ip < py.event.size(); ip++)
+		{
+			if (py.event[ip].isFinal())
+			{
+				if (no_beam_particles && py.event[ip].status() > 10 && py.event[ip].status() < 20)
+					continue;
+				total_et += py.event[ip].eT();
+			}
+		}
+		return total_et;
+	}
+
+	TLorentzVector total_vector_final_particles(const Pythia8::Pythia &py, bool no_beam_particles)
+	{
+		TLorentzVector total;
+		total.SetPxPyPzE(0,0,0,0);
+		for (unsigned int ip = 0; ip < py.event.size(); ip++)
+		{
+			if (py.event[ip].isFinal())
+			{
+				if (no_beam_particles && py.event[ip].status() > 10 && py.event[ip].status() < 20)
+					continue;
+				TLorentzVector tp = TLVFromPythia(py.event[ip]);
+				total += tp;
+			}
+		}
+		Ldebug << "eT from TLV: " << total.Et() << " Summed eT: " << total_et_from_final_particles(py);
+		return total;
 	}
 
 	std::vector<std::pair <double, double>> make_pThat_bins(std::vector<double> ptbins)

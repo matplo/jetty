@@ -9,6 +9,8 @@
 
 #include "util/args.h"
 
+#include <TParticle.h>
+
 namespace PyUtil
 {
 	Pythia8::Pythia *make_pythia(const SysUtil::Args &args);
@@ -23,6 +25,14 @@ namespace PyUtil
 
 	std::vector<int> GetDaughters	(const Pythia8::Event &event, int idx, int minID = 0, int maxID = 10000, bool quiet = true);
 	std::vector<int> FollowDaughters(const Pythia8::Event &event, int idx, int minID = 0, int maxID = 10000, bool quiet = true);
+
+	TParticle TParticleFromPythia(const Pythia8::Particle &p);
+	std::vector<TParticle> TParticlesFromPythia(const Pythia8::Pythia &py);
+
+	TLorentzVector TLVFromPythia(const Pythia8::Particle &p);
+	TLorentzVector total_vector_final_particles(const Pythia8::Pythia &py, bool no_beam_particles = true);
+
+	double total_et_from_final_particles(const Pythia8::Pythia &py, bool no_beam_particles = true);
 
 	std::vector<std::pair <double, double>> make_pThat_bins(std::vector<double> ptbins);
 	std::vector<double> hard_bins_from_string(const std::string &s); //const SysUtil::Args &args)
