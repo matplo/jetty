@@ -1,6 +1,7 @@
 #include <jetty/examples/run_pythia_pool.h>
 
 #include <jetty/util/pythia/pythia_pool.h>
+#include <jetty/util/pythia/event_pool.h>
 #include <jetty/util/pythia/pyargs.h>
 #include <jetty/util/pythia/pyutil.h>
 
@@ -61,6 +62,8 @@ int run_pythia_pool (const std::string &s)
 
 	Linfo << args.asString("[pythia_run_pool:status]");
 
+	PyUtil::EventPool ev_pool;
+
 	LoopUtil::TPbar pbar(nEv);
 	for (unsigned int iE = 0; iE < nEv; iE++)
 	{
@@ -90,6 +93,11 @@ int run_pythia_pool (const std::string &s)
 		Linfo << "total TLV : " << t.Px() << " " << t.Py() << " " << t.Pz() << " eT=" << t.Et();
 		TVector3 bv = t.BoostVector();
 		Linfo << " ... boost vector: mag=" << bv.Mag() << " px=" << bv.Px() << " py=" << bv.Py() << " pz=" << bv.Pz();
+
+		ev_pool.AddEvent(event);
+		Linfo << "number of events in the ev_pool: " << ev_pool.GetPool().size();
+		std::vector<Pythia8::Particle> fparts = ev_pool.GetFinalParticles();
+		Linfo << "number of final state particles in the ev_pool: " << fparts.size();
 
 		if (photons_flag)
 		{

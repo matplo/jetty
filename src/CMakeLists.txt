@@ -5,6 +5,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${C
 message(STATUS "CMAKE_MODULE_PATH=${CMAKE_MODULE_PATH}")
 
 include(safeguards)
+include(set_headers_lib)
+include(install_targets_custom)
 
 execute_process ( COMMAND fastjet-config --prefix WORKING_DIRECTORY /tmp OUTPUT_VARIABLE FASTJET_DIR OUTPUT_STRIP_TRAILING_WHITESPACE )
 execute_process ( COMMAND fastjet-config --cxxflags WORKING_DIRECTORY /tmp OUTPUT_VARIABLE FASTJET_CXXFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE )
@@ -56,9 +58,6 @@ set(CMAKE_MACOSX_RPATH 1)
 
 message( STATUS "CMAKE_CURRENT_SOURCE_DIR is ${CMAKE_CURRENT_SOURCE_DIR}")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include)
-
-include(set_headers_lib)
-include(install_targets_custom)
 
 add_subdirectory(util)
 add_subdirectory(examples)

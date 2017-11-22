@@ -11,6 +11,7 @@ set(SOURCES_LIB
 	presample.cxx
 	scanhard.cxx
 	pythia_pool.cxx
+	event_pool.cxx
 )
 
 # Headers from sources

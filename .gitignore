@@ -1,7 +1,5 @@
 .build
-include
-lib
-bin
 modules
 bt.sh
 *.root
+/jetty_*
