@@ -18,6 +18,7 @@ namespace PyUtil
 	, d_p_z({0, 0})
 	, mA(0.93827)
 	, mB(0.93827)
+	, f_et(0.0)
 	{
 		_calculate(pythia, includeHard);
 	}
@@ -28,6 +29,7 @@ namespace PyUtil
 	, d_p_z({0, 0})
 	, mA(0.93827)
 	, mB(0.93827)
+	, f_et(0.0)
 	{
 		;
 	}
@@ -37,12 +39,14 @@ namespace PyUtil
 	, d_p_z({0, 0})
 	, mA(0.93827)
 	, mB(0.93827)
+	, f_et(0.0)
 	{
 		i_p_z = o.i_p_z;
 		f_p_z = o.f_p_z;
 		d_p_z = o.d_p_z;
-		mA = o.mA;
-		mB = o.mB;
+		mA    = o.mA;
+		mB    = o.mB;
+		f_et  = o.f_et;
 	}
 
 	void OutKinematics::_calculate(const Pythia8::Pythia &pythia, bool includeHard)
@@ -83,6 +87,7 @@ namespace PyUtil
 			d_p_z[i] = std::fabs(i_p_z[i] - f_p_z[i]);
 			// std::cout << "=> remaining p_z_" << i+1 << " = " << f_p_z[i] << " delta p_z = " << d_p_z[i] << std::endl;
 		}
+		f_et = PyUtil::total_et_from_final_particles(pythia);
 	}
 
 	double OutKinematics::sqrts(double eA, double eB, double _mA, double _mB) const
@@ -122,6 +127,8 @@ TTree & operator << (TTree & t, const PyUtil::OutKinematics &kine)
 	e << "Af" << kine.f_p_z[0];
 	e << "Bf" << kine.f_p_z[1];
 	e << "CMf" << kine.sqrts_f();
+
+	e << "et" << kine.f_et;
 
 	e << std::endl;
 	return t;

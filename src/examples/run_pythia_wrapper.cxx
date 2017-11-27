@@ -3,7 +3,6 @@
 #include <jetty/util/pythia/pythia_wrapper.h>
 #include <jetty/util/pythia/pyargs.h>
 #include <jetty/util/pythia/pyutil.h>
-#include <jetty/util/pythia/crosssections.h>
 #include <jetty/util/pythia/outkinematics.h>
 
 #include <jetty/util/looputil.h>
@@ -116,6 +115,7 @@ int run_pythia_wrapper (const std::string &s)
 	Ltrace << "Scaling with " << _scale;
 	hstream.Scale(_scale);
 	pythia.stat();
+
 	Linfo << "Generation done.";
 
 	return 0;

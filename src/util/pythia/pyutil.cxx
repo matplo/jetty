@@ -13,18 +13,22 @@
 #include <cstdlib>
 
 #include <TMath.h>
-
+#include <TLorentzVector.h>
 using namespace std;
 
 namespace PyUtil
 {
 	double sqrts(double _eA, double _eB, double mA, double mB)
 		{
-				double eA  = TMath::Abs(eA);
-				double eB  = TMath::Abs(eB);
+				double eA  = TMath::Abs(_eA);
+				double eB  = TMath::Abs(_eB);
 				double pA  = TMath::Sqrt(eA * eA - mA * mA);
 				double pB  = TMath::Sqrt(eB * eB - mB * mB);
 				double eCM = TMath::Sqrt( TMath::Power(eA + eB, 2.) - TMath::Power(pA + (-1. * pB), 2.) );
+				Ldebug 	<< " eA=" << eA << " eB=" << eB
+						<< " mA=" << mA << " mB=" << mB
+						<< " pA=" << pA << " pB=" << pB
+						<< " eCM=" << eCM;
 				return eCM;
 		}
 

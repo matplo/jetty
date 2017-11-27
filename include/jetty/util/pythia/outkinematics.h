@@ -29,6 +29,8 @@ namespace PyUtil
 		double mA;
 		double mB;
 
+		double f_et;
+
 	private:
 
 		void _calculate(const Pythia8::Pythia &pythia, bool includeHard);

@@ -1,9 +1,13 @@
 #include <jetty/util/pythia/crosssections.h>
+#include <jetty/util/pythia/pyutil.h>
 #include <jetty/util/strutil.h>
 #include <jetty/util/rstream/tstream.h>
 
 #include <fstream>
 #include <iostream>
+
+#include <TFile.h>
+#include <TTree.h>
 
 namespace PyUtil
 {
@@ -20,8 +24,12 @@ namespace PyUtil
 		eB  = pythia.parm("Beams:eB");
 		if (pythia.mode("Beams:frameType") == 1)
 		{
-			eA = eCM / 2;
-			eB = eCM / 2;
+			eA = eCM / 2.;
+			eB = eCM / 2.;
+		}
+		if (pythia.mode("Beams:frameType") == 2)
+		{
+			eCM = PyUtil::sqrts(eA, eB); //assuming proton mass
 		}
 
 		auto _codes = pythia.info.codesHard();
@@ -46,6 +54,7 @@ namespace PyUtil
 				Linfo << "Beams:eCM="	<< eCM 	;
 				Linfo << "Beams:eA=" 	<< eA 	;
 				Linfo << "Beams:eB=" 	<< eB 	;
+				Linfo << "Beams:frameType=" << pythia.mode("Beams:frameType");
 				Linfo << "weightSum=" << pythia.info.weightSum() ;
 				for ( unsigned int i = 0; i < codes.size(); i++)
 				{
@@ -59,6 +68,7 @@ namespace PyUtil
 				foutput << "Beams:eCM="	<< eCM 	<< std::endl;
 				foutput << "Beams:eA=" 	<< eA 	<< std::endl;
 				foutput << "Beams:eB=" 	<< eB 	<< std::endl;
+				foutput << "Beams:frameType=" << pythia.mode("Beams:frameType") << std::endl;
 				foutput << "weightSum=" << pythia.info.weightSum() << std::endl;
 				for ( unsigned int i = 0; i < codes.size(); i++)
 				{
@@ -66,6 +76,32 @@ namespace PyUtil
 					foutput << "XSecErr:" << i << "=" << xsec_err[i] << std::endl;
 				}
 				foutput.close();
+			}
+
+			TString rfname = fname;
+			rfname.ReplaceAll(".txt", "_xsec.root");
+			TFile xsec_out(rfname, "recreate");
+			if (xsec_out.IsOpen())
+			{
+				TTree *t = new TTree("xsec", "xsec");
+				RStream::TStream rs(t);
+				rs << "Beams_eCM"	<< eCM;
+				rs << "Beams_eA" 	<< eA ;
+				rs << "Beams_eB" 	<< eB ;
+				rs << "Beams_frameType" << pythia.mode("Beams:frameType");
+				rs << "weightSum" << pythia.info.weightSum();
+				TString tmp;
+				for ( unsigned int i = 0; i < codes.size(); i++)
+				{
+					tmp = TString::Format("Xsec_%d", i);
+					rs << tmp.Data() << xsec[i];
+					tmp = TString::Format("XsecErr_%d", i);
+					rs << tmp.Data() << xsec_err[i];
+				}
+				rs << std::endl;
+				xsec_out.Write();
+				xsec_out.Close();
+				Linfo << "xsections root file written: " << rfname.Data();
 			}
 		}
 	}

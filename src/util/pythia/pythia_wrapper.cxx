@@ -60,7 +60,16 @@ namespace PyUtil
 		double eA       = args->getD("Beams:eA");
 		double eB       = args->getD("Beams:eB");
 		if (eA == eB)
-			args->set("Beams:frameType=1");
+		{
+			if (args->isSet("Beams:frameType") == false)
+				args->set("Beams:frameType=1");
+		}
+		else
+		{
+			if (args->isSet("Beams:frameType") == false)
+				args->set("Beams:frameType=2");
+		}
+
 
 		auto pairs = args->pairs();
 		for (unsigned int i = 0; i < pairs.size(); i++)

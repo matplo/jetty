@@ -1,0 +1,12 @@
+#!/bin/bash
+
+module load jetty/default
+echo $JETTYDIR
+#10 30 50 80 100 200 500 1000 1500 2000 2500 3000 3500 4000 4500 5000 6000 6500 7000 8000 8500 9000 9500
+for e1 in 10 20 30 50 80 100 200 500 1000 1500 2000 2500 3000 3500 4000 4500 5000 6000 6500 7000
+do
+	for e2 in 10 20 30 50 80 100 200 500 1000 1500 2000 2500 3000 3500 4000 4500 5000 6000 6500 7000
+	do
+		jetty_examples_exe --nev=1000 --pythia-wrapper --minbias --nev=1000 Beams:eA=$e1 Beams:eB=$e2 --out=eCM_scan.root $@
+	done
+done
