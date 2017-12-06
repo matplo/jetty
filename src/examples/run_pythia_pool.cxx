@@ -4,6 +4,7 @@
 #include <jetty/util/pythia/event_pool.h>
 #include <jetty/util/pythia/pyargs.h>
 #include <jetty/util/pythia/pyutil.h>
+#include <jetty/util/pythia/param_sigmas.h>
 
 #include <jetty/util/looputil.h>
 #include <jetty/util/blog.h>
@@ -88,6 +89,11 @@ int run_pythia_pool (const std::string &s)
 		if (pythia.next() == false) continue;
 
 		Linfo << "-";
+		PyUtil::ParamSigmas &sigmas = PyUtil::ParamSigmas::Instance();
+		Linfo << "total cross-section: " << sigmas.Get("TOTAL", rndmA, rndmB);
+		Linfo << "inel enum: " << PyUtil::ParamSigmas::kINEL;
+		Linfo << " inel cross-section: " << sigmas.Get(PyUtil::ParamSigmas::kINEL, rndmA, rndmB);
+
 		Linfo << "total_et : " << PyUtil::total_et_from_final_particles(pythia);
 		TLorentzVector t = PyUtil::total_vector_final_particles(pythia);
 		Linfo << "total TLV : " << t.Px() << " " << t.Py() << " " << t.Pz() << " eT=" << t.Et();

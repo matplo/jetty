@@ -12,6 +12,7 @@ set(SOURCES_LIB
 	scanhard.cxx
 	pythia_pool.cxx
 	event_pool.cxx
+	param_sigmas.cxx
 )
 
 # Headers from sources
