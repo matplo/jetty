@@ -25,10 +25,10 @@ namespace PyUtil
 				double pA  = TMath::Sqrt(eA * eA - mA * mA);
 				double pB  = TMath::Sqrt(eB * eB - mB * mB);
 				double eCM = TMath::Sqrt( TMath::Power(eA + eB, 2.) - TMath::Power(pA + (-1. * pB), 2.) );
-				Ldebug 	<< " eA=" << eA << " eB=" << eB
-						<< " mA=" << mA << " mB=" << mB
-						<< " pA=" << pA << " pB=" << pB
-						<< " eCM=" << eCM;
+				// Ldebug 	<< " eA=" << eA << " eB=" << eB
+				// 		<< " mA=" << mA << " mB=" << mB
+				// 		<< " pA=" << pA << " pB=" << pB
+				// 		<< " eCM=" << eCM;
 				return eCM;
 		}
 

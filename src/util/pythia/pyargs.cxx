@@ -49,7 +49,8 @@ namespace PyUtil
 		if (isSet("--test"))
 		{
 			set("Main:numberOfEvents=1");
-			set("--out=test.root");
+			if (isSet("--out") == false)
+				set("--out=test_output_pyargs.root");
 		}
 
 		double pTHatMin = getD("-pTHatMin", -99);

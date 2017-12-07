@@ -83,6 +83,7 @@ namespace PyUtil
 		{
 			delete fXsections[i];
 		}
+		Ltrace << "destroyed.";
 	}
 
 	TF1 *ParamSigmas::Get(int iwhich)
