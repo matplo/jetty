@@ -84,18 +84,22 @@ namespace LogUtil
 
 }
 
-#define LTRACE BOOST_LOG_TRIVIAL(trace) << "(" << LogUtil::env_path_jetty( __FILE__ ) << ", " << __LINE__ << ") "
-#define LDEBUG BOOST_LOG_TRIVIAL(debug)   << "(" << LogUtil::env_path_jetty( __FILE__ ) << ", " << __LINE__ << ") "
-#define LINFO  BOOST_LOG_TRIVIAL(info)
-#define LWARN  BOOST_LOG_TRIVIAL(warning)
-#define LERROR BOOST_LOG_TRIVIAL(error)  << "(" << LogUtil::env_path_jetty( __FILE__ ) << ", " << __LINE__ << ") "
-#define LFATAL BOOST_LOG_TRIVIAL(fatal)  << "(" << LogUtil::env_path_jetty( __FILE__ ) << ", " << __LINE__ << ") "
+#define COLWARN "\033[33m"
+#define COLERR "\033[31m"
+#define COLDEF "\033[0m"
 
-#define Ltrace BOOST_LOG_TRIVIAL(trace) << "(" << __FILE__ << ", " << __LINE__ << ") "
-#define Ldebug BOOST_LOG_TRIVIAL(debug) << "(" << __FILE__ << ", " << __LINE__ << ") "
+#define LTRACE BOOST_LOG_TRIVIAL(trace) 	<< "(" << LogUtil::env_path_jetty( __FILE__ ) << ", " << __LINE__ << ") "
+#define LDEBUG BOOST_LOG_TRIVIAL(debug) 	<< "(" << LogUtil::env_path_jetty( __FILE__ ) << ", " << __LINE__ << ") "
+#define LINFO  BOOST_LOG_TRIVIAL(info)
+#define LWARN  BOOST_LOG_TRIVIAL(warning)	<< COLWARN << "[!]" << COLDEF
+#define LERROR BOOST_LOG_TRIVIAL(error)  	<< COLERR << "(" << LogUtil::env_path_jetty( __FILE__ ) << ", " << __LINE__ << ") " << COLDEF
+#define LFATAL BOOST_LOG_TRIVIAL(fatal)  	<< COLERR << "(" << LogUtil::env_path_jetty( __FILE__ ) << ", " << __LINE__ << ") " << COLDEF
+
+#define Ltrace BOOST_LOG_TRIVIAL(trace) 	<< "(" << __FILE__ << ", " << __LINE__ << ") "
+#define Ldebug BOOST_LOG_TRIVIAL(debug) 	<< "(" << __FILE__ << ", " << __LINE__ << ") "
 #define Linfo  BOOST_LOG_TRIVIAL(info)
-#define Lwarn  BOOST_LOG_TRIVIAL(warning)
-#define Lerror BOOST_LOG_TRIVIAL(error)  << "(" << __FILE__ << ", " << __LINE__ << ") "
-#define Lfatal BOOST_LOG_TRIVIAL(fatal)  << "(" << __FILE__ << ", " << __LINE__ << ") "
+#define Lwarn  BOOST_LOG_TRIVIAL(warning) 	<< COLWARN << "[!]" << COLDEF
+#define Lerror BOOST_LOG_TRIVIAL(error)  	<< COLERR << "(" << __FILE__ << ", " << __LINE__ << ") " << COLDEF
+#define Lfatal BOOST_LOG_TRIVIAL(fatal)  	<< COLERR << "(" << __FILE__ << ", " << __LINE__ << ") " << COLDEF
 
 #endif // BLOG_HH

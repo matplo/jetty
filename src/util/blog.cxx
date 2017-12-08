@@ -32,12 +32,49 @@ namespace LogUtil
 
 	boost::log::trivial::severity_level current_blog_severity() { return current_severity;}
 
+	// https://stackoverflow.com/questions/38309479/how-to-add-color-coding-to-boostlog-console-output
+	void coloring_formatter(
+		logging::record_view const& rec, logging::formatting_ostream& strm)
+	{
+		auto severity = rec[logging::trivial::severity];
+		if (severity)
+		{
+			// Set the color
+			switch (severity.get())
+			{
+			case logging::trivial::info:
+				strm << "\033[32m";
+				break;
+			case logging::trivial::warning:
+				strm << "\033[33m";
+				break;
+			case logging::trivial::error:
+			case logging::trivial::fatal:
+				strm << "\033[31m";
+				break;
+			default:
+				break;
+			}
+		}
+
+		// Format the message here...
+		strm << rec[logging::expressions::smessage];
+
+		if (severity)
+		{
+			// Restore the default color
+			strm << "\033[0m";
+		}
+	}
+
 	void blog_set_severity(boost::log::trivial::severity_level level)
 	{
 		logging::core::get()->set_filter
 		(
 			logging::trivial::severity >= level
 		);
+		// nope - do not know how to get the default sink
+		//logging::core::get()->set_formatter(&coloring_formatter);
 		current_severity = level;
 		//boost::log::add_console_log(std::cout, boost::log::keywords::format = "[%TimeStamp%] %Message%");
 
@@ -64,5 +101,4 @@ namespace LogUtil
 		boost::algorithm::replace_first(sfname, jetty_dir, "$JETTYDIR");
 		return sfname;
 	}
-
 }
