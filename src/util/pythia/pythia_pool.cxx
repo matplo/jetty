@@ -77,10 +77,27 @@ namespace PyUtil
 
 	Pythia8::Pythia * PythiaPool::CreatePythia(double eA, double eB, const char *s)
 	{
-		// setup generator
-		Pythia8::Pythia *ppythia = new Pythia8::Pythia();
-
 		Args args(s);
+
+		// setup generator
+		Pythia8::Pythia *ppythia = 0x0;
+		if (args.isSet("--silent-pythia-init"))
+		{
+			LogUtil::cout_sink _cout_sink;
+			LogUtil::cerr_sink _cerr_sink;
+			ppythia = new Pythia8::Pythia();
+		}
+		else
+		{
+			ppythia = new Pythia8::Pythia();
+		}
+
+		if (!ppythia)
+		{
+			Lfatal << "unable to create new pythia!";
+			return 0x0;
+		}
+
 		if (eA == eB)
 		{
 			args.set("Beams:frameType=1");
@@ -103,7 +120,20 @@ namespace PyUtil
 			string spypar = pairs[i].first + " = " + pairs[i].second;
 			ppythia->readString(spypar.c_str());
 		}
-		bool _is_initialized = ppythia->init();
+		bool _is_initialized = false;
+		string pythia_init_message;
+		if (args.isSet("--silent-pythia-init"))
+		{
+			LogUtil::cout_sink _cout_sink;
+			LogUtil::cerr_sink _cerr_sink;
+			_is_initialized = ppythia->init();
+			pythia_init_message = _cerr_sink.get_buffer()->str();
+			pythia_init_message += _cout_sink.get_buffer()->str();
+		}
+		else
+		{
+			_is_initialized = ppythia->init();
+		}
 		if (_is_initialized)
 		{
 			Ldebug << "new pythia is at " << ppythia << " with settings: " << args.asString();
@@ -111,6 +141,7 @@ namespace PyUtil
 		else
 		{
 			Lerror << "pythia initialization failed with settings: " << args.asString();
+			Lerror << pythia_init_message;
 			delete ppythia;
 			ppythia = 0;
 		}

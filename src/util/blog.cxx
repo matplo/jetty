@@ -64,4 +64,5 @@ namespace LogUtil
 		boost::algorithm::replace_first(sfname, jetty_dir, "$JETTYDIR");
 		return sfname;
 	}
+
 }
