@@ -80,17 +80,7 @@ namespace PyUtil
 		Args args(s);
 
 		// setup generator
-		Pythia8::Pythia *ppythia = 0x0;
-		if (args.isSet("--silent-pythia-init"))
-		{
-			LogUtil::cout_sink _cout_sink;
-			LogUtil::cerr_sink _cerr_sink;
-			ppythia = new Pythia8::Pythia();
-		}
-		else
-		{
-			ppythia = new Pythia8::Pythia();
-		}
+		Pythia8::Pythia *ppythia = new Pythia8::Pythia();
 
 		if (!ppythia)
 		{
@@ -112,6 +102,7 @@ namespace PyUtil
 		args.set("Beams:eA", eA);
 		args.set("Beams:eB", eB);
 
+		bool _is_initialized = false;
 		auto pairs = args.pairs();
 		for (unsigned int i = 0; i < pairs.size(); i++)
 		{
@@ -120,28 +111,14 @@ namespace PyUtil
 			string spypar = pairs[i].first + " = " + pairs[i].second;
 			ppythia->readString(spypar.c_str());
 		}
-		bool _is_initialized = false;
-		string pythia_init_message;
-		if (args.isSet("--silent-pythia-init"))
-		{
-			LogUtil::cout_sink _cout_sink;
-			LogUtil::cerr_sink _cerr_sink;
-			_is_initialized = ppythia->init();
-			pythia_init_message = _cerr_sink.get_buffer()->str();
-			pythia_init_message += _cout_sink.get_buffer()->str();
-		}
-		else
-		{
-			_is_initialized = ppythia->init();
-		}
+		_is_initialized = ppythia->init();
 		if (_is_initialized)
 		{
-			Ldebug << "new pythia is at " << ppythia << " with settings: " << args.asString();
+			Lwarn << "new pythia is at " << ppythia << " with settings: " << args.asString();
 		}
 		else
 		{
 			Lerror << "pythia initialization failed with settings: " << args.asString();
-			Lerror << pythia_init_message;
 			delete ppythia;
 			ppythia = 0;
 		}
@@ -223,14 +200,28 @@ namespace PyUtil
 		if (pyindex < 0 || _pythia_pool.size() == 0)
 		{
 			// init new pythia here
-			Ldebug << "create new pythia instance ...";
+			Lwarn << "create new pythia instance ... " << eA << " -><- " << eB;
+			string pythia_init_message;
+			LogUtil::cout_sink _cout_sink;
+			LogUtil::cerr_sink _cerr_sink;
+
 			ret_pythia = CreatePythia(eA, eB, settings.c_str());
 			if (ret_pythia != 0)
 			{
 				_pythia_pool.push_back(ret_pythia);
 				pyindex = _pythia_pool.size();
 				_eAeBmap->SetBinContent(binx, biny, pyindex);
+				Args args(settings);
+				if (args.isSet("--silent-pythia-init") == false)
+				{
+					Linfo << endl << _cout_sink.get_buffer()->str();
+				}
 				return GetPythia(eA, eB, settings.c_str());
+			}
+			else
+			{
+				Linfo << endl << _cout_sink.get_buffer()->str();
+				Linfo << endl << _cerr_sink.get_buffer()->str();
 			}
 		}
 		else
