@@ -19,5 +19,5 @@ function build()
 	echo "[i] building sources at ${BT_src_dir}"
     cmake -DCMAKE_INSTALL_PREFIX=${BT_install_dir} -DCMAKE_BUILD_TYPE=${BT_build_type} ${BT_src_dir}
     make -j $(n_cores) VERBOSE=$BT_verbose && make install
-    # make -j VERBOSE=$BT_verbose && make install
+    #make -j VERBOSE=$BT_verbose && make install
 }

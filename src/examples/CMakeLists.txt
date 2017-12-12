@@ -22,6 +22,6 @@ target_link_libraries(${NAME_LIB} ${PYTHIA8_LDFLAGS} ${FASTJET_LIBS} ${ROOT_LIBR
 
 add_executable(${NAME_EXE} ${SOURCES_EXE})
 target_include_directories(${NAME_EXE} PUBLIC ${ROOT_INCLUDE_DIR} ${FASTJET_DIR}/include ${PYTHIA8_DIR}/include)
-target_link_libraries( ${NAME_EXE} ${NAME_LIB})
+target_link_libraries(${NAME_EXE} ${NAME_LIB})
 
 install_targets_custom()

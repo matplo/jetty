@@ -18,7 +18,7 @@ string(REPLACE ".cxx" ".h" HEADERS_EXE "${SOURCES_EXE}")
 
 add_library(${NAME_LIB} SHARED ${SOURCES_LIB})
 target_include_directories(${NAME_LIB} PUBLIC ${ROOT_INCLUDE_DIR} ${FASTJET_DIR}/include ${CGAL_INCLUDE_DIR})
-target_link_libraries( ${NAME_LIB} ${PROJECT_NAME}_util ${ROOT_LIBRARIES})
+target_link_libraries( ${NAME_LIB} ${PROJECT_NAME}_util ${ROOT_LIBRARIES} ${CGAL_LIBRARIES})
 
 if (HEPMC_FOUND)
 	add_executable(${NAME_EXE} ${SOURCES_EXE})
