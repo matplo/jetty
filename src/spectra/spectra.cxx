@@ -83,6 +83,12 @@ int run_spectra (const std::string &s)
 		Linfo << "running with a cut on jet pT > " << jptcut;
 	}
 
+	if (args.get("PhaseSpace:bias2Selection", "off") == "on")
+	{
+		Lwarn << "PhaseSpace:bias2Selection";
+		args.set("PhaseSpace:bias2SelectionPow", 4.);  // default pythia settings
+        args.set("PhaseSpace:bias2SelectionRef", 20.); // 100 for pThat min = 0 (?)
+	}
 
 	// this is where the event loop section starts
 	auto nEv = pyargs.getI("Main:numberOfEvents");
