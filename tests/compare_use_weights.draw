@@ -1,0 +1,59 @@
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpT :p  : title=pT
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt :p  : title=pythia particle pT
+un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_eta :p  : title=pythia particle pT eta
+un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_rap :p  : title=pythia particle pT rap
+un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_jet_pt_eta :p  : title=pythia jet pT eta
+un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_jet_pt :p  : title=pythia jet pT
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_eta :p  : title=pythia particle eta
+un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_rap :p  : title=pythia particle rap
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_phi :p  : title=pythia particle pT
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_m :p  : title=pythia particle m
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_cms :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
+weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_cms :p  : title=weighted,,scale=0
+un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_phenix :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
+weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_phenix :p  : title=weighted,,scale=0
+un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_z0 :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
+weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_z0 :p  : title=weighted,,scale=0
+un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_photon_pt_cms :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
+weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_photon_pt_cms :p  : title=weighted,,scale=0
+un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_photon_pt_phenix :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
+weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_photon_pt_phenix :p  : title=weighted,,scale=0
+#logx 1
+#logy 1
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:pcodexsec :p  : title=pcodexsec
+

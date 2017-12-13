@@ -50,10 +50,10 @@ int run_spectra (const std::string &s)
 	pywrap.outputFile()->cd();
 	TTree *tk = new TTree("kine", "kine");
 	TH1F *hpT = new TH1F("hpT", "pT;p_{T} (GeV/#it{c});counts", 50, 0, 100);
-	TNtuple *nt_parts = new TNtuple("nt_parts", "nt_parts", "pT:y:eta:phi");
-	TNtuple *nt_gamma = new TNtuple("nt_gamma", "nt_gamma", "pT:y:eta:phi");
-	TNtuple *nt_z0 = new TNtuple("nt_z0", "nt_z0", "pT:y:eta:phi");
-	TNtuple *nt_jets = new TNtuple("nt_jets", "nt_jets", "pT:y:eta:phi");
+	TNtuple *nt_parts = new TNtuple("nt_parts", "nt_parts", "pT:y:eta:phi:w");
+	TNtuple *nt_gamma = new TNtuple("nt_gamma", "nt_gamma", "pT:y:eta:phi:w");
+	TNtuple *nt_z0 = new TNtuple("nt_z0", "nt_z0", "pT:y:eta:phi:w");
+	TNtuple *nt_jets = new TNtuple("nt_jets", "nt_jets", "pT:y:eta:phi:w");
 
 	RStream::HStream hstream;
 	if (args.isSet("--hconfig"))
@@ -88,6 +88,8 @@ int run_spectra (const std::string &s)
 		Lwarn << "PhaseSpace:bias2Selection";
 		args.set("PhaseSpace:bias2SelectionPow", 4.);  // default pythia settings
         args.set("PhaseSpace:bias2SelectionRef", 20.); // 100 for pThat min = 0 (?)
+		args.set("PhaseSpace:bias2SelectionPow", 5.7);  // default pythia settings
+        args.set("PhaseSpace:bias2SelectionRef", 20.); // 100 for pThat min = 0 (?)
 	}
 
 	// this is where the event loop section starts
@@ -109,7 +111,7 @@ int run_spectra (const std::string &s)
 				if (TMath::Abs(event[ipho].eta()) < maxEta)
 				{
 					if (event[ipho].pT() > 0.5)
-						nt_gamma->Fill(event[ipho].pT(), event[ipho].y(), event[ipho].eta(), event[ipho].phi());
+						nt_gamma->Fill(event[ipho].pT(), event[ipho].y(), event[ipho].eta(), event[ipho].phi(), pythia.info.weight());
 				}
 				if (TMath::Abs(event[ipho].eta()) < 1.)
 					hstream << "photon_pt_cms" << event[ipho].pT();
@@ -125,7 +127,7 @@ int run_spectra (const std::string &s)
 			if (TMath::Abs(event[iZ0].eta()) < maxEta)
 			{
 				if (event[iZ0].pT() > 0.5)
-					nt_z0->Fill(event[iZ0].pT(), event[iZ0].y(), event[iZ0].eta(), event[iZ0].phi());
+					nt_z0->Fill(event[iZ0].pT(), event[iZ0].y(), event[iZ0].eta(), event[iZ0].phi(), pythia.info.weight());
 			}
 		}
 
@@ -137,13 +139,16 @@ int run_spectra (const std::string &s)
 			{
 				if (event[ip].isFinal())
 				{
+					double pTw[] = {event[ip].pT(), pythia.info.weight()};
 					if (TMath::Abs(event[ip].eta()) < 1.)
+					{
 						hpT->Fill(event[ip].pT(), 1./event[ip].pT());
+					}
 					hstream << "part_" << event[ip];
 					if (TMath::Abs(event[ip].eta()) < 1.)
-						hstream << "part_pt_cms" << event[ip].pT();
+						hstream << "part_pt_cms" << pTw;
 					if (TMath::Abs(event[ip].eta()) < 0.35)
-						hstream << "part_pt_phenix" << event[ip].pT();
+						hstream << "part_pt_phenix" << pTw;
 					//hstream << "undefined_" << event[ip];
 					double pt_eta[] = {event[ip].pT(), event[ip].eta()};
 					hstream << "part_pt_eta" << pt_eta;
@@ -153,7 +158,7 @@ int run_spectra (const std::string &s)
 					if (TMath::Abs(event[ip].eta()) < maxEta)
 					{
 						if (event[ip].pT() > 0.5)
-							nt_parts->Fill(event[ip].pT(), event[ip].y(), event[ip].eta(), event[ip].phi());
+							nt_parts->Fill(event[ip].pT(), event[ip].y(), event[ip].eta(), event[ip].phi(), pythia.info.weight());
 						fj::PseudoJet p(event[ip].px(), event[ip].py(), event[ip].pz(), event[ip].e());
 						p.set_user_index(ip);
 						parts.push_back(p);
@@ -170,11 +175,12 @@ int run_spectra (const std::string &s)
 					continue;
 				if (TMath::Abs(j.eta()) > maxEta - R)
 					continue;
-				nt_jets->Fill(j.pt(), j.rap(), j.eta(), j.phi());
+				nt_jets->Fill(j.pt(), j.rap(), j.eta(), j.phi(), pythia.info.weight());
 				double pt_eta[] = {j.pt(), j.eta()};
 				hstream << "jet_pt_eta" << pt_eta;
-				hstream << "jet_pt_atlas" << j.pt();
-				hstream << "jet_pt" << j.pt();
+				double pTw[] = {j.pt(), pythia.info.weight()};
+				hstream << "jet_pt_atlas" << pTw;
+				hstream << "jet_pt" << pTw;
 			} // jets loop
 
 		}
