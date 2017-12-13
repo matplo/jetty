@@ -39,15 +39,19 @@ un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy
 #date
 #title: smart group
 un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_cms :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
-weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_cms :p  : title=weighted,,scale=0
+un_weighted_100_eA_0_eB_0_eCM_0GeV_pTHatMin_100.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_cms :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
+weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_10000.root 		:hpy_part_pt_cms :p  : title=weighted,,scale=0
+
 un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_phenix :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
-weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_phenix :p  : title=weighted,,scale=0
-un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_z0 :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
-weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_z0 :p  : title=weighted,,scale=0
-un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_photon_pt_cms :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
-weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_photon_pt_cms :p  : title=weighted,,scale=0
-un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_photon_pt_phenix :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
-weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_photon_pt_phenix :p  : title=weighted,,scale=0
+un_weighted_100_eA_0_eB_0_eCM_0GeV_pTHatMin_100.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_phenix :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
+weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_10000.root 		:hpy_part_pt_phenix :p  : title=weighted,,scale=0
+
+#un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_z0 :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
+#weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_z0 :p  : title=weighted,,scale=0
+#un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_photon_pt_cms :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
+#weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_photon_pt_cms :p  : title=weighted,,scale=0
+#un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_photon_pt_phenix :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
+#weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_photon_pt_phenix :p  : title=weighted,,scale=0
 #logx 1
 #logy 1
 #-----------------------
