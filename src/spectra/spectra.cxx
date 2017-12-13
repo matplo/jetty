@@ -88,8 +88,11 @@ int run_spectra (const std::string &s)
 		Lwarn << "PhaseSpace:bias2Selection";
 		args.set("PhaseSpace:bias2SelectionPow", 4.);  // default pythia settings
         args.set("PhaseSpace:bias2SelectionRef", 20.); // 100 for pThat min = 0 (?)
-		args.set("PhaseSpace:bias2SelectionPow", 5.7);  // default pythia settings
-        args.set("PhaseSpace:bias2SelectionRef", 20.); // 100 for pThat min = 0 (?)
+		args.set("PhaseSpace:bias2SelectionPow", 5.7);  // default pythia settings is 4.
+        args.set("PhaseSpace:bias2SelectionRef", args.getD("PhaseSpace:pTHatMin", 2.)); // 100 for pThat min = 0 (?)
+		args.set("PhaseSpace:bias2SelectionPow", 5.7 * (5.7 / args.getD("PhaseSpace:pTHatMin", 2.)));  // default pythia settings is 4.
+		Linfo << "PhaseSpace:bias2SelectionRef = " << args.getD("PhaseSpace:bias2SelectionRef");
+		Linfo << "PhaseSpace:bias2SelectionPow = " << args.getD("PhaseSpace:bias2SelectionPow");
 	}
 
 	// this is where the event loop section starts

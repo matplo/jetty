@@ -3,61 +3,139 @@
 #geom 500x500
 #date
 #title: smart group
-un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpT :p  : title=pT
+un_weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpT :p  : title=pT
 #-----------------------
 #figure
 #geom 500x500
 #date
 #title: smart group
-un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt :p  : title=pythia particle pT
-un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_eta :p  : title=pythia particle pT eta
-un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_rap :p  : title=pythia particle pT rap
-un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_jet_pt_eta :p  : title=pythia jet pT eta
-un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_jet_pt :p  : title=pythia jet pT
+un_weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt :p  : title=pythia particle pT
+un_weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_eta :p  : title=pythia particle pT eta
+un_weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_rap :p  : title=pythia particle pT rap
+un_weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_jet_pt_eta :p  : title=pythia jet pT eta
+un_weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_jet_pt :p  : title=pythia jet pT
 #-----------------------
 #figure
 #geom 500x500
 #date
 #title: smart group
-un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_eta :p  : title=pythia particle eta
-un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_rap :p  : title=pythia particle rap
+un_weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_eta :p  : title=pythia particle eta
+un_weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_rap :p  : title=pythia particle rap
 #-----------------------
 #figure
 #geom 500x500
 #date
 #title: smart group
-un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_phi :p  : title=pythia particle pT
+un_weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_phi :p  : title=pythia particle pT
 #-----------------------
 #figure
 #geom 500x500
 #date
 #title: smart group
-un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_m :p  : title=pythia particle m
+un_weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_m :p  : title=pythia particle m
 #-----------------------
 #figure
 #geom 500x500
 #date
 #title: smart group
-un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_cms :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
-un_weighted_100_eA_0_eB_0_eCM_0GeV_pTHatMin_100.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_cms :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
-weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_10000.root 		:hpy_part_pt_cms :p  : title=weighted,,scale=0
+un_weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:pcodexsec :p  : title=pcodexsec
 
-un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_phenix :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
-un_weighted_100_eA_0_eB_0_eCM_0GeV_pTHatMin_100.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_phenix :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
-weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_10000.root 		:hpy_part_pt_phenix :p  : title=weighted,,scale=0
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title: smart group
+weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_0.1_pTHatMax_-99.0_nEv_10000.root 		:hpy_part_pt_cms :l hist  : title=weighted,,scale=0
+un_weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_0.1_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_cms :p -k  : title=cms acceptance pThat>0.1,,scale=0
+un_weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_2.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_cms :p -k  : title=cms acceptance pThat>5,,scale=0
+un_weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_1.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_cms :p -k  : title=cms acceptance pThat>1,,scale=0
+un_weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_5.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_cms :p -k  : title=cms acceptance pThat>5,,scale=0
+un_weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_10.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_cms :p -k  : title=cms acceptance pThat>10,,scale=0
+un_weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_cms :p -k  : title=cms acceptance pThat>20,,scale=0
 
-#un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_z0 :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
-#weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_z0 :p  : title=weighted,,scale=0
-#un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_photon_pt_cms :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
-#weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_photon_pt_cms :p  : title=weighted,,scale=0
-#un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_photon_pt_phenix :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
-#weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_photon_pt_phenix :p  : title=weighted,,scale=0
+weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_0.1_pTHatMax_-99.0_nEv_10000.root 		:hpy_part_pt_phenix :l hist  : title=weighted,,scale=0
+un_weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_0.1_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_phenix :p -k : title=phenix acceptance pThat>0.1,,scale=0
+weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_1.0_pTHatMax_-99.0_nEv_10000.root 		:hpy_part_pt_phenix :p -k: title=weighted pThat>1,,scale=0
+
 #logx 1
 #logy 1
+#miny 1e-12
+
 #-----------------------
 #figure
 #geom 500x500
 #date
-#title: smart group
-un_weighted_eA_0_eB_0_eCM_0GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:pcodexsec :p  : title=pcodexsec
+#title RHIC jets
+weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_0.1_pTHatMax_-99.0_nEv_10000.root 		:hpy_jet_pt :l hist  : title=weighted jets,,scale=0
+un_weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_0.1_pTHatMax_-99.0_nEv_1000.root 		:hpy_jet_pt :p -k  : title=cms acceptance pThat>0.1,,scale=0
+un_weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_2.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_jet_pt :p -k  : title=cms acceptance pThat>5,,scale=0
+un_weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_1.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_jet_pt :p -k  : title=cms acceptance pThat>1,,scale=0
+un_weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_5.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_jet_pt :p -k  : title=cms acceptance pThat>5,,scale=0
+un_weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_10.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_jet_pt :p -k  : title=cms acceptance pThat>10,,scale=0
+un_weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_jet_pt :p -k  : title=cms acceptance pThat>20,,scale=0
 
+#logx 1
+#logy 1
+#maxy 1e-3
+#miny 1e-12
+
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title RHIC particles
+weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_0.1_pTHatMax_-99.0_nEv_10000.root 		:hpy_part_pt_cms :l hist  : title=weighted parts,,scale=0
+un_weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_0.1_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_cms :p -k  : title=cms acceptance pThat>0.1,,scale=0
+un_weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_2.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_cms :p -k  : title=cms acceptance pThat>5,,scale=0
+un_weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_1.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_cms :p -k  : title=cms acceptance pThat>1,,scale=0
+un_weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_5.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_cms :p -k  : title=cms acceptance pThat>5,,scale=0
+un_weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_10.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_cms :p -k  : title=cms acceptance pThat>10,,scale=0
+un_weighted_eA_100_eB_100_eCM_200GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_cms :p -k  : title=cms acceptance pThat>20,,scale=0
+
+#logx 1
+#logy 1
+#maxy 1e4
+#miny 1e-10
+
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title LHC 5 TeV particles
+weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_2.0_pTHatMax_-99.0_nEv_10000.root 		:hpy_part_pt_cms :l hist  : title=weighted pThat>2,,scale=0
+weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_10000.root 		:hpy_part_pt_cms :l hist -k : title=weighted pThat>20,,scale=0
+weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_100.0_pTHatMax_-99.0_nEv_10000.root 		:hpy_part_pt_cms :l hist -k : title=weighted pThat>100,,scale=0
+
+un_weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_2.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_cms :p -k  : title=cms acceptance pThat>2,,scale=0
+un_weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_cms :p -k  : title=cms acceptance pThat>20,,scale=0
+un_weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_100.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_cms :p -k : title=cms acceptance pThat>100,,scale=0
+
+weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_10000.root 		:hpy_part_pt_phenix :l hist  : title=weighted,,scale=0
+un_weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_phenix :p -k : title=phenix acceptance pThat>20,,scale=0
+un_weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_100.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_phenix :p -k : title=phenix acceptance pThat>100,,scale=0
+
+#un_weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_z0 :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
+#weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_part_pt_z0 :p  : title=weighted,,scale=0
+#un_weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_photon_pt_cms :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
+#weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_photon_pt_cms :p  : title=weighted,,scale=0
+#un_weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_photon_pt_phenix :p  : title=doi 10.17182/hepdata.77101.v1/t8,,scale=0
+#weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_photon_pt_phenix :p  : title=weighted,,scale=0
+#logx 1
+#logy 1
+#miny 1e-12
+
+#-----------------------
+#figure
+#geom 500x500
+#date
+#title LHC 5 TeV jets
+weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_2.0_pTHatMax_-99.0_nEv_10000.root 		:hpy_jet_pt :l hist  : title=weighted pThat>2,,scale=0
+weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_10000.root 		:hpy_jet_pt :l hist -k : title=weighted pThat>20,,scale=0
+weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_100.0_pTHatMax_-99.0_nEv_10000.root 		:hpy_jet_pt :l hist -k : title=weighted pThat>100,,scale=0
+un_weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_20.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_jet_pt :p -k  : title=cms acceptance pThat>20,,scale=0
+un_weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_100.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_jet_pt :p -k : title=cms acceptance pThat>100,,scale=0
+un_weighted_eA_2500_eB_2500_eCM_5000GeV_pTHatMin_500.0_pTHatMax_-99.0_nEv_1000.root 		:hpy_jet_pt :p -k : title=cms acceptance pThat>500,,scale=0
+
+#logx 1
+#logy 1
+#miny 1e-12
