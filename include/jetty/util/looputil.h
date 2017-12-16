@@ -29,7 +29,7 @@ namespace LoopUtil
 	        	{
 	                fSw->Stop();
 	                fNCalls = fNCalls + nup;
-	                Double_t frac = (1.*fNCalls)/fN;
+	                Double_t frac = (1.*fNCalls+1)/fN;
 	                Double_t pcent = frac * 100.;
 	                //if (((pcent - TMath::Floor(pcent)) == 0) || (fNCalls == fN - 1) || nup > 1 || fNCalls == 1)
 	                //if (pcent - fOldPcent >= 0.1 || (fNCalls == fN - 1) || nup > 1 || fNCalls == 1)
@@ -48,7 +48,7 @@ namespace LoopUtil
 	                        fm = TMath::Floor(fSw->RealTime() / 60. - fh * 60.);
 	                        fs = fSw->RealTime() - fh * 60. * 60. - fm * 60.;
 	                        TString sela = TString::Format("%02d:%02d:%02d", Int_t(fh), Int_t(fm), Int_t(fs));
-	                        std::cout << "\r[i] event #" << fNCalls << " of " << fN << " is " << TString::Format("%3.1f %% ETA:%s T:%s                       \r", pcent, seta.Data(), sela.Data()); std::cout.flush();
+	                        std::cout << "\r[i] event #" << fNCalls+1 << " of " << fN << " is " << TString::Format("%3.1f %% ETA:%s T:%s                       \r", pcent, seta.Data(), sela.Data()); std::cout.flush();
 	                        fOldPcent = pcent;
 	                        fOldRTime = fSw->RealTime();
 	                }
@@ -73,7 +73,7 @@ namespace LoopUtil
                         Double_t fm = TMath::Floor(fSw->RealTime() / 60. - fh * 60.);
                         Double_t fs = fSw->RealTime() - fh * 60. * 60. - fm * 60.;
                         TString sela = TString::Format("%02d:%02d:%02d (it/s %f)", Int_t(fh), Int_t(fm), Int_t(fs), 1./mean_t_per_it);
-                        std::cout << "\r[i] event #" << fNCalls << " " << TString::Format("T:%s                       \r", sela.Data()); std::cout.flush();
+                        std::cout << "\r[i] event #" << fNCalls+1 << " " << TString::Format("T:%s                       \r", sela.Data()); std::cout.flush();
                         fOldRTime = fSw->RealTime();
 	                }
 	                fSw->Start(kFALSE);
