@@ -38,6 +38,8 @@ int gentasks (const std::string &s)
     cout << px->GetName() << endl;
     auto px2 = w.get<GenUtil::SpectraPtHatBins>();
     cout << px2->GetName() << endl;
+    auto px3 = w.get<GenUtil::SpectraPtHatBins>("no_label");
+    cout << px3->GetName() << endl;
 
     int nEv = args.getI("--nev", 5);
     LoopUtil::TPbar pbar(nEv);

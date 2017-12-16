@@ -3,7 +3,9 @@
 
 #include <vector>
 
+#include <jetty/util/wrapper/wrapper.h>
 #include <jetty/util/pythia/pyargs.h>
+
 #include <Pythia8/Pythia.h>
 
 namespace GenUtil
@@ -19,7 +21,9 @@ namespace GenUtil
 			: fName(name), fArgs(params), fSubtasks(), fParent(0), fStatus(kBeforeInit)
 			{;}
 		GenTask();
-		virtual 				~GenTask() {;}
+
+		virtual 				~GenTask();
+
 		virtual unsigned int 	ExecThis(const char *opt = "");
 		virtual unsigned int 	InitThis(const char *opt);
 		virtual unsigned int 	FinalizeThis(const char *opt);
@@ -39,14 +43,18 @@ namespace GenUtil
 		GenTask *				GetParent() {return fParent;}
 
 	private:
-		std::string fName;
-		PyUtil::Args fArgs;
-		std::vector<GenTask*> fSubtasks;
-		GenTask *fParent;
-		unsigned int fStatus;
-		// add a wrapper to share the data!
+		std::string 			fName;
+		PyUtil::Args 			fArgs;
+		std::vector<GenTask*> 	fSubtasks;
+		GenTask *				fParent;
+		unsigned int 			fStatus;
 
 		static unsigned int _instance_counter;
+
+	protected:
+
+		static Wrapper *		fExchangeWrapper;
+
 	};
 
 	class PythiaTask : public GenTask

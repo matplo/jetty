@@ -9,7 +9,17 @@
 
 namespace GenUtil
 {
-	unsigned int GenTask::_instance_counter = 0;
+	unsigned int 	GenTask::_instance_counter 	= 0;
+	Wrapper * 		GenTask::fExchangeWrapper  	= new Wrapper();
+
+	GenTask::~GenTask()
+	{
+		if (fExchangeWrapper)
+		{
+			delete fExchangeWrapper;
+			fExchangeWrapper = 0;
+		}
+	}
 
 	GenTask::GenTask()
 		: fName("GenTask"), fArgs(), fSubtasks(), fParent(0), fStatus(0)
