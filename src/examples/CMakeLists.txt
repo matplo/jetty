@@ -19,7 +19,7 @@ string(REPLACE ".cxx" ".h" HEADERS_EXE "${SOURCES_EXE}")
 
 add_library(${NAME_LIB} SHARED ${SOURCES_LIB})
 target_include_directories(${NAME_LIB} PUBLIC ${ROOT_INCLUDE_DIR} ${FASTJET_DIR}/include ${PYTHIA8_DIR}/include)
-target_link_libraries(${NAME_LIB} ${PYTHIA8_LDFLAGS} ${FASTJET_LIBS} ${ROOT_LIBRARIES} ${PROJECT_NAME}_util ${PROJECT_NAME}_util_pythia)
+target_link_libraries(${NAME_LIB} ${PYTHIA8_LDFLAGS} ${FASTJET_LIBS} ${ROOT_LIBRARIES} ${PROJECT_NAME}_util ${PROJECT_NAME}_util_pythia ${PROJECT_NAME}_util_tasks)
 
 add_executable(${NAME_EXE} ${SOURCES_EXE})
 target_include_directories(${NAME_EXE} PUBLIC ${ROOT_INCLUDE_DIR} ${FASTJET_DIR}/include ${PYTHIA8_DIR}/include)

@@ -20,6 +20,7 @@ install_targets_custom()
 
 add_subdirectory(wrapper)
 add_subdirectory(rstream)
+add_subdirectory(tasks)
 add_subdirectory(pythia)
 
 if (HEPMC_FOUND)
