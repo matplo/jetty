@@ -26,9 +26,10 @@ class Wrapper
 		{
 			for (unsigned int i = 0; i < fPointers.size(); i++)
 			{
-				if (debug) 
+				if (debug)
 					{
 						std::cout << "[d] Deleting... " << fPointers[i]->get_name() << std::endl;
+						std::cout << "    " << fLabels[i];
 						std::cout << *fPointers[i] << std::endl;
 					}
 
@@ -37,7 +38,7 @@ class Wrapper
 		}
 
 		template <class T>
-		unsigned int 	add(T *p)
+		unsigned int 	add(T *p, const char *label = "no_label")
 		{
 			if (contains(p))
 			{
@@ -50,14 +51,16 @@ class Wrapper
 			WrapContainer<T> *c = new WrapContainer<T>(p, id, name.c_str());
 			c->take_ownership();
 			fPointers.push_back(c);
+			std::string slabel(label);
+			fLabels.push_back(slabel);
 			return id;
 		}
 
 		template <class T>
-		unsigned int 	add(const T &o)
+		unsigned int 	add(const T &o, const char *label = "no_label")
 		{
 			T *p = new T(o);
-			return add(p);
+			return add(p, label);
 		}
 
 		template <class T>
@@ -82,22 +85,32 @@ class Wrapper
 					{
 						delete fPointers[i];
 						fPointers.erase(fPointers.begin() + i);
+						fLabels.erase(fLabels.begin() + i);
 						return true;
 					}
 			}
-			return false;			
+			return false;
 		}
 
 		template <class T>
-		T* get() const
+		T* get(const char *label = 0) const
 		{
 			T *p = 0x0;
+			std::string slabel;
+			if (label) slabel = label;
 			size_t tmphash = std::type_index(typeid(p)).hash_code();
 			for (unsigned int i = 0; i < fPointers.size(); i++)
 			{
 				WrapContainer<T> *c = (WrapContainer<T>*)(fPointers[i]); // always returns c!=0
 				if (c->HasHash(tmphash))
 				{
+					if (label)
+					{
+						if (fLabels[i] != slabel)
+						{
+							continue;
+						}
+					}
 					p = c->get();
 				}
 			}
@@ -117,7 +130,7 @@ class Wrapper
 		}
 
 		template <class T>
-		T* get(unsigned int iwhich) const 
+		T* get(unsigned int iwhich) const
 		{
 			T *p = 0x0;
 			if ( iwhich < fPointers.size() )
@@ -168,8 +181,9 @@ class Wrapper
 				// this is a trick - we do not need a template argument here
 				WrapContainer<bool> *c = (WrapContainer<bool>*)(fPointers[i]); // always returns c!=0
 				WrapContainer<bool> &rc = *c;
+				std::cout << "    " << fLabels[i];
 				std::cout << rc << std::endl;
-			}			
+			}
 		}
 
 		unsigned int size() const
@@ -186,6 +200,7 @@ class Wrapper
 
 		std::vector< WrapType* >		fPointers;
 		//std::forward_list< WrapType* >		fPointers;
+		std::vector<std::string> fLabels;
 
 	private:
 		unsigned int 	idcount;
