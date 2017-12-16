@@ -3,6 +3,7 @@
 #include <jetty/examples/run_pythia_wrapper.h>
 #include <jetty/examples/run_pythia_pool.h>
 #include <jetty/examples/et.h>
+#include <jetty/examples/gentasks.h>
 
 int main ( int argc, char *argv[] )
 {
@@ -28,6 +29,11 @@ int main ( int argc, char *argv[] )
     if (args.isSet("--et"))
     {
         rv = et(args.asString());
+    }
+
+    if (args.isSet("--gentasks"))
+    {
+        rv = gentasks(args.asString());
     }
 
     return rv;

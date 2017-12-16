@@ -8,6 +8,7 @@ set(SOURCES_LIB
 	run_pythia_wrapper.cxx
 	run_pythia_pool.cxx
 	et.cxx
+	gentasks.cxx
 )
 
 set(SOURCES_EXE main.cxx)
