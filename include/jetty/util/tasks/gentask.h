@@ -65,6 +65,7 @@ namespace GenUtil
 		PythiaTask() : GenTask(), fCurrentPythia(0) {;}
 		virtual ~PythiaTask();
 		virtual unsigned int ExecThis(const char *opt = "");
+		virtual unsigned int 	InitThis(const char *opt);
 	private:
 		Pythia8::Pythia *fCurrentPythia; // useful in case of using a pool
 	};
@@ -77,6 +78,7 @@ namespace GenUtil
 			SpectraPtHatBins() : PythiaTask(), fvPtHatMin() {;}
 			virtual ~SpectraPtHatBins();
 			virtual unsigned int ExecThis(const char *opt = "");
+		virtual unsigned int 	InitThis(const char *opt);
 		private:
 			std::vector<double> fvPtHatMin;
 	};

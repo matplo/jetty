@@ -151,14 +151,33 @@ namespace GenUtil
 		return kGood;
 	}
 
+	unsigned int PythiaTask::InitThis(const char *opt)
+	{
+		fCurrentPythia = new Pythia8::Pythia();
+		std::string slabel = StrUtil::sT(GetName()) + "_Pythia";
+		fExchangeWrapper->add(fCurrentPythia, slabel.c_str());
+		Linfo << "PythiaTask " << GetName() << " pythia at: " << fCurrentPythia;
+		return kGood;
+	}
+
+	///---
 	SpectraPtHatBins::~SpectraPtHatBins()
 	{
 		;
 	}
 
+	unsigned int SpectraPtHatBins::InitThis(const char *opt)
+	{
+		auto *py = fExchangeWrapper->get<Pythia8::Pythia>();
+		Linfo << "SpectraPtHatBins " << GetName() << " pythia at: " << py;
+		return kGood;
+	}
+
 	unsigned int SpectraPtHatBins::ExecThis(const char *opt)
 	{
 		Ltrace << "SpectraPtHatBins " << GetName() << " with option: " << opt;
+		auto *py = fExchangeWrapper->get<Pythia8::Pythia>();
+		Linfo << "SpectraPtHatBins " << GetName() << " pythia at: " << py;
 		return kGood;
 	}
 }
