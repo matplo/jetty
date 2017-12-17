@@ -72,6 +72,12 @@ namespace SysUtil
 		_init_logging();
 	}
 
+	Args::Args(const char * s, const char bchar)
+		: _args(breakup(s, bchar))
+	{
+		_init_logging();
+	}
+
 	Args::Args(const Args &v)
 		: _args(v._args)
 	{
@@ -82,9 +88,10 @@ namespace SysUtil
 	{
 		_log_argument(what);
 		string swhat(what);
+		string s = boost::trim_left_copy(swhat);
 		auto prs = pairs();
 		for (auto &p : prs)
-			if (p.first == swhat) return true;
+			if (p.first == s) return true;
 		return false;
 	}
 
@@ -182,11 +189,13 @@ namespace SysUtil
 
 	void Args::remove(const string &swhat)
 	{
+		string s = boost::trim_left_copy(swhat);
 		auto prs = pairs();
 		for (auto &p : prs)
 		{
-			if (p.first == swhat)
+			if (p.first == s)
 			{
+				Ldebug << "removing arg:" << p.first;
 				p.first = "";
 				p.second = "";
 			}
@@ -264,6 +273,16 @@ namespace SysUtil
     		}
     	}
 		return v;
+	}
+
+	void Args::merge(const Args &args)
+	{
+		std::vector<string> v = breakup(args.asString().c_str(), ' ');
+		for (auto &s : v)
+		{
+			Ldebug << "merge.. " << s;
+			add(s);
+		}
 	}
 
 	string Args::asString(const char *pre, bool breaklines) const

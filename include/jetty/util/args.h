@@ -13,6 +13,7 @@ namespace SysUtil
 		Args(int argc, char **argv);
 		Args(const std::vector<std::string> &v);
 		Args(const std::string &s, const char bchar = ' ');
+		Args(const char *s, const char bchar = ' ');
 		Args(const Args &v);
 		Args();
 		virtual ~Args();
@@ -36,6 +37,9 @@ namespace SysUtil
 		template <class T>
 		void 			add(const std::string &what, const T &value);
 		void 			add(const std::string &what);
+
+		void 			merge(const Args &args);
+
 		void 			set(const char *what) 		 { add(what); }
 		void 			set(const std::string &what) { add(what.c_str()); }
 
@@ -71,7 +75,7 @@ namespace SysUtil
 	template <class T>
 	void Args::set(const char *what, const T &value)
 	{
-		remove(what);
+		// remove(what); // done in ::add
 		add(what, value);
 	}
 
@@ -84,11 +88,10 @@ namespace SysUtil
 	template <class T>
 	void Args::add(const char *what, const T &value)
 	{
-		remove(what);
 		std::ostringstream ss;
 		ss << what << "=" << value;
 		std::string s = ss.str();
-		_args.push_back(s);
+		add(s);
 	}
 
 	template <class T>

@@ -39,7 +39,7 @@ namespace PyUtil
 			nEvent 		= userNEvent;
 		}
 		set("Main:numberOfEvents", nEvent);
-		Ldebug << "[PyUtil::Args::_cook] Main:numberOfEvents = " << get("Main:numberOfEvents");
+		Ltrace << "[PyUtil::Args::_cook] Main:numberOfEvents = " << get("Main:numberOfEvents");
 
 		if (isSet("-h") || isSet("--help"))
 		{
@@ -187,7 +187,6 @@ namespace PyUtil
 
 		if (isSet("Next:numberShowEvent") == false)
 			set("Next:numberShowEvent", 0);
-
 		if (isSet("Next:numberShowInfo") == false)
 			set("Next:numberShowInfo", 0);
 		if (isSet("Next:numberShowProcess") == false)
@@ -208,8 +207,5 @@ namespace PyUtil
 				Linfo << "      Beams:eCM=" << getD("Beams:eCM");
 			}
 		}
-
-		if (isSet("Next:numberCount") == false)
-			add("Next:numberCount=0");
 	}
 };

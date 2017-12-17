@@ -20,8 +20,14 @@ namespace PyUtil
 			_cook();
 		}
 
-		Args(const std::string &s)
-		: SysUtil::Args(s)
+		Args(const std::string &s, const char bchar = ' ')
+		: SysUtil::Args(s, bchar)
+		{
+			_cook();
+		}
+
+		Args(const char *s, const char bchar = ' ')
+		: SysUtil::Args(s, bchar)
 		{
 			_cook();
 		}

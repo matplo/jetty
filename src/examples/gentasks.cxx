@@ -39,6 +39,19 @@ int gentasks (const std::string &s)
     Linfo << "task1 N exec calls: " << task1.GetNExecCalls();
     Linfo << "task2 N exec calls: " << task2.GetNExecCalls();
 
+    Ldebug << "-----";
+    PyUtil::Args a1("--out=None");
+    Linfo << a1.asString("args - 1:");
+
+    Ldebug << "-----";
+    PyUtil::Args a2("--out=ala.root");
+    a1.merge(a2);
+    Linfo << a1.asString("args - 2:");
+
+    Ldebug << "-----";
+    PyUtil::Args a3("--out=bela.root");
+    a1.merge(a3);
+    Linfo << a1.asString("args - 3:");
     return 0;
 }
 

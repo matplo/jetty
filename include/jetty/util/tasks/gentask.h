@@ -45,6 +45,10 @@ namespace GenUtil
 		PyUtil::Args 			*GetArgs() {return &fArgs;}
 
 		unsigned int 			GetNExecCalls() {return fNExecCalls;}
+
+		void 					SetOutputPath(const char *s) {fOutputPath = s;}
+		std::string 			GetOutputPath() {return fOutputPath;}
+
 	protected:
 		std::string 			fName;
 		PyUtil::Args 			fArgs;
@@ -55,6 +59,9 @@ namespace GenUtil
 
 		static unsigned int _instance_counter;
 		static Wrapper *		fShared;
+
+	private:
+		std::string 			fOutputPath;
 
 	};
 
