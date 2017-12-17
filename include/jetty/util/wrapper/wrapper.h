@@ -118,7 +118,7 @@ class Wrapper
 		}
 
 		template <class T>
-		T* get_unchecked(unsigned int iwhich) const
+		T* get_unchecked_at(unsigned int iwhich) const
 		{
 			T *p = 0x0;
 			if ( iwhich < fPointers.size())
@@ -130,7 +130,7 @@ class Wrapper
 		}
 
 		template <class T>
-		T* get(unsigned int iwhich) const
+		T* get_at(unsigned int iwhich) const
 		{
 			T *p = 0x0;
 			if ( iwhich < fPointers.size() )

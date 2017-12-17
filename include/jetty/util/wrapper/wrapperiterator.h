@@ -30,7 +30,7 @@ public:
 		unsigned int isize = fWrapper->size();
 		for (unsigned int i = 0; i < isize; i++)
 		{
-			if (fWrapper->get<T>(i) != 0x0)
+			if (fWrapper->get_at<T>(i) != 0x0)
 				fIndexes.push_back(i);
 		}
 		if (fForward == false)
@@ -54,7 +54,7 @@ public:
 		}
 		if (fPos - 1 < fIndexes.size())
 		{
-			p = fWrapper->get<T>(fPos - 1);
+			p = fWrapper->get_at<T>(fPos - 1);
 			if (fForward == false)
 			{
 				fPos--;

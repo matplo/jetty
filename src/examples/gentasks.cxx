@@ -17,29 +17,13 @@ int gentasks (const std::string &s)
     PyUtil::Args args(s);
 
     GenUtil::PythiaTask pythiaT("pythia", args.asString().c_str());
-    GenUtil::SpectraPtHatBins aTask;
-    GenUtil::SpectraPtHatBins aTask2;
+    GenUtil::SpectraPtHatBins task1;
+    GenUtil::SpectraPtHatBins task2;
 
-    pythiaT.AddTask(&aTask);
-    aTask.AddTask(&aTask2);
+    pythiaT.AddTask(&task1);
+    task1.AddTask(&task2);
 
-    pythiaT.Init();
-
-    Wrapper w;
-    w.set_debug(1);
-    w.add(pythiaT, "pythiaT");
-    w.add(aTask2);
-    w.add(aTask, "aTaskLabel");
-    w.list();
-
-    auto p = w.get<GenUtil::PythiaTask>("pythiaT");
-    cout << p->GetName() << endl;
-    auto px = w.get<GenUtil::SpectraPtHatBins>("aTaskLabel");
-    cout << px->GetName() << endl;
-    auto px2 = w.get<GenUtil::SpectraPtHatBins>();
-    cout << px2->GetName() << endl;
-    auto px3 = w.get<GenUtil::SpectraPtHatBins>("no_label");
-    cout << px3->GetName() << endl;
+    pythiaT.Init("new");
 
     int nEv = args.getI("--nev", 5);
     LoopUtil::TPbar pbar(nEv);
@@ -51,5 +35,28 @@ int gentasks (const std::string &s)
 
     pythiaT.Finalize();
 
+    Linfo << "pythiaT N exec calls: " << pythiaT.GetNExecCalls();
+    Linfo << "task1 N exec calls: " << task1.GetNExecCalls();
+    Linfo << "task2 N exec calls: " << task2.GetNExecCalls();
+
     return 0;
 }
+
+//int wrap_tests()
+//{
+//    Wrapper w;
+//    w.set_debug(1);
+//    w.add(pythiaT, "pythiaT");
+//    w.add(aTask2);
+//    w.add(aTask, "aTaskLabel");
+//    w.list();
+//
+//    auto p = w.get<GenUtil::PythiaTask>("pythiaT");
+//    cout << p->GetName() << endl;
+//    auto px = w.get<GenUtil::SpectraPtHatBins>("aTaskLabel");
+//    cout << px->GetName() << endl;
+//    auto px2 = w.get<GenUtil::SpectraPtHatBins>();
+//    cout << px2->GetName() << endl;
+//    auto px3 = w.get<GenUtil::SpectraPtHatBins>("no_label");
+//    cout << px3->GetName() << endl;
+//}

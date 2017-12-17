@@ -10,19 +10,20 @@
 namespace GenUtil
 {
 	unsigned int 	GenTask::_instance_counter 	= 0;
-	Wrapper * 		GenTask::fExchangeWrapper  	= new Wrapper();
+	Wrapper * 		GenTask::fShared 			= new Wrapper();
 
 	GenTask::~GenTask()
 	{
-		if (fExchangeWrapper)
+		_instance_counter -= 1;
+		if (fShared && _instance_counter == 0)
 		{
-			delete fExchangeWrapper;
-			fExchangeWrapper = 0;
+			delete fShared;
+			fShared = 0;
 		}
 	}
 
 	GenTask::GenTask()
-		: fName("GenTask"), fArgs(), fSubtasks(), fParent(0), fStatus(0)
+		: fName("GenTask"), fArgs(), fSubtasks(), fParent(0), fStatus(0), fNExecCalls(0)
 	{
 		_instance_counter += 1;
 		std::string tmpname = "GenTask_";
@@ -32,30 +33,32 @@ namespace GenUtil
 
 	unsigned int GenTask::ExecThis(const char *opt)
 	{
-		Ltrace << GetName() << "::ExecThis with options: " << opt;
+		Ltrace << "GenTask::ExecThis " << GetName() << " with options: " << opt;
 		return kGood;
 	}
 
 	unsigned int GenTask::InitThis(const char *opt)
 	{
-		Ltrace << GetName() << "::InitThis with options: " << opt;
+		Ltrace << "GenTask::InitThis " << GetName() << " with options: " << opt;
 		return kGood;
 	}
 
 	unsigned int GenTask::FinalizeThis(const char *opt)
 	{
-		Ltrace << GetName() << "::FinalizeThis with options: " << opt;
+		Ltrace << "GenTask::FinalizeThis " << GetName() << " with options: " << opt;
 		return kDone;
 	}
 
 	unsigned int GenTask::Init(const char *opt)
 	{
+		Ltrace << "GenTask::Init " << GetName() << " with options: " << opt;
 		if (fStatus == kBeforeInit)
 		{
 			fStatus = InitThis(opt);
 		}
 		for(auto t : fSubtasks)
 		{
+			Ltrace << " -- call ::Init of " << t->GetName();
 			auto iret_tmp = t->Init(opt);
 			t->SetStatus(iret_tmp);
 		}
@@ -83,6 +86,7 @@ namespace GenUtil
 
 	unsigned int GenTask::Execute(const char *opt)
 	{
+		fNExecCalls+=1;
 		unsigned int iret = kGood;
 		if (fStatus == kError)
 		{
@@ -147,17 +151,32 @@ namespace GenUtil
 
 	unsigned int PythiaTask::ExecThis(const char *opt)
 	{
-		Ltrace << "PythiaTask " << GetName() << " with option: " << opt;
+		Ltrace << "PythiaTask::ExecThis " << GetName() << " with option: " << opt;
 		return kGood;
 	}
 
-	unsigned int PythiaTask::InitThis(const char *opt)
+	unsigned int PythiaTask::Init(const char *opt)
 	{
-		fCurrentPythia = new Pythia8::Pythia();
-		std::string slabel = StrUtil::sT(GetName()) + "_Pythia";
-		fExchangeWrapper->add(fCurrentPythia, slabel.c_str());
-		Linfo << "PythiaTask " << GetName() << " pythia at: " << fCurrentPythia;
-		return kGood;
+		PyUtil::Args _opts(opt);
+		Linfo << "PythiaTask::Init " << GetName() << " with opts: " << _opts.asString();
+		Linfo << "PythiaTask::Init " << GetName() << " fStatus: " << fStatus;
+		if (fStatus == kBeforeInit)
+		{
+			if (_opts.isSet("new"))
+			{
+				fpPythia = new Pythia8::Pythia();
+				std::string slabel = StrUtil::sT(GetName()) + "_Pythia";
+				fShared->add(fpPythia, slabel.c_str());
+				fShared->list();
+				_opts.remove("new");
+			}
+			else
+			{
+				fpPythia = fShared->get<Pythia8::Pythia>();
+			}
+		}
+		Linfo << "PythiaTask::Init " << GetName() << " pythia at: " << fpPythia;
+		return GenTask::Init(_opts.asString().c_str());
 	}
 
 	///---
@@ -168,16 +187,14 @@ namespace GenUtil
 
 	unsigned int SpectraPtHatBins::InitThis(const char *opt)
 	{
-		auto *py = fExchangeWrapper->get<Pythia8::Pythia>();
-		Linfo << "SpectraPtHatBins " << GetName() << " pythia at: " << py;
+		Linfo << "SpectraPtHatBins::InitThis " << GetName() << " pythia at: " << fpPythia;
 		return kGood;
 	}
 
 	unsigned int SpectraPtHatBins::ExecThis(const char *opt)
 	{
-		Ltrace << "SpectraPtHatBins " << GetName() << " with option: " << opt;
-		auto *py = fExchangeWrapper->get<Pythia8::Pythia>();
-		Linfo << "SpectraPtHatBins " << GetName() << " pythia at: " << py;
+		Ltrace << "SpectraPtHatBins::ExecThis " << GetName() << " with option: " << opt;
+		Ltrace << "SpectraPtHatBins::ExecThis " << GetName() << " pythia at: " << fpPythia;
 		return kGood;
 	}
 }

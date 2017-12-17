@@ -15,23 +15,23 @@ namespace GenUtil
 	public:
 		enum { kBeforeInit, kGood, kDefinedStop, kInactive, kError, kDone };
 		GenTask(const char *name)
-			: fName(name), fArgs(), fSubtasks(), fParent(0), fStatus(kBeforeInit)
+			: fName(name), fArgs(), fSubtasks(), fParent(0), fStatus(kBeforeInit), fNExecCalls(0)
 			{;}
 		GenTask(const char *name, const char *params)
-			: fName(name), fArgs(params), fSubtasks(), fParent(0), fStatus(kBeforeInit)
+			: fName(name), fArgs(params), fSubtasks(), fParent(0), fStatus(kBeforeInit), fNExecCalls(0)
 			{;}
 		GenTask();
 
 		virtual 				~GenTask();
 
 		virtual unsigned int 	ExecThis(const char *opt = "");
-		virtual unsigned int 	InitThis(const char *opt);
-		virtual unsigned int 	FinalizeThis(const char *opt);
+		virtual unsigned int 	InitThis(const char *opt = "");
+		virtual unsigned int 	FinalizeThis(const char *opt = "");
 
 
-		unsigned int 			Execute(const char *opt = "");
-		unsigned int 			Init(const char *opt = "");
-		unsigned int 			Finalize(const char *opt = "");
+		virtual unsigned int 	Execute(const char *opt = "");
+		virtual unsigned int 	Init(const char *opt = "");
+		virtual unsigned int 	Finalize(const char *opt = "");
 
 		unsigned int 			GetStatus() {return fStatus;}
 		void 					SetStatus(unsigned int st) {fStatus = st;}
@@ -41,46 +41,49 @@ namespace GenUtil
 		void 					AddTask(GenTask *t);
 		void 					SetParent(GenTask *t) {fParent = t;}
 		GenTask *				GetParent() {return fParent;}
+		Wrapper * 				GetShared() {return fShared;}
+		PyUtil::Args 			*GetArgs() {return &fArgs;}
 
-	private:
+		unsigned int 			GetNExecCalls() {return fNExecCalls;}
+	protected:
 		std::string 			fName;
 		PyUtil::Args 			fArgs;
 		std::vector<GenTask*> 	fSubtasks;
 		GenTask *				fParent;
 		unsigned int 			fStatus;
+		unsigned int 			fNExecCalls;
 
 		static unsigned int _instance_counter;
-
-	protected:
-
-		static Wrapper *		fExchangeWrapper;
+		static Wrapper *		fShared;
 
 	};
 
+	// a convenience class
+	// init creates pythia or grabs last instance from the fShared
 	class PythiaTask : public GenTask
 	{
 	public:
-		PythiaTask(const char *name) : GenTask(name), fCurrentPythia(0) {;}
-		PythiaTask(const char *name, const char *params) : GenTask(name, params), fCurrentPythia(0) {;}
-		PythiaTask() : GenTask(), fCurrentPythia(0) {;}
-		virtual ~PythiaTask();
+		PythiaTask(const char *name) : GenTask(name), fpPythia(0) {;}
+		PythiaTask(const char *name, const char *params) : GenTask(name, params), fpPythia(0) {;}
+		PythiaTask() : GenTask(), fpPythia(0) {;}
+		virtual 			~PythiaTask();
+		virtual unsigned int Init(const char *opt = "");
 		virtual unsigned int ExecThis(const char *opt = "");
-		virtual unsigned int 	InitThis(const char *opt);
-	private:
-		Pythia8::Pythia *fCurrentPythia; // useful in case of using a pool
+	protected:
+		Pythia8::Pythia 		*fpPythia;
 	};
 
 	class SpectraPtHatBins : public PythiaTask
 	{
-		public:
-			SpectraPtHatBins(const char *name) : PythiaTask(name), fvPtHatMin() {;}
-			SpectraPtHatBins(const char *name, const char *params) : PythiaTask(name, params), fvPtHatMin() {;}
-			SpectraPtHatBins() : PythiaTask(), fvPtHatMin() {;}
-			virtual ~SpectraPtHatBins();
-			virtual unsigned int ExecThis(const char *opt = "");
-		virtual unsigned int 	InitThis(const char *opt);
-		private:
-			std::vector<double> fvPtHatMin;
+	public:
+		SpectraPtHatBins(const char *name) : PythiaTask(name), fvPtHatMin() {;}
+		SpectraPtHatBins(const char *name, const char *params) : PythiaTask(name, params), fvPtHatMin() {;}
+		SpectraPtHatBins() : PythiaTask(), fvPtHatMin() {;}
+		virtual 			~SpectraPtHatBins();
+		virtual unsigned int ExecThis(const char *opt = "");
+		virtual unsigned int InitThis(const char *opt = "");
+	protected:
+		std::vector<double> fvPtHatMin;
 	};
 };
 
