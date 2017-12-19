@@ -115,6 +115,8 @@ namespace PyUtil
 		if (_is_initialized)
 		{
 			Lwarn << "new pythia is at " << ppythia << " with settings: " << args.asString();
+			_pythia_pool_settings.push_back(args.asString());
+			_pythia_pool.push_back(ppythia);
 		}
 		else
 		{
@@ -182,7 +184,7 @@ namespace PyUtil
 		Int_t binx    = _eAeBmap->GetXaxis()->FindBin(eA);
 		Int_t biny    = _eAeBmap->GetYaxis()->FindBin(eB);
 		Int_t pyindex = _eAeBmap->GetBinContent(binx,biny) - 1;
-		Int_t ibin    = _eAeBmap->GetBin(binx,biny);
+		// Int_t ibin    = _eAeBmap->GetBin(binx,biny);
 		Ldebug << "eA = " << eA << " is bin : " << binx;
 		Ldebug << "eB = " << eB << " is bin : " << biny;
 		if (binx <= 0 || binx > _eAeBmap->GetXaxis()->GetNbins() ||
@@ -208,7 +210,6 @@ namespace PyUtil
 			ret_pythia = CreatePythia(eA, eB, settings.c_str());
 			if (ret_pythia != 0)
 			{
-				_pythia_pool.push_back(ret_pythia);
 				pyindex = _pythia_pool.size();
 				_eAeBmap->SetBinContent(binx, biny, pyindex);
 				Args args(settings);
@@ -227,6 +228,15 @@ namespace PyUtil
 		else
 		{
 			ret_pythia = _pythia_pool[pyindex];
+			if (settings != _pythia_pool_settings[pyindex])
+			{
+				Lwarn << "replacing pythia eA: " << eA << " eB:" << eB << " settings: " << _pythia_pool_settings[pyindex]
+					<< "with pythia eA: " << eA << " eB:" << eB << " settings: " << settings;
+				delete ret_pythia;
+				_pythia_pool[pyindex] = CreatePythia(eA, eB, settings.c_str());
+				_pythia_pool_settings[pyindex] = settings;
+				ret_pythia = _pythia_pool[pyindex];
+			}
 			if (!ret_pythia)
 			{
 				Lfatal << "pythia instance not found at index: " << pyindex;
@@ -243,7 +253,7 @@ namespace PyUtil
 				double tmp_eB = ret_pythia->parm("Beams:eB");
 				Int_t binx    = _eAeBmap->GetXaxis()->FindBin(tmp_eA);
 				Int_t biny    = _eAeBmap->GetYaxis()->FindBin(tmp_eB);
-				Int_t ibin    = _eAeBmap->GetBin(binx,biny);
+				// Int_t ibin    = _eAeBmap->GetBin(binx,biny);
 				if (binx <= 0 || binx > _eAeBmap->GetXaxis()->GetNbins() ||
 				    biny <= 0 || biny > _eAeBmap->GetYaxis()->GetNbins())
 				{
