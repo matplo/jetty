@@ -1,4 +1,4 @@
-#include <tglaubermc.h>
+#include <jetty/util/tglaubermc/tglaubermc.h>
 ClassImp(TGlauNucleon)
   //---------------------------------------------------------------------------------
 void TGlauNucleon::RotateXYZ(Double_t phi, Double_t theta)
@@ -21,7 +21,7 @@ void TGlauNucleon::RotateXYZ_3D(Double_t psiX, Double_t psiY, Double_t psiZ)
   fY = v.Y();
   fZ = v.Z();
 }
-TF1 *getNNProf(Double_t snn, Double_t omega, Double_t G) 
+TF1 *getNNProf(Double_t snn, Double_t omega, Double_t G)
 { // NN collisoin profile from https://arxiv.org/abs/1307.0636
   if ((omega<0) || (omega>1))
     return 0;
@@ -53,11 +53,11 @@ void runAndSaveNtuple(const Int_t n,
     om=Form("-om%.1f",omega);
   }
   TString name;
-  if (fname) 
-    name = fname; 
+  if (fname)
+    name = fname;
   else {
     TString nd;
-    if (noded>0) 
+    if (noded>0)
       nd=Form("-nd%.1f",noded);
     name = Form("%s%s%s.root",mcg->Str(),om.Data(),nd.Data());
   }
@@ -67,9 +67,9 @@ void runAndSaveNtuple(const Int_t n,
   nt->Write();
   out.Close();
 }
-void runAndSaveNucleons(const Int_t n,                    
-                        const char *sysA,           
-                        const char *sysB,           
+void runAndSaveNucleons(const Int_t n,
+                        const char *sysA,
+                        const char *sysB,
                         const Double_t signn,
                         const Double_t sigwidth,
                         const Double_t mind,
@@ -79,14 +79,14 @@ void runAndSaveNucleons(const Int_t n,
   TGlauberMC *mcg=new TGlauberMC(sysA,sysB,signn,sigwidth);
   mcg->SetMinDistance(mind);
   TFile *out=0;
-  if (fname) 
+  if (fname)
     out=new TFile(fname,"recreate",fname,9);
   for (Int_t ievent=0; ievent<n; ++ievent) {
     //get an event with at least one collision
     while (!mcg->NextEvent()) {}
     //access, save and (if wanted) print out nucleons
     TObjArray* nucleons=mcg->GetNucleons();
-    if (!nucleons) 
+    if (!nucleons)
       continue;
     if (out)
       nucleons->Write(Form("nucleonarray%d",ievent),TObject::kSingleKey);
@@ -98,7 +98,7 @@ void runAndSaveNucleons(const Int_t n,
       for (Int_t iNucl=0; iNucl<nNucls; ++iNucl) {
         TGlauNucleon *nucl=(TGlauNucleon *)nucleons->At(iNucl);
         Char_t nucleus='A';
-        if (nucl->IsInNucleusB()) 
+        if (nucl->IsInNucleusB())
 	  nucleus='B';
         Double_t x=nucl->GetX();
         Double_t y=nucl->GetY();
@@ -108,7 +108,7 @@ void runAndSaveNucleons(const Int_t n,
       }
     }
   }
-  if (out) 
+  if (out)
     delete out;
 }
 void runAndSmearNtuple(const Int_t n,
@@ -240,7 +240,7 @@ void runAndSmearNtuple(const Int_t n,
   delete out;
 }
 ClassImp(TGlauNucleus)
-TGlauNucleus::TGlauNucleus(const char* iname, Int_t iN, Double_t iR, Double_t ia, Double_t iw, TF1* ifunc) : 
+TGlauNucleus::TGlauNucleus(const char* iname, Int_t iN, Double_t iR, Double_t ia, Double_t iw, TF1* ifunc) :
   TNamed(iname,""),
   fN(iN),fR(iR),fA(ia),fW(iw),fR2(0),fA2(0),fW2(0),fBeta2(0),fBeta4(0),
   fMinDist(0.4),fNodeDist(0.0),fSmearing(0.0),fRecenter(1),fLattice(0),fSmax(99),
@@ -286,7 +286,7 @@ void TGlauNucleus::Lookup(const char* name)
   SetName(name);
   TString tmp(name);
   if      (TString(name) == "p")       {fN = 1;   fR = 0.234;      fA = 0;      fW =  0;       fF = 0;  fZ=1;}
-  else if (TString(name) == "pg")      {fN = 1;   fR = 0.514;      fA = 0;      fW =  0;       fF = 9;  fZ=1;} 
+  else if (TString(name) == "pg")      {fN = 1;   fR = 0.514;      fA = 0;      fW =  0;       fF = 9;  fZ=1;}
   else if (TString(name) == "pdg")     {fN = 1;   fR = 1;          fA = 0;      fW =  0;       fF = 10; fZ=1;} // from arXiv:1101.5953
   else if (TString(name) == "d")       {fN = 2;   fR = 0.01;       fA = 0.5882; fW =  0;       fF = 1;  fZ=1;}
   else if (TString(name) == "dh")      {fN = 2;   fR = 0.01;       fA = 0.5882; fW =  0;       fF = 3;  fZ=1;}
@@ -301,7 +301,7 @@ void TGlauNucleus::Lookup(const char* name)
   else if (TString(name) == "Ni")      {fN = 58;  fR = 4.309;      fA = 0.517;  fW = -0.1308;  fF = 1;  fZ=28;}
   else if (TString(name) == "Cu")      {fN = 63;  fR = 4.2;        fA = 0.596;  fW =  0;       fF = 1;  fZ=29;}
   else if (TString(name) == "Curw ")   {fN = 63;  fR = 4.2;        fA = 0.596;  fW =  0;       fF = 12; fZ=29;}
-  else if (TString(name) == "Cu2")     {fN = 63;  fR = 4.2;        fA = 0.596;  fW =  0;       fF = 8;  fZ=29; fBeta2=0.162; fBeta4=-0.006;}  
+  else if (TString(name) == "Cu2")     {fN = 63;  fR = 4.2;        fA = 0.596;  fW =  0;       fF = 8;  fZ=29; fBeta2=0.162; fBeta4=-0.006;}
   else if (TString(name) == "CuHN")    {fN = 63;  fR = 4.28;       fA = 0.5;    fW =  0;       fF = 1;  fZ=29;} // from arXiv:0904.4080v1
   else if (TString(name) == "Xe")      {fN = 129; fR = 5.32*1.019; fA = 0.57;   fW =  0;       fF = 1;  fZ=54;} // scale from Sb (Antimony, A=122) by 1.019 = (129/122)**0.333
   else if (TString(name) == "Xerw")    {fN = 129; fR = 5.32*1.019; fA = 0.57;   fW =  0;       fF = 13; fZ=54;}
@@ -317,7 +317,7 @@ void TGlauNucleus::Lookup(const char* name)
   else if (TString(name) == "Pbpn")    {fN = 208; fR = 6.68;       fA = 0.447;  fW =  0;       fF = 11; fZ=82; fR2=6.69; fA2=0.56; fW2=0;}
   else if (TString(name) == "Pbpnrw")  {fN = 208; fR = 6.68;       fA = 0.447;  fW =  0;       fF = 16; fZ=82; fR2=6.69; fA2=0.56; fW2=0;}
   // Uranium description taken from Heinz & Kuhlman, nucl-th/0411054.  In this code, fR is defined as 6.8*0.91, fW=6.8*0.26
-  else if (TString(name) == "U")       {fN = 238; fR = 6.188;      fA = 0.54;   fW =  1.77;    fF = 5;  fZ=92;}  
+  else if (TString(name) == "U")       {fN = 238; fR = 6.188;      fA = 0.54;   fW =  1.77;    fF = 5;  fZ=92;}
   else if (TString(name) == "U2")      {fN = 238; fR = 6.67;       fA = 0.44;   fW =  0;       fF = 8;  fZ=92; fBeta2=0.280; fBeta4=0.093;}
   else {
     cout << "Could not find nucleus " << name << endl;
@@ -349,19 +349,19 @@ void TGlauNucleus::Lookup(const char* name)
       break;
     case 12: // Cu reweighted
       fFunc1 = new TF1(name,"x*x*(1+[2]*(x/[0])**2)/(1+exp((x-[0])/[1]))/([3]+[4]*x+[5]*x^2)",0,fMaxR);
-      fFunc1->SetParameters(fR,fA,fW,1.00898,-0.000790403,-0.000389897); 
+      fFunc1->SetParameters(fR,fA,fW,1.00898,-0.000790403,-0.000389897);
       fRecenter=1;
       fSmax=0.1;
       break;
     case 13: // Xe reweighted
       fFunc1 = new TF1(name,"x*x*(1+[2]*(x/[0])**2)/(1+exp((x-[0])/[1]))/([3]+[4]*x+[5]*x^2)",0,fMaxR);
-      fFunc1->SetParameters(fR,fA,fW,1.0096,-0.000874123,-0.000256708); 
+      fFunc1->SetParameters(fR,fA,fW,1.0096,-0.000874123,-0.000256708);
       fRecenter=1;
       fSmax=0.1;
       break;
     case 14: // Au reweighted
       fFunc1 = new TF1(name,"x*x*(1+[2]*(x/[0])**2)/(1+exp((x-[0])/[1]))/([3]+[4]*x+[5]*x^2)",0,fMaxR);
-      fFunc1->SetParameters(fR,fA,fW,1.00899,-0.000590908,-0.000210598); 
+      fFunc1->SetParameters(fR,fA,fW,1.00899,-0.000590908,-0.000210598);
       fRecenter=1;
       fSmax=0.1;
       break;
@@ -478,7 +478,7 @@ Bool_t TGlauNucleus::TestMinDist(Int_t n, Double_t x, Double_t y, Double_t z) co
 {
   if (fMinDist<=0)
     return kTRUE;
-  const Double_t md2 = fMinDist*fMinDist; 
+  const Double_t md2 = fMinDist*fMinDist;
   for (Int_t j = 0; j<n; ++j) {
     TGlauNucleon *other=(TGlauNucleon*)fNucleons->At(j);
     Double_t xo=other->GetX();
@@ -499,13 +499,13 @@ TVector3 &TGlauNucleus::ThrowNucleons(Double_t xshift)
     fNucleons=new TObjArray(fN);
     fNucleons->SetOwner();
     for (Int_t i=0; i<fN; ++i) {
-      TGlauNucleon *nucleon=new TGlauNucleon(); 
+      TGlauNucleon *nucleon=new TGlauNucleon();
       nucleon->SetType(0);
-      if (i<fZ) 
+      if (i<fZ)
         nucleon->SetType(1);
-      fNucleons->Add(nucleon); 
+      fNucleons->Add(nucleon);
     }
-  } 
+  }
   if (1) { //randomize p and n in nucleus
     for (Int_t i=0,iz=0; i<fN; ++i) {
       TGlauNucleon *nucleon=(TGlauNucleon*)fNucleons->At(i);
@@ -557,7 +557,7 @@ TVector3 &TGlauNucleus::ThrowNucleons(Double_t xshift)
                      -nucleon1->GetY(),
                      -nucleon1->GetZ());
     fTrials = 1;
-  } else if (helium3) { 
+  } else if (helium3) {
     if (fHe3Counter == -1) {
       // read in the ascii file into the array and step through the counter
       char filename[100] = "he3_plaintext.dat";
@@ -581,11 +581,11 @@ TVector3 &TGlauNucleus::ThrowNucleons(Double_t xshift)
                >> fHe3Arr[inputcounter][2][0] >> fHe3Arr[inputcounter][2][1] >> fHe3Arr[inputcounter][2][2]
                >> foo >> foo >> foo >> foo;
         ++inputcounter;
-      }  
+      }
       myfile.close();
       fHe3Counter=0;
     } // done reading in the file the first time
-    if (fHe3Counter > 5999) 
+    if (fHe3Counter > 5999)
       fHe3Counter = 0;
     TGlauNucleon *nucleon1=(TGlauNucleon*)(fNucleons->At(0));
     TGlauNucleon *nucleon2=(TGlauNucleon*)(fNucleons->At(1));
@@ -607,7 +607,7 @@ TVector3 &TGlauNucleus::ThrowNucleons(Double_t xshift)
     nucleon3->RotateXYZ(fPhiRot,fThetaRot);
     ++fHe3Counter;
     fTrials = 1;
-  } else { // all other nuclei 
+  } else { // all other nuclei
     const Double_t startingEdge  = 20; // throw nucleons within a cube of this size (fm)
     const Double_t startingEdgeX = startingEdge + fNodeDist*gRandom->Rndm() - 0.5*fNodeDist;
     const Double_t startingEdgeY = startingEdge + fNodeDist*gRandom->Rndm() - 0.5*fNodeDist;
@@ -615,8 +615,8 @@ TVector3 &TGlauNucleus::ThrowNucleons(Double_t xshift)
     const Int_t nslots = 2*startingEdge/fNodeDist+1;
     if (fNodeDist>0) {
       if (fMinDist>fNodeDist) {
-        cout << "Minimum distance (nucleon hard core diameter) [" 
-          << fMinDist << "] cannot be larger than the nodal spacing of the grid [" 
+        cout << "Minimum distance (nucleon hard core diameter) ["
+          << fMinDist << "] cannot be larger than the nodal spacing of the grid ["
           << fNodeDist << "]." << endl;
         cout << "Quitting...." << endl;
         gSystem->Exit(123);
@@ -653,7 +653,7 @@ TVector3 &TGlauNucleus::ThrowNucleons(Double_t xshift)
             cerr << "Should not end here because you do not have libMathMore" << endl;
 #endif
             Double_t prob = 1/(1+TMath::Exp((R-Rtheta)/fA));
-            if (gRandom->Rndm()<prob) 
+            if (gRandom->Rndm()<prob)
               nucleon_inside=1;
           }
         } else if (fF==8) { // use TF2
@@ -728,7 +728,7 @@ TVector3 &TGlauNucleus::ThrowNucleons(Double_t xshift)
             fIsUsed->SetBitNumber(index);
           } /* end "grid/lattice mode" */
           nucleon->SetXYZ(x,y,z);
-          if (fF==5||fF==7||fF==8) 
+          if (fF==5||fF==7||fF==8)
             nucleon->RotateXYZ(fPhiRot,fThetaRot); // Uranium etc.
           if (fNodeDist>0) {
             nucleon->RotateXYZ_3D(fXRot,fYRot,fZRot);
@@ -739,11 +739,11 @@ TVector3 &TGlauNucleus::ThrowNucleons(Double_t xshift)
         }
       }
     }
-  }    
+  }
   // calculate center of mass
-  Double_t sumx=0;       
-  Double_t sumy=0;       
-  Double_t sumz=0;       
+  Double_t sumx=0;
+  Double_t sumy=0;
+  Double_t sumz=0;
   for (Int_t i = 0; i<fN; ++i) {
     TGlauNucleon *nucleon=(TGlauNucleon*)(fNucleons->At(i));
     sumx += nucleon->GetX();
@@ -850,7 +850,7 @@ Bool_t TGlauberMC::CalcEvent(Double_t bgen)
   }
   if (fPTot)
     fXSectEvent = fPTot->GetRandom();
-  else 
+  else
     fXSectEvent = fXSect;
   // "ball" diameter = distance at which two balls interact
   Double_t d2 = (Double_t)fXSectEvent/(TMath::Pi()*10); // in fm^2
@@ -871,7 +871,7 @@ Bool_t TGlauberMC::CalcEvent(Double_t bgen)
       Double_t dx = nucleonB->GetX()-nucleonA->GetX();
       Double_t dy = nucleonB->GetY()-nucleonA->GetY();
       Double_t dij = dx*dx+dy*dy;
-      if (dij>d2) 
+      if (dij>d2)
         continue;
       Double_t bij = TMath::Sqrt(dij);
       if (fNNProf) {
@@ -1010,7 +1010,7 @@ Bool_t TGlauberMC::CalcResults(Double_t bgen)
           Double_t r = TMath::Sqrt(xA*xA+yA*yA);
           Double_t phi = TMath::ATan2(yA,xA);
           Double_t w = n;
-          if (n==1) 
+          if (n==1)
             w = 3; // use r^3 weighting for Ecc1/Psi1
           cosphi[n] += TMath::Power(r,w)*TMath::Cos(n*phi);
           sinphi[n] += TMath::Power(r,w)*TMath::Sin(n*phi);
@@ -1038,7 +1038,7 @@ Bool_t TGlauberMC::CalcResults(Double_t bgen)
       fPsiN[n] = (TMath::ATan2(sinphi[n],cosphi[n]) + TMath::Pi())/n;
       fEccN[n] = TMath::Sqrt(sinphi[n]*sinphi[n]+cosphi[n]*cosphi[n])/rn[n];
     }
-    if (1) { //silly test but useful to catch errors 
+    if (1) { //silly test but useful to catch errors
       Double_t t=TMath::Sqrt(TMath::Power(fEv.VarY-fEv.VarX,2)+4.*fEv.VarXY*fEv.VarXY)/(fEv.VarY+fEv.VarX)/fEccN[2];
       if (t<0.99||t>1.01)
         cout << "Error: Expected t=1 but found t=" << t << endl;
@@ -1127,7 +1127,7 @@ Bool_t TGlauberMC::CalcResults(Double_t bgen)
     const Double_t krhs = TMath::Sqrt(fXSectEvent/40./TMath::Pi());
     const Double_t ksg  = krhs/TMath::Sqrt(5);
     const Double_t kDL  = 0.1;
-    TF1 rad("rad","2*pi/[0]/[0]*TMath::Exp(-x*x/(2.*[0]*[0]))",0.0,5*ksg); 
+    TF1 rad("rad","2*pi/[0]/[0]*TMath::Exp(-x*x/(2.*[0]*[0]))",0.0,5*ksg);
     rad.SetParameter(0,ksg);
     const Double_t minval = rad.Eval(5*ksg);
     fEv.Phi0         = gRandom->Uniform(0,TMath::TwoPi());
@@ -1149,7 +1149,7 @@ Bool_t TGlauberMC::CalcResults(Double_t bgen)
     }
     fEv.Length = 2*i1a/i0a;
   }
-  if (fEv.Npart > fMaxNpartFound) 
+  if (fEv.Npart > fMaxNpartFound)
     fMaxNpartFound = fEv.Npart;
   return kTRUE;
 }
@@ -1223,10 +1223,10 @@ Double_t TGlauberMC::GetTotXSect() const
 }
 Double_t TGlauberMC::GetTotXSectErr() const
 {
-  return GetTotXSect()/TMath::Sqrt((Double_t)fEvents) * 
+  return GetTotXSect()/TMath::Sqrt((Double_t)fEvents) *
     TMath::Sqrt(Double_t(1.-fEvents/fTotalEvents));
 }
-TObjArray *TGlauberMC::GetNucleons() 
+TObjArray *TGlauberMC::GetNucleons()
 {
   if (!fNucleonsA || !fNucleonsB) return 0;
   if (fNucleons) return fNucleons;
@@ -1245,7 +1245,7 @@ TObjArray *TGlauberMC::GetNucleons()
 }
 Bool_t TGlauberMC::NextEvent(Double_t bgen)
 {
-  if (bgen<0) 
+  if (bgen<0)
     bgen = TMath::Sqrt((fBmax*fBmax-fBmin*fBmin)*gRandom->Rndm()+fBmin*fBmin);
   return CalcEvent(bgen);
 }
@@ -1275,7 +1275,7 @@ void TGlauberMC::Run(Int_t nevents, Double_t b)
   for (Int_t i = 0; i<nevents; ++i) {
     while (!NextEvent(b)) {}
     fNt->Fill((Float_t*)(&fEv.Npart));
-    if (!(i%100)) 
+    if (!(i%100))
       cout << "Event # " << i << " x-sect = " << GetTotXSect() << " +- " << GetTotXSectErr() << " b        \r" << flush;
   }
   cout << endl << "Done!" << endl;

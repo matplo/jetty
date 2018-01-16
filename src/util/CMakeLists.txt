@@ -22,6 +22,7 @@ add_subdirectory(wrapper)
 add_subdirectory(rstream)
 add_subdirectory(tasks)
 add_subdirectory(pythia)
+add_subdirectory(tglaubermc)
 
 if (HEPMC_FOUND)
 	add_subdirectory(hepmc)
