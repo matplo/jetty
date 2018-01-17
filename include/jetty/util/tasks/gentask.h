@@ -8,8 +8,6 @@
 
 #include <Pythia8/Pythia.h>
 
-class TGlauberMC;
-
 namespace GenUtil
 {
 	class GenTask
@@ -80,21 +78,6 @@ namespace GenUtil
 		virtual unsigned int ExecThis(const char *opt = "");
 	protected:
 		Pythia8::Pythia 		*fpPythia;
-	};
-
-	class GlauberTask : public GenTask
-	{
-	public:
-		GlauberTask(const char *name) : GenTask(name), fpGlauberMC(0), fFixedb(-1.) {;}
-		GlauberTask(const char *name, const char *params) : GenTask(name, params), fpGlauberMC(0), fFixedb(-1.) {;}
-		GlauberTask() : GenTask(), fpGlauberMC(0), fFixedb(-1.) {;}
-		virtual 			~GlauberTask();
-		virtual unsigned int Init(const char *opt = "");
-		virtual unsigned int ExecThis(const char *opt = "");
-		virtual unsigned int FinalizeThis(const char *opt = "");
-	protected:
-		TGlauberMC 		*fpGlauberMC;
-		double 			 fFixedb;
 	};
 
 	class SpectraPtHatBins : public PythiaTask
