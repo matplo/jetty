@@ -5,6 +5,7 @@ set(NAME_LIB ${MODULE})
 set(SOURCES_LIB
 	gentask.cxx
 	glaubertask.cxx
+	pythiatask.cxx
 )
 
 # Headers from sources

@@ -7,6 +7,7 @@
 
 #include <jetty/util/tasks/gentask.h>
 #include <jetty/util/tasks/glaubertask.h>
+#include <jetty/util/tasks/pythiatask.h>
 
 #include <string>
 #include <iostream>
