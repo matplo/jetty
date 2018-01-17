@@ -213,6 +213,7 @@ namespace PyUtil
 
 		fout->cd();
 		auto tdir = new TDirectory("histograms", "histograms");
+		tdir->cd();
 		auto h = new TH1F("pcodexsec", "pcodexsec", 500, -0.5, 500 - 0.5);
 
 		// deal with the process codes

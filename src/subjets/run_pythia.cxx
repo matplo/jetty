@@ -37,7 +37,7 @@ int run_pythia (const std::string &s)
 		return 0; // this is a normal termination
 	}
 
-	PyUtil::Args &pyargs    = *pywrap.args();
+	// PyUtil::Args &pyargs    = *pywrap.args();
 	Pythia8::Pythia &pythia = *pywrap.pythia();
 	auto &event             = pythia.event;
 
@@ -63,14 +63,14 @@ int run_pythia (const std::string &s)
 	// this is where the event loop section starts
 	auto nEv = args.getI("Main:numberOfEvents");
 	LoopUtil::TPbar pbar(nEv);
-	for (unsigned int iE = 0; iE < nEv; iE++)
+	for (int iE = 0; iE < nEv; iE++)
 	{
 		pbar.Update();
 		if (pythia.next() == false) continue;
 
 		std::vector<fj::PseudoJet> parts;
 		// loop over particles in the event
-		for (unsigned int ip = 0; ip < event.size(); ip++)
+		for (int ip = 0; ip < event.size(); ip++)
 		{
 			if (event[ip].isFinal())
 				if (TMath::Abs(event[ip].eta()) < maxEta)

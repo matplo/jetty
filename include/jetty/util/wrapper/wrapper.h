@@ -163,7 +163,6 @@ class Wrapper
 		template <class T>
 		void remove_all()
 		{
-			T *p = 0x0;
 			long idx = index<T>();
 			while (idx >= 0)
 			{

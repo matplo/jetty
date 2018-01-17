@@ -32,13 +32,13 @@ int main ( int argc, char *argv[] )
 	// initialize pythia with a config and command line args
 	Pythia8::Pythia *ppythia = PyUtil::make_pythia(args.asString());
 	Pythia8::Pythia &pythia  = *ppythia;
-	auto &event              = pythia.event;
+	// auto &event              = pythia.event;
 
 	HepMC::Pythia8ToHepMC pyhepmc;
 	// this is where the event loop section starts
 	auto nEv = args.getI("Main:numberOfEvents");
 	LoopUtil::TPbar pbar(nEv);
-	for (unsigned int iE = 0; iE < nEv; iE++)
+	for (int iE = 0; iE < nEv; iE++)
 	{
 		pbar.Update();
 		if (pythia.next() == false) continue;
@@ -46,6 +46,8 @@ int main ( int argc, char *argv[] )
 		HepMC::GenEvent* hepmc_event = new HepMC::GenEvent();
     	// ToHepMC.fill_next_event( pythia, hepmcevt );
 		bool _filled = pyhepmc.fill_next_event( pythia.event, hepmc_event, iE, &pythia.info, &pythia.settings);
+		if (_filled == false)
+			Lwarn << "::fill_next_event false";
 		hepmc_output << hepmc_event;
 		delete hepmc_event;
 	}

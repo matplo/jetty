@@ -45,7 +45,7 @@ int run_gamma_h (const std::string &s)
 
 	pywrap.outputFile()->cd();
 	TTree *tk = new TTree("kine", "kine");
-	TH1F *hpT = new TH1F("hpT", "pT;p_{T} (GeV/#it{c});counts", 50, 0, 100);
+	// TH1F *hpT = new TH1F("hpT", "pT;p_{T} (GeV/#it{c});counts", 50, 0, 100);
 	TNtuple *gntuple = new TNtuple("gntuple", "gntuple", "gpT:geta:gphi");
 	TNtuple *ghntuple = new TNtuple("ghntuple", "ghntuple", "gpT:geta:gphi:hpT:heta:hphi:dphi");
 
@@ -64,12 +64,12 @@ int run_gamma_h (const std::string &s)
 	Linfo << "photon flag : " << photons_flag;
 	Linfo << "z0 flag     : " << z0_flag;
 
-	Stat_t nPhotons = 0;
+	// Stat_t nPhotons = 0;
 
 	// this is where the event loop section starts
 	auto nEv = pyargs.getI("Main:numberOfEvents");
 	LoopUtil::TPbar pbar(nEv);
-	for (unsigned int iE = 0; iE < nEv; iE++)
+	for (int iE = 0; iE < nEv; iE++)
 	{
 		pbar.Update();
 		if (pywrap.next() == false) continue;
@@ -83,7 +83,7 @@ int run_gamma_h (const std::string &s)
 			TVector3 photon;
 			photon.SetPtEtaPhi (event[ipho].pT(), event[ipho].eta(), event[ipho].phi());
 			gntuple->Fill(event[ipho].pT(), event[ipho].eta(), event[ipho].phi());
-			for (unsigned int ip = 0; ip < event.size(); ip++)
+			for (int ip = 0; ip < event.size(); ip++)
 			{
 				if (event[ip].isFinal())
 				{

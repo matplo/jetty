@@ -279,6 +279,7 @@ class TGlauberMC : public TNamed
                               AreaA=0;AreaO=0;X0=0;Y0=0;Phi0=0;Length=0;
                               MeanX=0;MeanY=0;MeanX2=0;MeanY2=0;MeanXY=0;MeanXSystem=0;MeanYSystem=0;MeanXA=0;MeanYA=0;MeanXB=0;MeanYB=0;
                               PhiA=0;ThetaA=0;PhiB=0;ThetaB=0;} // order must match that given in vars below
+        virtual ~Event() {;} // MP add
         ClassDef(TGlauberMC::Event, 1)
     };
   protected:

@@ -45,9 +45,9 @@ namespace RStream
 	   std::string CurrentBranchName() const {return fCurrentName;}
 
 	protected:
-		TTree *fTree;
 		std::string fName;
 		std::string fCurrentName;
+		TTree *fTree;
 	};
 };
 

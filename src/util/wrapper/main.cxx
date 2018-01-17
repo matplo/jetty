@@ -95,7 +95,7 @@ void test_wrapper()
 
 }
 
-int main ( int argc, char *argv[] )
+int main ( int /*argc*/, char **/* argv[] */ )
 {
 	for (unsigned int i = 0; i < 1e1; i++)
 	{

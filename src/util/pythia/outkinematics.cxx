@@ -52,7 +52,7 @@ namespace PyUtil
 	void OutKinematics::_calculate(const Pythia8::Pythia &pythia, bool includeHard)
 	{
 		auto &event = pythia.event;
-		for (unsigned int i = 0; i < event.size(); i++)
+		for (int i = 0; i < event.size(); i++)
 		{
 			auto &p = event[i];
 			auto im = has_beam_mother(p);

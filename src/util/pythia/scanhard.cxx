@@ -23,7 +23,7 @@ namespace PyUtil
 	{
 		auto &event             = pythia.event;
 		double sum = 0;
-		for (unsigned int ip = 0; ip < event.size(); ip++)
+		for (int ip = 0; ip < event.size(); ip++)
 		{
 			if (event[ip].isFinal())
 			{
@@ -41,9 +41,9 @@ namespace PyUtil
 	double estim_eT_jets(const Pythia8::Pythia &pythia)
 	{
 		auto &event             = pythia.event;
-		double sum = 0;
+		// double sum = 0;
 		std::vector<fj::PseudoJet> parts;
-		for (unsigned int ip = 0; ip < event.size(); ip++)
+		for (int ip = 0; ip < event.size(); ip++)
 		{
 			if (event[ip].isFinal())
 			{
@@ -164,7 +164,7 @@ namespace PyUtil
 		}
 	}
 
-	bool StatHardPythia::accept(const Pythia8::Pythia &pythia, double n_std_dev)
+	bool StatHardPythia::accept(const Pythia8::Pythia &/*pythia*/, double /*n_std_dev*/)
 	{
 		return false;
 	}

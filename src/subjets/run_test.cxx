@@ -46,7 +46,7 @@ int run_test (const std::string &s)
 		Lwarn << "Pythia not initialized. Stop here.";
 		return 0; // this is a normal termination
 	}
-	PyUtil::Args &pyargs    = *pywrap.args();
+	// PyUtil::Args &pyargs    = *pywrap.args();
 	Pythia8::Pythia &pythia = *pywrap.pythia();
 	auto &event             = pythia.event;
 
@@ -74,7 +74,7 @@ int run_test (const std::string &s)
 	// this is where the event loop section starts
 	auto nEv = args.getI("Main:numberOfEvents");
 	LoopUtil::TPbar pbar(nEv);
-	for (unsigned int iE = 0; iE < nEv; iE++)
+	for (int iE = 0; iE < nEv; iE++)
 	{
 		pbar.Update();
 		if (pywrap.next() == false) continue;
@@ -85,7 +85,7 @@ int run_test (const std::string &s)
 
 		std::vector<fj::PseudoJet> parts;
 		// loop over particles in the event
-		for (unsigned int ip = 0; ip < event.size(); ip++)
+		for (int ip = 0; ip < event.size(); ip++)
 		{
 
 			if (event[ip].isFinal() && event[ip].isDiquark() == false)

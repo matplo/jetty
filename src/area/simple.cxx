@@ -63,8 +63,6 @@ int simple ( int argc, char *argv[] )
 	Stat_t nevents = args.getI("--nev", 0);
 	LoopUtil::TPbar pbar(nevents);
 
-	double max_mult = 3000.;
-
 	Linfo << "output goes to : " << sfoutputname;
 	TFile *fout = new TFile(sfoutputname.c_str(), "recreate");
 	TTree *t = new TTree("t", "t");

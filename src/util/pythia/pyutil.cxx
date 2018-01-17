@@ -209,7 +209,7 @@ namespace PyUtil
 	double total_et_from_final_particles(const Pythia8::Pythia &py, bool no_beam_particles)
 	{
 		double total_et = 0.0;
-		for (unsigned int ip = 0; ip < py.event.size(); ip++)
+		for (int ip = 0; ip < py.event.size(); ip++)
 		{
 			if (py.event[ip].isFinal())
 			{
@@ -225,7 +225,7 @@ namespace PyUtil
 	{
 		TLorentzVector total;
 		total.SetPxPyPzE(0,0,0,0);
-		for (unsigned int ip = 0; ip < py.event.size(); ip++)
+		for (int ip = 0; ip < py.event.size(); ip++)
 		{
 			if (py.event[ip].isFinal())
 			{
@@ -272,7 +272,7 @@ namespace PyUtil
 	}
 
 	bad_mothers_exception not_so_bad_moms;
-	double delta_pz_mother(const int i, const Pythia8::Event &event, const int maxmothers)
+	double delta_pz_mother(const int i, const Pythia8::Event &event, const unsigned int maxmothers)
 	{
 		auto p          = event[i];
 		double delta_pz = p.pz();
@@ -325,7 +325,7 @@ namespace PyUtil
 	std::vector<int> prompt_photon_indexes(const Pythia8::Event &event)
 	{
 		std::vector<int> ret;
-		for (unsigned int i = 0; i < event.size(); ++i)
+		for (int i = 0; i < event.size(); ++i)
 		{
 			if (is_prompt_photon(i, event)) ret.push_back(i);
 		}
@@ -335,7 +335,7 @@ namespace PyUtil
 	std::vector<int> decay_photon_indexes(const Pythia8::Event &event)
 	{
 		std::vector<int> ret;
-		for (unsigned int i = 0; i < event.size(); ++i)
+		for (int i = 0; i < event.size(); ++i)
 		{
 			if (is_decay_photon(i, event)) ret.push_back(i);
 		}
@@ -348,7 +348,7 @@ namespace PyUtil
 	int z0_index(const Pythia8::Event &event)
 	{
 		int iZ = -1;
-		for (unsigned int i = 0; i < event.size(); ++i)
+		for (int i = 0; i < event.size(); ++i)
 			if (event[i].id() == 23) iZ = i;
 		return iZ;
 	}

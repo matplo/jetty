@@ -77,7 +77,7 @@ void PreSamplePythia::run()
 	if (nEv == 0) nEv = 1000;
 	//boost::progress_display show_progress(nEv);
 	LoopUtil::TPbar pbar(nEv);
-	for (unsigned int iE = 0; iE < nEv; iE++)
+	for (int iE = 0; iE < nEv; iE++)
 	{
 		pbar.Update();
 		//++show_progress;

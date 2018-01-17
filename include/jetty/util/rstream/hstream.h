@@ -69,14 +69,14 @@ namespace RStream
 		std::string CurrentHranchName() const {return fCurrentName;}
 
 	protected:
-		TList *fList;
 		std::string fName;
+		TList *fList;
 		std::string fCurrentName;
 		std::string fConfigString;
 		TFile *fOutputFile;
 		bool fFileOwner;
-		bool fSkipUndefined;
 		bool fInit;
+		bool fSkipUndefined;
 		void CreateHistograms();
 	};
 };

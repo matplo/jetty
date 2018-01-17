@@ -17,7 +17,7 @@ namespace PyUtil
 		fAllParticles.clear();
 		for (unsigned int ie = 0; ie < fPool.size(); ie++)
 		{
-			for (unsigned int ip = 0; ip < fPool[ie].size(); ip++)
+			for (int ip = 0; ip < fPool[ie].size(); ip++)
 			{
 				fAllParticles.push_back(fPool[ie][ip]);
 			}
@@ -30,7 +30,7 @@ namespace PyUtil
 		fFinalParticles.clear();
 		for (unsigned int ie = 0; ie < fPool.size(); ie++)
 		{
-			for (unsigned int ip = 0; ip < fPool[ie].size(); ip++)
+			for (int ip = 0; ip < fPool[ie].size(); ip++)
 			{
 				if (fPool[ie][ip].isFinal())
 					fFinalParticles.push_back(fPool[ie][ip]);

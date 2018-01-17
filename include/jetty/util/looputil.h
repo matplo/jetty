@@ -14,8 +14,8 @@ namespace LoopUtil
 	public:
 	        TPbar(Long64_t n)
 	                : fN(n)
-	                , fSw(new TStopwatch)
 	                , fNCalls(0)
+	                , fSw(new TStopwatch)
 	                , fTperIt()
 	                , fOldPcent(-1)
 	                , fOldRTime(0)

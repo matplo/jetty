@@ -137,7 +137,7 @@ namespace RStream
 	{
 		Ltrace << "list at: " << fList;
 		if (fList == 0x0) return;
-		for (unsigned int i = 0; i < fList->GetEntries(); i++)
+		for (int i = 0; i < fList->GetEntries(); i++)
 		{
 			Ltrace << "h #" << i << endl;
 			TH1 *h = (TH1*)fList->At(i);

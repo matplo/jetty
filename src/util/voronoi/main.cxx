@@ -66,11 +66,11 @@ int test2 ( int argc, char *argv[] )
 	Linfo << "output goes to : " << sfoutputname;
 	TFile *fout = new TFile(sfoutputname.c_str(), "recreate");
 	TProfile *hpmult = new TProfile("hpmult", "hpmult", 100, 0, 100);
-	TProfile *hpareaM = new TProfile("hpareaM", "hpareaM", 100, 0, max_mult);
+	// TProfile *hpareaM = new TProfile("hpareaM", "hpareaM", 100, 0, max_mult);
 	TProfile *hptotareaM = new TProfile("hptotareaM", "hptotareaM", 100, 0, max_mult);
 	TProfile *hptotareasfractionM = new TProfile("hptotareasfractionM", "hptotareasfractionM", 100, 0, max_mult);
 
-	TProfile *hpareaghostM = new TProfile("hpareaghostM", "hpareaghostM", 100, 0, max_mult);
+	// TProfile *hpareaghostM = new TProfile("hpareaghostM", "hpareaghostM", 100, 0, max_mult);
 	TProfile *hptotareaghostM = new TProfile("hptotareaghostM", "hptotareaghostM", 100, 0, max_mult);
 	TProfile *hptotareaghostfractionM = new TProfile("hptotareaghostfractionM", "hptotareaghostfractionM", 100, 0, max_mult);
 

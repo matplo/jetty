@@ -13,16 +13,16 @@ namespace RStream
 
 	TStream::TStream(TTree *t)
 		: fName("SE")
-		, fTree(t)
 		, fCurrentName("")
+		, fTree(t)
 	{
 		assert(t != NULL);
 	}
 
 	TStream::TStream(const char *name, TTree *t)
 		: fName(name)
-		, fTree(t)
 		, fCurrentName("")
+		, fTree(t)
 	{
 		assert(t != NULL);
 	}
