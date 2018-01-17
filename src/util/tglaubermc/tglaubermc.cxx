@@ -1219,12 +1219,16 @@ void TGlauberMC::Draw(Option_t* option)
 }
 Double_t TGlauberMC::GetTotXSect() const
 {
-  return (1.*fEvents/fTotalEvents)*TMath::Pi()*fBmax*fBmax/100;
+  if (fTotalEvents > 0)
+    return (1.*fEvents/fTotalEvents)*TMath::Pi()*fBmax*fBmax/100;
+  return 0;
 }
 Double_t TGlauberMC::GetTotXSectErr() const
 {
-  return GetTotXSect()/TMath::Sqrt((Double_t)fEvents) *
-    TMath::Sqrt(Double_t(1.-fEvents/fTotalEvents));
+  if (fTotalEvents > 0 && fEvents > 0)
+    return GetTotXSect()/TMath::Sqrt((Double_t)fEvents) *
+      TMath::Sqrt(Double_t(1.-fEvents/fTotalEvents));
+  return 0;
 }
 TObjArray *TGlauberMC::GetNucleons()
 {
@@ -1275,8 +1279,8 @@ void TGlauberMC::Run(Int_t nevents, Double_t b)
   for (Int_t i = 0; i<nevents; ++i) {
     while (!NextEvent(b)) {}
     fNt->Fill((Float_t*)(&fEv.Npart));
-    if (!(i%100))
-      cout << "Event # " << i << " x-sect = " << GetTotXSect() << " +- " << GetTotXSectErr() << " b        \r" << flush;
+    //if (!(i%100))
+    //  cout << "Event # " << i << " x-sect = " << GetTotXSect() << " +- " << GetTotXSectErr() << " b        \r" << flush;
   }
-  cout << endl << "Done!" << endl;
+  // cout << endl << "Done!" << endl;
 }

@@ -16,12 +16,16 @@ int gentasks (const std::string &s)
     // test(s); return;
     PyUtil::Args args(s);
 
+    GenUtil::GlauberTask g0;
+
     GenUtil::PythiaTask pythiaT("pythia", args.asString().c_str());
+
     GenUtil::SpectraPtHatBins task1;
     GenUtil::SpectraPtHatBins task2;
 
     pythiaT.AddTask(&task1);
     task1.AddTask(&task2);
+    task1.AddTask(&g0);
 
     pythiaT.Init("new");
 

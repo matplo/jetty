@@ -39,6 +39,7 @@ namespace SysUtil
 		void 			add(const std::string &what);
 
 		void 			merge(const Args &args);
+		void 			merge(const char *args);
 
 		void 			set(const char *what) 		 { add(what); }
 		void 			set(const std::string &what) { add(what.c_str()); }

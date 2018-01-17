@@ -285,6 +285,16 @@ namespace SysUtil
 		}
 	}
 
+	void Args::merge(const char *args)
+	{
+		std::vector<string> v = breakup(args, ' ');
+		for (auto &s : v)
+		{
+			Ldebug << "merge.. " << s;
+			add(s);
+		}
+	}
+
 	string Args::asString(const char *pre, bool breaklines) const
 	{
 		ostringstream ss;
