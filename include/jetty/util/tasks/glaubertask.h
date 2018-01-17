@@ -17,7 +17,7 @@ namespace GenUtil
 		GlauberTask(const char *name, const char *params) : GenTask(name, params), fpGlauberMC(0), fFixedb(-1.) {;}
 		GlauberTask() : GenTask(), fpGlauberMC(0), fFixedb(-1.) {;}
 		virtual 			~GlauberTask();
-		virtual unsigned int Init(const char *opt = "");
+		virtual unsigned int InitThis(const char *opt = "");
 		virtual unsigned int ExecThis(const char *opt = "");
 		virtual unsigned int FinalizeThis(const char *opt = "");
 	protected:

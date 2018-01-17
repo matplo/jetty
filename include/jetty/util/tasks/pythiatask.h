@@ -23,7 +23,7 @@ namespace GenUtil
 		PythiaTask(const char *name, const char *params) : GenTask(name, params), fpPythia(0) {;}
 		PythiaTask() : GenTask(), fpPythia(0) {;}
 		virtual 			~PythiaTask();
-		virtual unsigned int Init(const char *opt = "");
+		virtual unsigned int InitThis(const char *opt = "");
 		virtual unsigned int ExecThis(const char *opt = "");
 	protected:
 		Pythia8::Pythia 		*fpPythia;

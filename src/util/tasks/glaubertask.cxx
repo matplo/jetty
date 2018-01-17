@@ -70,7 +70,7 @@ namespace GenUtil
 		return kGood;
 	}
 
-	unsigned int GlauberTask::Init(const char *opt)
+	unsigned int GlauberTask::InitThis(const char *opt)
 	{
 		fArgs.merge(opt);
 		Linfo << "GlauberTask::Init " << GetName() << " with opts: " << fArgs.asString();
@@ -109,6 +109,6 @@ namespace GenUtil
 		fShared->add(fpGlauberMC, slabel.c_str());
 		fShared->list();
 
-		return GenTask::Init(opt);
+		return kGood;
 	}
 }
