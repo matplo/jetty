@@ -17,6 +17,7 @@ namespace GenUtil
 	unsigned int PythiaTask::ExecThis(const char *opt)
 	{
 		Ltrace << "PythiaTask::ExecThis " << GetName() << " with option: " << opt;
+		while (fpPythia->next() == false) continue;
 		return kGood;
 	}
 
@@ -97,6 +98,7 @@ namespace GenUtil
 	{
 		Ltrace << "SpectraPtHatBins::ExecThis " << GetName() << " with option: " << opt;
 		Ltrace << "SpectraPtHatBins::ExecThis " << GetName() << " pythia at: " << fpPythia;
+		Ltrace << "SpectraPtHatBins::ExecThis " << GetName() << " number of particles " << fpPythia->event.size();
 		return kGood;
 	}
 }
