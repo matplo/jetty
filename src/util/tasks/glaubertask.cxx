@@ -48,7 +48,10 @@ namespace GenUtil
 			TString nd;
 			if (noded>0)
 				nd=Form("-nd%.1f",noded);
-			name = Form("%s%s%s.root",fpGlauberMC->Str(),om.Data(),nd.Data());
+			if (fArgs.isSet("--glauber-update-NNxsect"))
+				name = Form("%s%s%s_xsectmod.root",fpGlauberMC->Str(),om.Data(),nd.Data());
+			else
+				name = Form("%s%s%s.root",fpGlauberMC->Str(),om.Data(),nd.Data());
 		}
 		Linfo << GetName() << " writing file: " << name;
 		TFile out(name,"recreate",name,9);
