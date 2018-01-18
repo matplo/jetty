@@ -8,5 +8,6 @@
 #pragma link C++ class TGlauNucleus+;
 #pragma link C++ class TGlauberMC+;
 #pragma link C++ class TGlauberMC::Event+;
+#pragma link C++ class TGlauberMC::Collision+;
 
 #endif

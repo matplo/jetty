@@ -20,7 +20,7 @@ int gentasks (const std::string &s)
     // test(s); return;
     PyUtil::Args args(s);
 
-    GenUtil::GlauberTask g0("glauber", s.c_str());
+    GenUtil::GlauberTask g0("glauber", args.asString().c_str());
 
     GenUtil::PythiaTask pythiaT("pythia", args.asString().c_str());
 

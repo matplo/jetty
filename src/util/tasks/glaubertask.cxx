@@ -66,6 +66,10 @@ namespace GenUtil
 		if (fpGlauberMC)
 		{
 			fpGlauberMC->Run(1, fFixedb);
+			Ltrace << " - number of collisions: " << fpGlauberMC->GetCollisions().size() << " ?= " << fpGlauberMC->GetNcoll();
+			auto colls = fpGlauberMC->GetCollisions();
+			for (auto &c : colls)
+				Ltrace << " -- " << c.GetA()->GetEnergy() << " - " << c.GetB()->GetEnergy();
 		}
 		return kGood;
 	}
@@ -83,14 +87,22 @@ namespace GenUtil
 		Linfo << "GlauberTask::Init " << GetName() << " sysA: " << sysA << " sysB: " << sysB;
 
 		// const Int_t n           = 1;
-		const Double_t signn    = fArgs.getD("--glauber-signn", 67.6);
-		const Double_t sigwidth = fArgs.getD("--glauber-sigwidth", 1);
-		const Double_t mind     = fArgs.getD("--glauber-mind", 0.4);
-		const Double_t omega    = fArgs.getD("--glauber-omega", -1);
-		const Double_t noded    = fArgs.getD("--glauber-noded", -1);
-
-		fpGlauberMC = new TGlauberMC(sysA.c_str(),sysB.c_str(),signn,sigwidth);
+		const Double_t signn         = fArgs.getD("--glauber-signn", 67.6);
+		const Double_t sigwidth      = fArgs.getD("--glauber-sigwidth", 1);
+		const Double_t mind          = fArgs.getD("--glauber-mind", 0.4);
+		const Double_t omega         = fArgs.getD("--glauber-omega", -1);
+		const Double_t noded         = fArgs.getD("--glauber-noded", -1);
+		const Bool_t   updateNNxsect = fArgs.isSet("--glauber-update-NNxsect");
+		fpGlauberMC = new TGlauberMC(sysA.c_str(),sysB.c_str(),signn,sigwidth,updateNNxsect);
 		Linfo << "GlauberTask::Init " << GetName() << " GlauberMC at: " << fpGlauberMC;
+
+		Double_t eA = fArgs.getD("--eA", 0.0);
+		Double_t eB = fArgs.getD("--eB", 0.0);
+		if (eA == 0.0)
+			eA = fArgs.getD("Beams:eA");
+		if (eB == 0.0)
+			eB = fArgs.getD("Beams:eB");
+		fpGlauberMC->SetEnergyPerNucleon(eA, eB);
 
 		fpGlauberMC->SetMinDistance(mind);
 		fpGlauberMC->SetNodeDistance(noded);

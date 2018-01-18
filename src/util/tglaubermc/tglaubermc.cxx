@@ -1,4 +1,5 @@
 #include <jetty/util/tglaubermc/tglaubermc.h>
+#include <jetty/util/blog.h>
 ClassImp(TGlauNucleon)
   //---------------------------------------------------------------------------------
 void TGlauNucleon::RotateXYZ(Double_t phi, Double_t theta)
@@ -801,7 +802,7 @@ TVector3 &TGlauNucleus::ThrowNucleons(Double_t xshift)
 //---------------------------------------------------------------------------------
   ClassImp(TGlauberMC)
   ClassImp(TGlauberMC::Event)
-TGlauberMC::TGlauberMC(const char* NA, const char* NB, Double_t xsect, Double_t xsectsigma) :
+TGlauberMC::TGlauberMC(const char* NA, const char* NB, Double_t xsect, Double_t xsectsigma, Bool_t canUpdateNNxsection) :
   fANucleus(NA),fBNucleus(NB),
   fXSect(xsect),fXSectOmega(0),fXSectLambda(0),fXSectEvent(0),
   fNucleonsA(0),fNucleonsB(0),fNucleons(0),
@@ -809,7 +810,10 @@ TGlauberMC::TGlauberMC(const char* NA, const char* NB, Double_t xsect, Double_t 
   fEvents(0),fTotalEvents(0),fBmin(0),fBmax(20),fHardFrac(0.65),
   fDetail(99),fCalcArea(0),fCalcLength(0),
   fMaxNpartFound(0),f2Cx(0),fPTot(0),fNNProf(0),
-  fEv()
+  fEv(),
+  fUpdateNNCrossSection(canUpdateNNxsection), // MP
+  fEnergyPerNucleonA(0), // MP
+  fEnergyPerNucleonB(0) // MP
 {
   if (xsectsigma>0) {
     fXSectOmega = xsectsigma;
@@ -839,6 +843,9 @@ Bool_t TGlauberMC::CalcEvent(Double_t bgen)
       nucleonA->SetInNucleusA();
     }
   }
+  fAN = fANucleus.GetN();
+  for (Int_t i = 0; i<fAN; ++i) ((TGlauNucleon*)(fNucleonsA->At(i)))->SetEnergy(fEnergyPerNucleonA); // MP - could be done in nucleus but needs to propagate energy...
+
   fBNucleus.ThrowNucleons(bgen/2.);
   if (!fNucleonsB) {
     fNucleonsB = fBNucleus.GetNucleons();
@@ -848,6 +855,9 @@ Bool_t TGlauberMC::CalcEvent(Double_t bgen)
       nucleonB->SetInNucleusB();
     }
   }
+  fBN = fBNucleus.GetN();
+  for (Int_t i = 0; i<fBN; ++i) ((TGlauNucleon*)(fNucleonsB->At(i)))->SetEnergy(fEnergyPerNucleonB); // MP - could be done in nucleus but needs to propagate energy...
+
   if (fPTot)
     fXSectEvent = fPTot->GetRandom();
   else
@@ -862,6 +872,7 @@ Bool_t TGlauberMC::CalcEvent(Double_t bgen)
   }
   fEv.Reset();
   memset(fBC,0,sizeof(Bool_t)*999*999);
+  fCollisions.clear(); // MP
   Int_t nc=0,nh=0;
   for (Int_t i = 0; i<fBN; ++i) {
     TGlauNucleon *nucleonB=(TGlauNucleon*)(fNucleonsB->At(i));
@@ -871,6 +882,11 @@ Bool_t TGlauberMC::CalcEvent(Double_t bgen)
       Double_t dx = nucleonB->GetX()-nucleonA->GetX();
       Double_t dy = nucleonB->GetY()-nucleonA->GetY();
       Double_t dij = dx*dx+dy*dy;
+      if (fUpdateNNCrossSection)
+      {
+        d2 = UpdateNNCrossSection(nucleonB, nucleonA); // MP modification
+        bh = TMath::Sqrt(d2*fHardFrac);
+      }
       if (dij>d2)
         continue;
       Double_t bij = TMath::Sqrt(dij);
@@ -880,8 +896,7 @@ Bool_t TGlauberMC::CalcEvent(Double_t bgen)
         if (ran>val)
           continue;
       }
-      nucleonB->Collide();
-      nucleonA->Collide();
+      Collide(nucleonB, nucleonA); //MP
       fBC[i][j] = 1;
       fEv.BNN  += bij;
       ++nc;
@@ -909,6 +924,25 @@ Bool_t TGlauberMC::CalcEvent(Double_t bgen)
     return CalcResults(bgen);
   }
   return kFALSE;
+}
+Double_t TGlauberMC::UpdateNNCrossSection(TGlauNucleon *, TGlauNucleon *) // MP
+{
+  // "ball" diameter = distance at which two balls interact
+  Double_t d2 = (Double_t)fXSectEvent/(TMath::Pi()*10); // in fm^2
+  return d2;
+}
+ClassImp(TGlauberMC::Collision)
+void TGlauberMC::Collide(TGlauNucleon *nucleonB, TGlauNucleon *nucleonA) // MP
+{
+  nucleonB->Collide();
+  nucleonA->Collide();
+  Collision c(nucleonB, nucleonA, fXSectEvent);
+  fCollisions.push_back(c);
+  if (fUpdateNNCrossSection)
+  {
+    nucleonA->SetEnergy(nucleonA->GetEnergy() * 0.9);
+    nucleonB->SetEnergy(nucleonB->GetEnergy() * 0.9);
+  }
 }
 Bool_t TGlauberMC::CalcResults(Double_t bgen)
 {

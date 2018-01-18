@@ -119,6 +119,7 @@ class TGlauNucleon : public TObject
     Double32_t fEn;           //Energy it has
   public:
     TGlauNucleon() : fX(0), fY(0), fZ(0), fInNucleusA(0), fNColl(0), fEn(0) {}
+    TGlauNucleon(const TGlauNucleon &n) : fX(n.fX), fY(n.fY), fZ(n.fZ), fInNucleusA(n.fInNucleusA), fNColl(n.fNColl), fEn(n.fEn) {} // MP
     virtual   ~TGlauNucleon() {}
     void       Collide()                                  {++fNColl;}
     Double_t   Get2CWeight(Double_t x) const              {return 2.*(0.5*(1-x)+0.5*x*fNColl);}
@@ -282,6 +283,27 @@ class TGlauberMC : public TNamed
         virtual ~Event() {;} // MP add
         ClassDef(TGlauberMC::Event, 1)
     };
+    class Collision { // MP add
+        protected:
+            TGlauNucleon fA;
+            TGlauNucleon fB;
+            Double_t fXSect;
+        public:
+            Collision()
+                : fA(), fB(), fXSect(0)
+                { ; }
+            Collision(const TGlauNucleon *b, const TGlauNucleon *a, Double_t xsect)
+                : fA(*a), fB(*b), fXSect(xsect)
+                { ; }
+            Collision(const Collision &c)
+                : fA(c.fA), fB(c.fB), fXSect(c.fXSect)
+                { ; }
+            virtual ~Collision() {;}
+            TGlauNucleon *GetA() { return &fA; }
+            TGlauNucleon *GetB() { return &fB; }
+            Double_t GetXsection() { return fXSect; }
+        ClassDef(TGlauberMC::Collision, 1)
+    };
   protected:
     TGlauNucleus  fANucleus;       //Nucleus A
     TGlauNucleus  fBNucleus;       //Nucleus B
@@ -311,10 +333,15 @@ class TGlauberMC : public TNamed
     TF1          *fNNProf;         //NN profile (hard-sphere == 0 by default)
     Event         fEv;             //Glauber event (results of calculation stored in tree)
     Bool_t        fBC[999][999];   //Array to record binary collision
+    Bool_t        fUpdateNNCrossSection; // update NN xsection collision by collision - MP
+    std::vector<TGlauberMC::Collision> fCollisions; // pairs of nucleons that collided - detailed record - MP
+    Double_t      fEnergyPerNucleonA; // energy per nucleon A - MP
+    Double_t      fEnergyPerNucleonB; // energy per nucleon B - MP
     Bool_t        CalcResults(Double_t bgen);
     Bool_t        CalcEvent(Double_t bgen);
   public:
-    TGlauberMC(const char* NA = "Pb", const char* NB = "Pb", Double_t xsect = 42, Double_t xsectsigma=0);
+    TGlauberMC(const char* NA = "Pb", const char* NB = "Pb", Double_t xsect = 42, Double_t xsectsigma=0, Bool_t canUpdateNNxsection = kFALSE); // MP
+    void                SetEnergyPerNucleon(Double_t eA, Double_t eB) {fEnergyPerNucleonB = eB; fEnergyPerNucleonA = eA;} // -MP
     virtual            ~TGlauberMC() {Reset();}
     Double_t            CalcDens(TF1 &prof, Double_t xval, Double_t yval) const;
     void                Draw(Option_t* option="");
@@ -374,6 +401,10 @@ class TGlauberMC : public TNamed
     const char         *Str()                  const {return Form("gmc-%s%s-snn%.1f-md%.1f-nd%.1f-rc%d-smax%.1f",fANucleus.GetName(),fBNucleus.GetName(),fXSect,fBNucleus.GetMinDist(),fBNucleus.GetNodeDist(),fBNucleus.GetRecenter(),fBNucleus.GetShiftMax());}
     static void         PrintVersion()               {cout << "TGlauberMC " << Version() << endl;}
     static const char  *Version()                    {return "v3.0 (trunk)";}
+
+    virtual Double_t UpdateNNCrossSection(TGlauNucleon *, TGlauNucleon *); // MP modif
+    virtual void Collide(TGlauNucleon *nucleonB, TGlauNucleon *nucleonA); // MP modif
+    std::vector<TGlauberMC::Collision> GetCollisions() {return fCollisions;}
     ClassDef(TGlauberMC,6) // TGlauberMC class
 };
 //---------------------------------------------------------------------------------
