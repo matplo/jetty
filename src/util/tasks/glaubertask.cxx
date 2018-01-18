@@ -3,6 +3,8 @@
 #include <jetty/util/strutil.h>
 #include <jetty/util/tglaubermc/tglaubermc.h>
 #include <jetty/util/tasks/glaubertask.h>
+#include <jetty/util/pythia/param_sigmas.h>
+#include <jetty/util/pythia/pyutil.h>
 
 #include <cstdio>
 #include <string>
@@ -86,22 +88,49 @@ namespace GenUtil
 		string sysB             = fArgs.get("--glauber-B", "Pb");
 		Linfo << "GlauberTask::Init " << GetName() << " sysA: " << sysA << " sysB: " << sysB;
 
-		// const Int_t n           = 1;
-		const Double_t signn         = fArgs.getD("--glauber-signn", 67.6);
-		const Double_t sigwidth      = fArgs.getD("--glauber-sigwidth", 1);
-		const Double_t mind          = fArgs.getD("--glauber-mind", 0.4);
-		const Double_t omega         = fArgs.getD("--glauber-omega", -1);
-		const Double_t noded         = fArgs.getD("--glauber-noded", -1);
-		const Bool_t   updateNNxsect = fArgs.isSet("--glauber-update-NNxsect");
-		fpGlauberMC = new TGlauberMC(sysA.c_str(),sysB.c_str(),signn,sigwidth,updateNNxsect);
-		Linfo << "GlauberTask::Init " << GetName() << " GlauberMC at: " << fpGlauberMC;
-
 		Double_t eA = fArgs.getD("--eA", 0.0);
 		Double_t eB = fArgs.getD("--eB", 0.0);
 		if (eA == 0.0)
 			eA = fArgs.getD("Beams:eA");
 		if (eB == 0.0)
 			eB = fArgs.getD("Beams:eB");
+		Double_t eCM = fArgs.getD("Beams:eCM", 0.0);
+		if ( eCM > 0)
+		{
+			eA = eCM / 2.;
+			eB = eCM / 2.;
+		}
+		else
+		{
+			if (eA > 0 || eB > 0)
+				eCM = PyUtil::sqrts(eA, eB);
+			else
+				{
+					eCM = 5020.; // LHC Run-2 energy for PbPb
+					Lwarn << "no sqrt(s) info given... running with default eCM = " << eCM << " GeV";
+				}
+		}
+
+		// const Int_t n           = 1;
+		Double_t signn         = fArgs.getD("--glauber-signn", 0.0);
+		if (signn == 0.0)
+		{
+			signn = 67.6;
+			Linfo << "trying to figure out sigma nn (INEL) from sqrt(s)...";
+			if (eCM > 0)
+			{
+				signn = PyUtil::ParamSigmas::Instance().Get(PyUtil::ParamSigmas::kINEL, eCM);
+			}
+			Lwarn << "adjusted signn = " << signn;
+		}
+		Double_t sigwidth      = fArgs.getD("--glauber-sigwidth", -1);
+		Double_t mind          = fArgs.getD("--glauber-mind", 0.4);
+		Double_t omega         = fArgs.getD("--glauber-omega", -1);
+		Double_t noded         = fArgs.getD("--glauber-noded", -1);
+		Bool_t   updateNNxsect = fArgs.isSet("--glauber-update-NNxsect");
+		fpGlauberMC = new TGlauberMC(sysA.c_str(),sysB.c_str(),signn,sigwidth,updateNNxsect);
+		Linfo << "GlauberTask::Init " << GetName() << " GlauberMC at: " << fpGlauberMC;
+
 		fpGlauberMC->SetEnergyPerNucleon(eA, eB);
 
 		fpGlauberMC->SetMinDistance(mind);
