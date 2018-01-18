@@ -17,6 +17,6 @@ ROOT_GENERATE_DICTIONARY(${DICT} ${HEADERS_LIB} LINKDEF ${LINKDEFS})
 
 add_library(${NAME_LIB} SHARED ${SOURCES_LIB} ${DICT})
 target_include_directories(${NAME_LIB} PUBLIC ${ROOT_INCLUDE_DIR})
-target_link_libraries(${NAME_LIB} ${PYTHIA8_LDFLAGS} ${ROOT_LIBRARIES})
+target_link_libraries(${NAME_LIB} ${PYTHIA8_LDFLAGS} ${ROOT_LIBRARIES} ${PROJECT_NAME}_util ${PROJECT_NAME}_util_pythia)
 
 install_targets_custom()

@@ -1,5 +1,6 @@
 #include <jetty/util/tglaubermc/tglaubermc.h>
-#include <jetty/util/blog.h>
+#include <jetty/util/blog.h> // MP
+#include <jetty/util/pythia/param_sigmas.h> // MP
 ClassImp(TGlauNucleon)
   //---------------------------------------------------------------------------------
 void TGlauNucleon::RotateXYZ(Double_t phi, Double_t theta)
@@ -925,10 +926,15 @@ Bool_t TGlauberMC::CalcEvent(Double_t bgen)
   }
   return kFALSE;
 }
-Double_t TGlauberMC::UpdateNNCrossSection(TGlauNucleon *, TGlauNucleon *) // MP
+Double_t TGlauberMC::UpdateNNCrossSection(TGlauNucleon *nucleonB, TGlauNucleon *nucleonA) // MP
 {
   // "ball" diameter = distance at which two balls interact
   Double_t d2 = (Double_t)fXSectEvent/(TMath::Pi()*10); // in fm^2
+  if (nucleonB->GetEnergy() > 0 || nucleonA->GetEnergy() > 0)
+  {
+    Double_t signn = PyUtil::ParamSigmas::Instance().Get(PyUtil::ParamSigmas::kINEL, nucleonA->GetEnergy(), nucleonB->GetEnergy());
+    d2 = (Double_t)signn/(TMath::Pi()*10.);
+  }
   return d2;
 }
 ClassImp(TGlauberMC::Collision)
