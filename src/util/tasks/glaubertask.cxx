@@ -97,19 +97,32 @@ namespace GenUtil
 		Double_t eCM = fArgs.getD("Beams:eCM", 0.0);
 		if ( eCM > 0)
 		{
-			eA = eCM / 2.;
-			eB = eCM / 2.;
+			if (eA == 0 && eB == 0)
+			{
+				eA = eCM / 2.;
+				eB = eCM / 2.;
+			}
 		}
 		else
 		{
 			if (eA > 0 || eB > 0)
+			{
 				eCM = PyUtil::sqrts(eA, eB);
+				Lwarn << "adjusted eCM: eA = " << eA << " eB = " << eB << " << eCM = " << eCM;
+			}
 			else
+			{
+				eCM = 5020.; // LHC Run-2 energy for PbPb
+				if (eA == 0 && eB == 0)
 				{
-					eCM = 5020.; // LHC Run-2 energy for PbPb
-					Lwarn << "no sqrt(s) info given... running with default eCM = " << eCM << " GeV";
+					eA = eCM / 2.;
+					eB = eCM / 2.;
 				}
+				Lwarn << "no sqrt(s) info given... running with default eCM = " << eCM << " GeV";
+			}
 		}
+
+		Linfo << "eA = " << eA << " eB = " << eB << " << eCM = " << eCM;
 
 		// const Int_t n           = 1;
 		Double_t signn         = fArgs.getD("--glauber-signn", 0.0);

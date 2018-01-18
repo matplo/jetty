@@ -22,6 +22,8 @@ namespace PyUtil
 		{
 				double eA  = TMath::Abs(_eA);
 				double eB  = TMath::Abs(_eB);
+				if (eA < mA) eA = mA;
+				if (eB < mB) eB = mB;
 				double pA  = TMath::Sqrt(eA * eA - mA * mA);
 				double pB  = TMath::Sqrt(eB * eB - mB * mB);
 				double eCM = TMath::Sqrt( TMath::Power(eA + eB, 2.) - TMath::Power(pA + (-1. * pB), 2.) );
