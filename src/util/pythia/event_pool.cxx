@@ -51,4 +51,10 @@ namespace PyUtil
 		return p;
 	}
 
+	void EventPool::Clear()
+	{
+		fPool.clear();
+		fAllParticles.clear();
+		fFinalParticles.clear();
+	}
 };

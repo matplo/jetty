@@ -6,6 +6,7 @@ set(SOURCES_LIB
 	gentask.cxx
 	glaubertask.cxx
 	pythiatask.cxx
+	pythiaAAtask.cxx
 )
 
 # Headers from sources

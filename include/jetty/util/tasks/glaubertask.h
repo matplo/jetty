@@ -20,6 +20,9 @@ namespace GenUtil
 		virtual unsigned int InitThis(const char *opt = "");
 		virtual unsigned int ExecThis(const char *opt = "");
 		virtual unsigned int FinalizeThis(const char *opt = "");
+
+		TGlauberMC 	*GetGlauberMC() {return fpGlauberMC;}
+
 	protected:
 		TGlauberMC 		*fpGlauberMC;
 		double 			 fFixedb;

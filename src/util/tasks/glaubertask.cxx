@@ -73,8 +73,8 @@ namespace GenUtil
 			fpGlauberMC->Run(1, fFixedb);
 			Ltrace << " - number of collisions: " << fpGlauberMC->GetCollisions().size() << " ?= " << fpGlauberMC->GetNcoll();
 			auto colls = fpGlauberMC->GetCollisions();
-			for (auto &c : colls)
-				Ltrace << " -- " << c.GetA()->GetEnergy() << " - " << c.GetB()->GetEnergy();
+			// for (auto &c : colls)
+			// 	Ltrace << " -- " << c.GetA()->GetEnergy() << " - " << c.GetB()->GetEnergy();
 		}
 		return kGood;
 	}

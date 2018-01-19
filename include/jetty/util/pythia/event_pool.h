@@ -20,7 +20,7 @@ namespace PyUtil
 		}
 		void AddEvent(Pythia8::Event &ev) { fPool.push_back(ev); }
 		void RemoveEvent(unsigned int idx) { if (idx < fPool.size()) fPool.erase(fPool.begin() + idx); }
-
+		void Clear();
 	private:
 		std::vector<Pythia8::Event> 	fPool;
 		std::vector<Pythia8::Particle> 	fAllParticles;

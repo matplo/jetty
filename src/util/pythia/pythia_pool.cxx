@@ -185,8 +185,8 @@ namespace PyUtil
 		Int_t biny    = _eAeBmap->GetYaxis()->FindBin(eB);
 		Int_t pyindex = _eAeBmap->GetBinContent(binx,biny) - 1;
 		// Int_t ibin    = _eAeBmap->GetBin(binx,biny);
-		Ldebug << "eA = " << eA << " is bin : " << binx;
-		Ldebug << "eB = " << eB << " is bin : " << biny;
+		Ltrace << "eA = " << eA << " is bin : " << binx;
+		Ltrace << "eB = " << eB << " is bin : " << biny;
 		if (binx <= 0 || binx > _eAeBmap->GetXaxis()->GetNbins() ||
 		    biny <= 0 || biny > _eAeBmap->GetYaxis()->GetNbins())
 		{
@@ -245,9 +245,9 @@ namespace PyUtil
 			}
 			else
 			{
-				Ldebug << "pythia instance found at index: " << pyindex;
-				Ldebug << "... eA: " << ret_pythia->parm("Beams:eA");
-				Ldebug << "... eB: " << ret_pythia->parm("Beams:eB");
+				Ltrace << "pythia instance found at index: " << pyindex;
+				Ltrace << "... eA: " << ret_pythia->parm("Beams:eA");
+				Ltrace << "... eB: " << ret_pythia->parm("Beams:eB");
 
 				double tmp_eA = ret_pythia->parm("Beams:eA");
 				double tmp_eB = ret_pythia->parm("Beams:eB");
