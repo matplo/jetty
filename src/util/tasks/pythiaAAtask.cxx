@@ -110,8 +110,8 @@ namespace GenUtil
 			Linfo << "PythiaAATask::InitThis " << GetName() << " with opts: " << fArgs.asString();
 			Linfo << "PythiaAATask::InitThis " << GetName() << " fStatus: " << fStatus;
 
-			fEA = fArgs.getD("Beams:eA", 5020.);
-			fEB = fArgs.getD("Beams:eB", 5020.);
+			fEA = fArgs.getD("Beams:eA", 2510.);
+			fEB = fArgs.getD("Beams:eB", 2510.);
 			fArgs.set("Beams:eA", fEA);
 			fArgs.set("Beams:eB", fEB);
 

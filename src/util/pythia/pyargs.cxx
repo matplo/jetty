@@ -196,16 +196,21 @@ namespace PyUtil
 
 		if (isSet("Beams:eA") || isSet("Beams:eB"))
 		{
-			if (isSet("Beams:frameType") == false)
+			double eA = getD("Beams:eA");
+			double eB = getD("Beams:eB");
+			if (eA == eB)
 			{
-				add("Beams:frameType=2");
-				double eA = getD("Beams:eA");
-				double eB = getD("Beams:eB");
-				Linfo << "reset Beams:eCM because eA=" << eA << " eB=" << eB;
-				double sqrts = PyUtil::sqrts(eA, eB);
-				add(boost::str(boost::format("Beams:eCM=%f") % sqrts));
-				Linfo << "      Beams:eCM=" << getD("Beams:eCM");
+				set("Beams:frameType=1");
 			}
+			else
+			{
+				set("Beams:frameType=2");
+			}
+
+			Linfo << "reset Beams:eCM because eA=" << eA << " eB=" << eB;
+			double sqrts = PyUtil::sqrts(eA, eB);
+			add(boost::str(boost::format("Beams:eCM=%f") % sqrts));
+			Linfo << "      Beams:eCM=" << getD("Beams:eCM");
 		}
 	}
 };
