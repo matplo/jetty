@@ -204,10 +204,18 @@ namespace PyUtil
 			// init new pythia here
 			Lwarn << "create new pythia instance ... " << eA << " -><- " << eB;
 			string pythia_init_message;
-			LogUtil::cout_sink _cout_sink;
-			LogUtil::cerr_sink _cerr_sink;
+			{
+				LogUtil::cout_sink _cout_sink;
+				LogUtil::cerr_sink _cerr_sink;
 
-			ret_pythia = CreatePythia(eA, eB, settings.c_str());
+				ret_pythia = CreatePythia(eA, eB, settings.c_str());
+				if (ret_pythia == 0)
+				{
+					Linfo << endl << _cout_sink.get_buffer()->str();
+					Linfo << endl << _cerr_sink.get_buffer()->str();
+				}
+				pythia_init_message = _cout_sink.get_buffer()->str();
+			}
 			if (ret_pythia != 0)
 			{
 				pyindex = _pythia_pool.size();
@@ -215,14 +223,9 @@ namespace PyUtil
 				Args args(settings);
 				if (args.isSet("--silent-pythia-init") == false)
 				{
-					Linfo << endl << _cout_sink.get_buffer()->str();
+					Linfo << endl << pythia_init_message;
 				}
 				return GetPythia(eA, eB, settings.c_str());
-			}
-			else
-			{
-				Linfo << endl << _cout_sink.get_buffer()->str();
-				Linfo << endl << _cerr_sink.get_buffer()->str();
 			}
 		}
 		else
