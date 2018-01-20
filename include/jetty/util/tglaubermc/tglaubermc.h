@@ -118,8 +118,8 @@ class TGlauNucleon : public TObject
     Int_t      fNColl;        //Number of binary collisions
     Double32_t fEn;           //Energy it has
   public:
-    TGlauNucleon() : fX(0), fY(0), fZ(0), fInNucleusA(0), fNColl(0), fEn(0) {}
-    TGlauNucleon(const TGlauNucleon &n) : fX(n.fX), fY(n.fY), fZ(n.fZ), fInNucleusA(n.fInNucleusA), fNColl(n.fNColl), fEn(n.fEn) {} // MP
+    TGlauNucleon() : TObject(), fX(0), fY(0), fZ(0), fInNucleusA(0), fNColl(0), fEn(0) {}
+    TGlauNucleon(const TGlauNucleon &n) : TObject(), fX(n.fX), fY(n.fY), fZ(n.fZ), fInNucleusA(n.fInNucleusA), fNColl(n.fNColl), fEn(n.fEn) {} // MP
     virtual   ~TGlauNucleon() {}
     void       Collide()                                  {++fNColl;}
     Double_t   Get2CWeight(Double_t x) const              {return 2.*(0.5*(1-x)+0.5*x*fNColl);}
