@@ -91,7 +91,7 @@ namespace PyUtil
 
 	void PrintParticle(const Pythia8::Event &event, int idx)
 	{
-		Pythia8::Particle p = event[idx];
+		// Pythia8::Particle p = event[idx];
 
 		std::cout << "    p index: "; std::cout.flush();
 		std::cout << std::setfill(' ') << std::setw(7) << std::right << std::noshowpos;
