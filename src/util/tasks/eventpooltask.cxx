@@ -23,7 +23,7 @@ namespace GenUtil
 
 	EventPoolTask::~EventPoolTask()
 	{
-		delete fEventPool;
+		Ltrace << "destructor " << GetName();
 	}
 
 }

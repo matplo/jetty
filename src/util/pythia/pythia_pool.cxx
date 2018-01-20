@@ -14,11 +14,14 @@ namespace PyUtil
 {
 	PythiaPool::~PythiaPool()
 	{
+		Ltrace << "PythiaPool::~PythiaPool ..." << endl;
 		DumpInfo();
+		Ltrace << "PythiaPool::~PythiaPool done." << endl;
 	}
 
 	void PythiaPool::WriteECMsToFile(const char *fname)
 	{
+		Ltrace << "PythiaPool::WriteECMsToFile ..." << endl;
 		TFile *fout = new TFile(fname, "recreate");
 		if (fout)
 		{
@@ -37,6 +40,7 @@ namespace PyUtil
 			fout->Close();
 			delete fout;
 		}
+		Ltrace << " ... done." << endl;
 	}
 
 	void PythiaPool::DumpInfo()
@@ -231,15 +235,16 @@ namespace PyUtil
 		else
 		{
 			ret_pythia = _pythia_pool[pyindex];
-			if (settings != _pythia_pool_settings[pyindex])
-			{
-				Lwarn << "replacing pythia eA: " << eA << " eB:" << eB << " settings: " << _pythia_pool_settings[pyindex]
-					<< "with pythia eA: " << eA << " eB:" << eB << " settings: " << settings;
-				delete ret_pythia;
-				_pythia_pool[pyindex] = CreatePythia(eA, eB, settings.c_str());
-				_pythia_pool_settings[pyindex] = settings;
-				ret_pythia = _pythia_pool[pyindex];
-			}
+			// if (settings != _pythia_pool_settings[pyindex])
+			// {
+			// 	Lwarn << "replacing pythia at index: " << pyindex << " " << _pythia_pool[pyindex];
+			// 	Lwarn << "replacing pythia eA: " << eA << " eB:" << eB << " settings: " << _pythia_pool_settings[pyindex]
+			// 		<< "with pythia eA: " << eA << " eB:" << eB << " settings: " << settings;
+			// 	delete ret_pythia;
+			// 	_pythia_pool[pyindex] = CreatePythia(eA, eB, settings.c_str());
+			// 	_pythia_pool_settings[pyindex] = settings;
+			// 	ret_pythia = _pythia_pool[pyindex];
+			// }
 			if (!ret_pythia)
 			{
 				Lfatal << "pythia instance not found at index: " << pyindex;
@@ -248,7 +253,7 @@ namespace PyUtil
 			}
 			else
 			{
-				Ltrace << "pythia instance found at index: " << pyindex;
+				Ltrace << "pythia instance found at index: " << pyindex << " " << ret_pythia;
 				Ltrace << "... eA: " << ret_pythia->parm("Beams:eA");
 				Ltrace << "... eB: " << ret_pythia->parm("Beams:eB");
 

@@ -8,7 +8,7 @@ namespace GenUtil
 
 	MultiplicityTask::~MultiplicityTask()
 	{
-		;
+		Ltrace << "destructor " << GetName();
 	}
 
 	unsigned int MultiplicityTask::InitThis(const char *opt)

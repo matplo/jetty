@@ -50,6 +50,7 @@ namespace GenUtil
 		fInputTasks.clear();
 		delete fData;
 		fData = 0;
+	    Ltrace << GetName() << " destroyed.";
 	}
 
 	GenTask::GenTask(const char *name)

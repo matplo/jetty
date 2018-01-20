@@ -66,13 +66,11 @@ namespace GenUtil
 			if (fpPythia->init())
 			{
 				std::string slabel = StrUtil::sT(GetName()) + "_Pythia";
-				fShared->add(fpPythia, slabel.c_str());
-				fShared->list();
-				fArgs.remove("new");
+				// fShared->add(fpPythia, slabel.c_str());
+				// fShared->list();
+				fData->add(fpPythia);
 				status = kGood;
 			}
-
-			fData->add(fpPythia);
 		}
 		Linfo << "PythiaTask::Init " << GetName() << " pythia at: " << fpPythia;
 		return status;

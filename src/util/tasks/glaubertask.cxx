@@ -14,7 +14,7 @@ namespace GenUtil
 
 	GlauberTask::~GlauberTask()
 	{
-		;
+		Ltrace << "destructor " << GetName();
 	}
 
 	unsigned int GlauberTask::FinalizeThis(const char *opt)
@@ -145,6 +145,8 @@ namespace GenUtil
 		Double_t noded         = fArgs.getD("--glauber-noded", -1);
 		Bool_t   updateNNxsect = fArgs.isSet("--glauber-update-NNxsect");
 		fpGlauberMC = new TGlauberMC(sysA.c_str(),sysB.c_str(),signn,sigwidth,updateNNxsect);
+		fData->add(fpGlauberMC);
+
 		Linfo << "GlauberTask::Init " << GetName() << " GlauberMC at: " << fpGlauberMC;
 
 		fpGlauberMC->SetEnergyPerNucleon(eA, eB);
@@ -163,8 +165,6 @@ namespace GenUtil
 		}
 
 		string slabel = StrUtil::sT(GetName()) + "_GlauberMC";
-		fShared->add(fpGlauberMC, slabel.c_str());
-		fShared->list();
 
 		return kGood;
 	}
