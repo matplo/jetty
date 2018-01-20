@@ -9,6 +9,7 @@
 #include <jetty/util/tasks/glaubertask.h>
 #include <jetty/util/tasks/pythiatask.h>
 #include <jetty/util/tasks/pythiaAAtask.h>
+#include <jetty/util/tasks/multiplicitytask.h>
 
 #include <jetty/util/pythia/event_pool.h>
 #include <jetty/util/tglaubermc/tglaubermc.h>
@@ -28,7 +29,17 @@ int gentasks (const std::string &s)
     GenUtil::PythiaAATask pythiaTAA("pythiaAA", args.asString().c_str());
     g0.AddTask(&pythiaTAA);
 
+    GenUtil::PythiaTask pythiaT("pythia", args.asString().c_str());
+    g0.AddTask(&pythiaT);
+
+    GenUtil::MultiplicityTask mult("mult");
+    mult.AddInputTask(&pythiaTAA);
+    mult.AddInputTask(&pythiaT);
+    g0.AddTask(&mult);
+
     g0.Init();
+
+    pythiaTAA.DumpTaskListInfo();
 
     int nEv = args.getI("--nev", 5);
     if (args.isSet("-h") || args.isSet("--help"))

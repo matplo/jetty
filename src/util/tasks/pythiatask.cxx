@@ -1,6 +1,7 @@
 #include <jetty/util/tasks/pythiatask.h>
 #include <jetty/util/blog.h>
 #include <jetty/util/strutil.h>
+#include <jetty/util/pythia/event_pool.h>
 
 #include <Pythia8/Pythia.h>
 
@@ -18,6 +19,8 @@ namespace GenUtil
 	{
 		Ltrace << "PythiaTask::ExecThis " << GetName() << " with option: " << opt;
 		while (fpPythia->next() == false) continue;
+		fEventPool->Clear();
+		fEventPool->AddEvent(fpPythia->event);
 		return kGood;
 	}
 
@@ -29,53 +32,47 @@ namespace GenUtil
 		Linfo << "PythiaTask::Init " << GetName() << " fStatus: " << fStatus;
 		if (fStatus == kBeforeInit)
 		{
-			if (fArgs.isSet("new"))
+			fpPythia = new Pythia8::Pythia();
+
+			if (!fpPythia)
 			{
-				fpPythia = new Pythia8::Pythia();
+				Lfatal << GetName() << " unable to create new pythia!";
+				return kError;
+			}
 
-				if (!fpPythia)
-				{
-					Lfatal << GetName() << " unable to create new pythia!";
-					return kError;
-				}
-
-				double eA = fArgs.getD("Beams:eA");
-				double eB = fArgs.getD("Beams:eB");
-				if (eA == eB)
-				{
-					fArgs.set("Beams:frameType=1");
-				}
-				else
-				{
-					fArgs.set("Beams:frameType=2");
-				}
-				// http://home.thep.lu.se/~torbjorn/pythia81html/BeamParameters.html
-				// NOTE: option 3 : the beams are not back-to-back, and therefore the three-momentum of each incoming particle
-				// needs to be specified, see Beams:pxA through Beams:pzB below.
-
-				auto pairs = fArgs.pairs();
-				for (unsigned int i = 0; i < pairs.size(); i++)
-				{
-					if (pairs[i].second.size() < 1) continue;
-					Linfo << GetName() << " [init pythia] paired arg: #" << i << " " << pairs[i].first << " " << pairs[i].second;
-					std::string spypar = pairs[i].first + " = " + pairs[i].second;
-					fpPythia->readString(spypar.c_str());
-				}
-
-				if (fpPythia->init())
-				{
-					std::string slabel = StrUtil::sT(GetName()) + "_Pythia";
-					fShared->add(fpPythia, slabel.c_str());
-					fShared->list();
-					fArgs.remove("new");
-					status = kGood;
-				}
+			double eA = fArgs.getD("Beams:eA");
+			double eB = fArgs.getD("Beams:eB");
+			if (eA == eB)
+			{
+				fArgs.set("Beams:frameType=1");
 			}
 			else
 			{
-				fpPythia = fShared->get<Pythia8::Pythia>();
-				if (fpPythia) status = kGood;
+				fArgs.set("Beams:frameType=2");
 			}
+			// http://home.thep.lu.se/~torbjorn/pythia81html/BeamParameters.html
+			// NOTE: option 3 : the beams are not back-to-back, and therefore the three-momentum of each incoming particle
+			// needs to be specified, see Beams:pxA through Beams:pzB below.
+
+			auto pairs = fArgs.pairs();
+			for (unsigned int i = 0; i < pairs.size(); i++)
+			{
+				if (pairs[i].second.size() < 1) continue;
+				Linfo << GetName() << " [init pythia] paired arg: #" << i << " " << pairs[i].first << " " << pairs[i].second;
+				std::string spypar = pairs[i].first + " = " + pairs[i].second;
+				fpPythia->readString(spypar.c_str());
+			}
+
+			if (fpPythia->init())
+			{
+				std::string slabel = StrUtil::sT(GetName()) + "_Pythia";
+				fShared->add(fpPythia, slabel.c_str());
+				fShared->list();
+				fArgs.remove("new");
+				status = kGood;
+			}
+
+			fData->add(fpPythia);
 		}
 		Linfo << "PythiaTask::Init " << GetName() << " pythia at: " << fpPythia;
 		return status;

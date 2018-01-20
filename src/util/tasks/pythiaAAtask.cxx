@@ -15,7 +15,6 @@ namespace GenUtil
 {
 	PythiaAATask::~PythiaAATask()
 	{
-		delete fEventPool;
 		Ltrace << "destructor " << GetName();
 	}
 
@@ -121,8 +120,6 @@ namespace GenUtil
 			pypool.SetupECMs(fEA, fEB, fArgs.getD("--pythia-pool-ndiv", 50));
 		}
 		fFixedNcoll = fArgs.getI("--AA-fixed-ncoll", 0);
-		if (!fEventPool) fEventPool = new PyUtil::EventPool();
-		Linfo << "PythiaAATask::Init " << GetName() << " Event pool at " << fEventPool;
 		Linfo << "PythiaAATask::Init " << GetName() << " done.";
 		return kGood;
 	}

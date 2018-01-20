@@ -5,8 +5,10 @@ set(NAME_LIB ${MODULE})
 set(SOURCES_LIB
 	gentask.cxx
 	glaubertask.cxx
+	eventpooltask.cxx
 	pythiatask.cxx
 	pythiaAAtask.cxx
+	multiplicitytask.cxx
 )
 
 # Headers from sources

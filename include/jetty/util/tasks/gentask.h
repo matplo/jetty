@@ -12,12 +12,8 @@ namespace GenUtil
 	{
 	public:
 		enum { kBeforeInit, kGood, kDefinedStop, kInactive, kError, kDone };
-		GenTask(const char *name)
-			: fName(name), fArgs(), fSubtasks(), fParent(0), fStatus(kBeforeInit), fNExecCalls(0)
-			{;}
-		GenTask(const char *name, const char *params)
-			: fName(name), fArgs(params), fSubtasks(), fParent(0), fStatus(kBeforeInit), fNExecCalls(0)
-			{;}
+		GenTask(const char *name);
+		GenTask(const char *name, const char *params);
 		GenTask();
 
 		virtual 				~GenTask();
@@ -25,7 +21,6 @@ namespace GenUtil
 		virtual unsigned int 	ExecThis(const char *opt = "");
 		virtual unsigned int 	InitThis(const char *opt = "");
 		virtual unsigned int 	FinalizeThis(const char *opt = "");
-
 
 		virtual unsigned int 	Execute(const char *opt = "");
 		virtual unsigned int 	Init(const char *opt = "");
@@ -47,6 +42,16 @@ namespace GenUtil
 		void 					SetOutputPath(const char *s) {fOutputPath = s;}
 		std::string 			GetOutputPath() {return fOutputPath;}
 
+		unsigned int 			GetId() {return fTaskId;}
+		GenTask *				GetTask(unsigned int id);
+		const std::vector<GenTask*> GetTasks() {return fTasks;}
+
+		static void 			DumpTaskListInfo();
+
+		void 					AddInputTask(GenTask *t);
+
+		Wrapper * 				GetData() {return fData;}
+
 	protected:
 		std::string 			fName;
 		PyUtil::Args 			fArgs;
@@ -54,9 +59,13 @@ namespace GenUtil
 		GenTask *				fParent;
 		unsigned int 			fStatus;
 		unsigned int 			fNExecCalls;
+		unsigned int 			fTaskId;
+		std::vector<GenTask*> 	fInputTasks;
+		Wrapper *				fData;
 
-		static unsigned int _instance_counter;
-		static Wrapper *		fShared;
+		static unsigned int 			_instance_counter;
+		static Wrapper *				fShared;
+		static std::vector<GenTask*> 	fTasks;
 
 	private:
 		std::string 			fOutputPath;

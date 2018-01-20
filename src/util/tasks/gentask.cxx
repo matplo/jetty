@@ -12,6 +12,32 @@ namespace GenUtil
 	unsigned int 	GenTask::_instance_counter 	= 0;
 	Wrapper * 		GenTask::fShared 			= new Wrapper();
 
+	std::vector<GenTask*> GenTask::fTasks;
+
+	GenTask *GenTask::GetTask(unsigned int id)
+	{
+		if (id >= fTasks.size())
+		{
+			Lfatal << "asked for a non-existing task ID: " << id;
+			return 0x0;
+		}
+		return fTasks[id];
+	}
+
+	void GenTask::AddInputTask(GenTask *t)
+	{
+		fInputTasks.push_back(t);
+	}
+
+	void GenTask::DumpTaskListInfo()
+	{
+	    Linfo << "number of tasks: " << fTasks.size();
+		for (auto &t : fTasks)
+		{
+			Linfo << "task id: " << t->GetId() << " " << t->GetName() << " status: " << t->GetStatus();
+		}
+	}
+
 	GenTask::~GenTask()
 	{
 		_instance_counter -= 1;
@@ -19,16 +45,38 @@ namespace GenUtil
 		{
 			delete fShared;
 			fShared = 0;
+			fTasks.clear();
 		}
+		fInputTasks.clear();
+		delete fData;
+		fData = 0;
+	}
+
+	GenTask::GenTask(const char *name)
+		: fName(name), fArgs(), fSubtasks(), fParent(0), fStatus(kBeforeInit), fNExecCalls(0), fTaskId(0), fInputTasks(), fData(new Wrapper)
+	{
+		_instance_counter += 1;
+		fTaskId = fTasks.size();
+		fTasks.push_back(this);
+	}
+
+	GenTask::GenTask(const char *name, const char *params)
+		: fName(name), fArgs(params), fSubtasks(), fParent(0), fStatus(kBeforeInit), fNExecCalls(0), fTaskId(0), fInputTasks(), fData(new Wrapper)
+	{
+		_instance_counter += 1;
+		fTaskId = fTasks.size();
+		fTasks.push_back(this);
 	}
 
 	GenTask::GenTask()
-		: fName("GenTask"), fArgs(), fSubtasks(), fParent(0), fStatus(0), fNExecCalls(0)
+		: fName("GenTask"), fArgs(), fSubtasks(), fParent(0), fStatus(kBeforeInit), fNExecCalls(0), fTaskId(0), fInputTasks(), fData(new Wrapper)
 	{
 		_instance_counter += 1;
 		std::string tmpname = "GenTask_";
 		tmpname += StrUtil::sT(_instance_counter);
 		SetName(tmpname);
+		fTaskId = fTasks.size();
+		fTasks.push_back(this);
 	}
 
 	unsigned int GenTask::ExecThis(const char *opt)
