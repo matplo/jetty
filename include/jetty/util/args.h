@@ -63,7 +63,7 @@ namespace SysUtil
 
 	protected:
 		void				_convert(int argc, char **argv);
-		void 				_init_logging();
+		void		 		_init_logging();
 
 		static void 		_log_argument(const char *what);
 		void 				_dump_logged_arguments();
@@ -100,5 +100,6 @@ namespace SysUtil
 	{
 		add(what.c_str(), value);
 	}
+
 };
 #endif

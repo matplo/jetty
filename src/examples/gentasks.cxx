@@ -12,6 +12,7 @@
 #include <jetty/util/tasks/multiplicitytask.h>
 
 #include <jetty/util/pythia/event_pool.h>
+#include <jetty/util/pythia/pythia_pool.h>
 #include <jetty/util/tglaubermc/tglaubermc.h>
 
 #include <string>
@@ -22,103 +23,117 @@ void test_args_merge();
 
 int gentasks (const std::string &s)
 {
-    // test(s); return;
-    PyUtil::Args args(s);
+	PyUtil::Args args(s);
+	PyUtil::PythiaPool &pypool = PyUtil::PythiaPool::Instance();
+	pypool.SetCommonSettings(s.c_str());
+	pypool.SetupECMs(1000, 1000, 50);
+	pypool.GetPythia(900, 900);
+	// pypool.GetPythia(1002, 1002, s.c_str());
+	Linfo << "just get the pool and done...";
+	LogUtil::cout_sink _cout_sink;
+	LogUtil::cerr_sink _cerr_sink;
+	return 1;
+}
 
-    GenUtil::GlauberTask g0("glauber", args.asString().c_str());
-    //GenUtil::PythiaAATask pythiaTAA("pythiaAA", args.asString().c_str());
-    //g0.AddTask(&pythiaTAA);
-    GenUtil::PythiaTask pythiaT("pythia", args.asString().c_str());
-    g0.AddTask(&pythiaT);
-    // GenUtil::MultiplicityTask mult("mult");
-    // mult.AddInputTask(&pythiaTAA);
-    // mult.AddInputTask(&pythiaT);
-    // g0.AddTask(&mult);
+int gentasks_x (const std::string &s)
+{
+	// test(s); return;
+	PyUtil::Args args(s);
 
-    g0.Init();
+	GenUtil::GlauberTask g0("glauber", args.asString().c_str());
+	//GenUtil::PythiaAATask pythiaTAA("pythiaAA", args.asString().c_str());
+	//g0.AddTask(&pythiaTAA);
+	GenUtil::PythiaTask pythiaT("pythia", args.asString().c_str());
+	g0.AddTask(&pythiaT);
+	// GenUtil::MultiplicityTask mult("mult");
+	// mult.AddInputTask(&pythiaTAA);
+	// mult.AddInputTask(&pythiaT);
+	// g0.AddTask(&mult);
 
-    //pythiaTAA.DumpTaskListInfo();
+	g0.Init();
 
-    int nEv = args.getI("--nev", 5);
-    if (args.isSet("-h") || args.isSet("--help"))
-        nEv = 1;
+	//pythiaTAA.DumpTaskListInfo();
 
-    LoopUtil::TPbar pbar(nEv);
-    for (int i = 0; i < nEv; i++)
-    {
-        pbar.Update();
-        g0.Execute("<an option>");
-        if (g0.GetStatus() == GenUtil::GenTask::kError)
-            break;
-        Ldebug << "number of collisions: " << g0.GetGlauberMC()->GetNcoll();
-        // Ldebug << " -> number of final state particles: " << pythiaTAA.GetEventPool()->GetFinalParticles().size();
-    }
+	int nEv = args.getI("--nev", 5);
+	if (args.isSet("-h") || args.isSet("--help"))
+		nEv = 1;
 
-    g0.Finalize();
+	LoopUtil::TPbar pbar(nEv);
+	for (int i = 0; i < nEv; i++)
+	{
+		pbar.Update();
+		g0.Execute("<an option>");
+		if (g0.GetStatus() == GenUtil::GenTask::kError)
+			break;
+		Ldebug << "number of collisions: " << g0.GetGlauberMC()->GetNcoll();
+		// Ldebug << " -> number of final state particles: " << pythiaTAA.GetEventPool()->GetFinalParticles().size();
+	}
 
-    Linfo << "glauber N exec calls: " << g0.GetNExecCalls();
-    // Linfo << "pythiaTAA N exec calls: " << pythiaTAA.GetNExecCalls();
+	g0.Finalize();
 
-    Linfo << "gentasks is done." << endl;
-    return 0;
+	Linfo << "glauber N exec calls: " << g0.GetNExecCalls();
+	// Linfo << "pythiaTAA N exec calls: " << pythiaTAA.GetNExecCalls();
+
+	Linfo << "gentasks is done." << endl;
+	return 0;
 }
 
 int gentasks_test (const std::string &s)
 {
-    // test(s); return;
-    PyUtil::Args args(s);
+	// test(s); return;
+	PyUtil::Args args(s);
 
-    GenUtil::GlauberTask g0("glauber", args.asString().c_str());
+	GenUtil::GlauberTask g0("glauber", args.asString().c_str());
 
-    GenUtil::PythiaTask pythiaT("pythia", args.asString().c_str());
+	GenUtil::PythiaTask pythiaT("pythia", args.asString().c_str());
 
-    GenUtil::SpectraPtHatBins task1;
-    GenUtil::SpectraPtHatBins task2;
+	GenUtil::SpectraPtHatBins task1;
+	GenUtil::SpectraPtHatBins task2;
 
-    g0.AddTask(&pythiaT);
-    pythiaT.AddTask(&task1);
-    task1.AddTask(&task2);
+	g0.AddTask(&pythiaT);
+	pythiaT.AddTask(&task1);
+	task1.AddTask(&task2);
 
-    g0.Init("new");
+	g0.Init("new");
 
-    int nEv = args.getI("--nev", 5);
-    if (args.isSet("-h") || args.isSet("--help"))
-        nEv = 1;
+	int nEv = args.getI("--nev", 5);
+	if (args.isSet("-h") || args.isSet("--help"))
+		nEv = 1;
 
-    LoopUtil::TPbar pbar(nEv);
-    for (int i = 0; i < nEv; i++)
-    {
-    	pbar.Update();
-    	g0.Execute("<an option>");
-    }
+	LoopUtil::TPbar pbar(nEv);
+	for (int i = 0; i < nEv; i++)
+	{
+		pbar.Update();
+		g0.Execute("<an option>");
+	}
 
-    g0.Finalize();
+	g0.Finalize();
 
-    Linfo << "glauber N exec calls: " << g0.GetNExecCalls();
-    Linfo << "pythiaT N exec calls: " << pythiaT.GetNExecCalls();
-    Linfo << "task1 N exec calls: " << task1.GetNExecCalls();
-    Linfo << "task2 N exec calls: " << task2.GetNExecCalls();
+	Linfo << "glauber N exec calls: " << g0.GetNExecCalls();
+	Linfo << "pythiaT N exec calls: " << pythiaT.GetNExecCalls();
+	Linfo << "task1 N exec calls: " << task1.GetNExecCalls();
+	Linfo << "task2 N exec calls: " << task2.GetNExecCalls();
 
-    if (args.isSet("--test-args-merge")) test_args_merge();
+	if (args.isSet("--test-args-merge")) test_args_merge();
 
-    return 0;
+	return 0;
 }
 
 void test_args_merge()
 {
-    Ldebug << "-----";
-    PyUtil::Args a1("--out=None");
-    Linfo << a1.asString("args - 1:");
+	Ldebug << "-----";
+	PyUtil::Args a1("--out=None");
+	Linfo << a1.asString("args - 1:");
 
-    Ldebug << "-----";
-    PyUtil::Args a2("--out=ala.root");
-    a1.merge(a2);
-    Linfo << a1.asString("args - 2:");
+	Ldebug << "-----";
+	PyUtil::Args a2("--out=ala.root");
+	a1.merge(a2);
+	Linfo << a1.asString("args - 2:");
 
-    Ldebug << "-----";
-    PyUtil::Args a3("--out=bela.root");
-    a1.merge(a3);
-    Linfo << a1.asString("args - 3:");
+	Ldebug << "-----";
+	PyUtil::Args a3("--out=bela.root");
+	a1.merge(a3);
+	Linfo << a1.asString("args - 3:");
 }
 
 //int wrap_tests()

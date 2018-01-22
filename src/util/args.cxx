@@ -431,5 +431,4 @@ namespace SysUtil
 			if (LogUtil::current_blog_severity() > boost::log::trivial::trace)
 				LogUtil::blog_set_severity(boost::log::trivial::trace);
 	}
-
 };

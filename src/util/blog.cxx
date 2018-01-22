@@ -94,6 +94,19 @@ namespace LogUtil
 		}
 	}
 
+	class LogInit
+	{
+	public:
+		LogInit()
+			{
+				LogUtil::blog_set_severity(LogUtil::current_blog_severity());
+				Linfo << "LogInit::LogInit : logging intialized.";
+			};
+		~LogInit();
+	};
+
+	static LogInit *gLogInit = new LogInit;
+
 	std::string env_path_jetty(const char *fname)
 	{
 		std::string jetty_dir = std::getenv("JETTYDIR");

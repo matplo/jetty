@@ -1,4 +1,4 @@
-#include <jetty/util/pythia/pythia_pool.h>
+	#include <jetty/util/pythia/pythia_pool.h>
 #include <jetty/util/pythia/pyargs.h>
 #include <jetty/util/blog.h>
 #include <jetty/util/wrapper/wrapper.h>
@@ -16,6 +16,23 @@ namespace PyUtil
 	{
 		Ltrace << "PythiaPool::~PythiaPool ..." << endl;
 		DumpInfo();
+		for (auto &p : _pythia_pool)
+		{
+			Ltrace << "deleting: " << p;
+			delete p;
+			Ltrace << "deleted: " << p;
+		}
+		Ltrace << "clearing pool...";
+		_pythia_pool.clear();
+		_pythia_pool_settings.clear();
+		Ltrace << "cleared.";
+
+		Ltrace << "deleting maps...";
+		if (_eAeBmap)
+			delete _eAeBmap;
+		if (_eAeBmapW)
+			delete _eAeBmapW;
+		Ltrace << "done.";
 		Ltrace << "PythiaPool::~PythiaPool done." << endl;
 	}
 
@@ -39,6 +56,8 @@ namespace PyUtil
 			fout->Write();
 			fout->Close();
 			delete fout;
+			_eAeBmap = 0;
+			_eAeBmapW = 0;
 		}
 		Ltrace << " ... done." << endl;
 	}
@@ -51,6 +70,7 @@ namespace PyUtil
 		{
 			Linfo << "... listing entries in the pool map: ";
 			for (Int_t ibx = 1; ibx <= _eAeBmap->GetXaxis()->GetNbins(); ibx++)
+			{
 				for (Int_t iby = 1; iby <= _eAeBmap->GetYaxis()->GetNbins(); iby++)
 				{
 					if (_eAeBmap->GetBinContent(ibx, iby) > 0 || _eAeBmapW->GetBinContent(ibx, iby) > 0)
@@ -70,8 +90,9 @@ namespace PyUtil
 							Linfo << "    ...   used N: " << _eAeBmapW->GetBinContent(ibx, iby);
 					}
 				}
-			Linfo << "... done.";
+			}
 		}
+		Linfo << "... done.";
 	}
 
 	void PythiaPool::SetCommonSettings(const char *s)
@@ -211,14 +232,17 @@ namespace PyUtil
 			{
 				LogUtil::cout_sink _cout_sink;
 				LogUtil::cerr_sink _cerr_sink;
-
 				ret_pythia = CreatePythia(eA, eB, settings.c_str());
+				pythia_init_message = _cout_sink.get_buffer()->str();
 				if (ret_pythia == 0)
 				{
-					Linfo << endl << _cout_sink.get_buffer()->str();
-					Linfo << endl << _cerr_sink.get_buffer()->str();
+					pythia_init_message += " ";
+					pythia_init_message += _cerr_sink.get_buffer()->str();
 				}
-				pythia_init_message = _cout_sink.get_buffer()->str();
+			}
+			if (ret_pythia == 0)
+			{
+				Linfo << endl << pythia_init_message;
 			}
 			if (ret_pythia != 0)
 			{
