@@ -41,18 +41,18 @@ int gentasks (const std::string &s)
 	PyUtil::Args args(s);
 
 	GenUtil::GlauberTask g0("glauber", args.asString().c_str());
-	//GenUtil::PythiaAATask pythiaTAA("pythiaAA", args.asString().c_str());
-	//g0.AddTask(&pythiaTAA);
+	GenUtil::PythiaAATask pythiaTAA("pythiaAA", args.asString().c_str());
+	g0.AddTask(&pythiaTAA);
 	GenUtil::PythiaTask pythiaT("pythia", args.asString().c_str());
 	g0.AddTask(&pythiaT);
-	// GenUtil::MultiplicityTask mult("mult");
-	// mult.AddInputTask(&pythiaTAA);
-	// mult.AddInputTask(&pythiaT);
-	// g0.AddTask(&mult);
+	GenUtil::MultiplicityTask mult("mult");
+	mult.AddInputTask(&pythiaTAA);
+	mult.AddInputTask(&pythiaT);
+	g0.AddTask(&mult);
 
 	g0.Init();
 
-	//pythiaTAA.DumpTaskListInfo();
+	pythiaTAA.DumpTaskListInfo();
 
 	int nEv = args.getI("--nev", 5);
 	if (args.isSet("-h") || args.isSet("--help"))
