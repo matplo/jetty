@@ -21,7 +21,7 @@ using namespace std;
 
 void test_args_merge();
 
-int gentasks (const std::string &s)
+int gentasks_debug (const std::string &s)
 {
 	PyUtil::Args args(s);
 	PyUtil::PythiaPool &pypool = PyUtil::PythiaPool::Instance();
@@ -35,7 +35,7 @@ int gentasks (const std::string &s)
 	return 1;
 }
 
-int gentasks_x (const std::string &s)
+int gentasks (const std::string &s)
 {
 	// test(s); return;
 	PyUtil::Args args(s);
