@@ -43,7 +43,7 @@ namespace LogUtil
 
 		~cerr_redirect( )
 		{
-			std::cout.rdbuf( old );
+			std::cerr.rdbuf( old );
 		}
 
 	private:
