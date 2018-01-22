@@ -15,6 +15,8 @@
 #include <jetty/util/pythia/pythia_pool.h>
 #include <jetty/util/tglaubermc/tglaubermc.h>
 
+#include <TRandom.h>
+
 #include <string>
 #include <iostream>
 using namespace std;
@@ -39,6 +41,12 @@ int gentasks (const std::string &s)
 {
 	// test(s); return;
 	PyUtil::Args args(s);
+
+	if (args.isSet("--random-seed"))
+	{
+		gRandom->SetSeed(args.getI("--random-seed", 0));
+	}
+	Linfo << "random seed is: " << gRandom->GetSeed();
 
 	GenUtil::GlauberTask g0("glauber", args.asString().c_str());
 	GenUtil::PythiaAATask pythiaTAA("pythiaAA", args.asString().c_str());
