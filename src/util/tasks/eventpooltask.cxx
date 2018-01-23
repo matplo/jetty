@@ -30,6 +30,7 @@ namespace GenUtil
 	{
 		for (auto &t : fInputTasks)
 		{
+			// change this to use fData not the GetSomething... - use fData!
 			auto *glt = (GlauberTask*)t;
 			fpGlauberMC = glt->GetGlauberMC();
 			if (fpGlauberMC)
