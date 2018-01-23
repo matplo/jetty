@@ -52,20 +52,13 @@ namespace GenUtil
 		}
 		else
 		{
-			TGlauberMC *glauber = 0x0;
-			auto *glt = (GlauberTask*)fParent;
-			if (glt)
-				glauber = glt->GetGlauberMC();
-			if (!glauber)
+			if (!fpGlauberMC)
 			{
-				Lfatal << GetName() << " no ncoll specified and no glauber-parent present...";
-				Lfatal << GetName() << " parent is at: " << fParent;
-				if (fParent)
-					Lfatal << GetName() << " parent name is: " << fParent->GetName();
+				Lfatal << GetName() << " no ncoll specified and no fpGlauberMC set...";
 				Lfatal << GetName() << " stop here.";
 				return kError;
 			}
-			auto collisions = glauber->GetCollisions();
+			auto collisions = fpGlauberMC->GetCollisions();
 			int ncoll = collisions.size();
 			Ltrace << GetName() << "generating ncoll = " << ncoll;
 			for (auto &c : collisions)

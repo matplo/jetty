@@ -12,6 +12,8 @@ namespace PyUtil
 	class EventPool;
 }
 
+class TGlauberMC;
+
 namespace GenUtil
 {
 	// a convenience class
@@ -23,9 +25,13 @@ namespace GenUtil
 		EventPoolTask(const char *name, const char *params);
 		EventPoolTask();
 		virtual 			~EventPoolTask();
-		PyUtil::EventPool *GetEventPool() {return fEventPool;}
+		virtual unsigned int Init(const char *opt = "");
+
+		PyUtil::EventPool 	*GetEventPool() {return fEventPool;}
+		TGlauberMC 			*GetGlauberMC() {return fpGlauberMC;}
 	protected:
 		PyUtil::EventPool 		*fEventPool;
+		TGlauberMC 				*fpGlauberMC;
 	};
 }
 
