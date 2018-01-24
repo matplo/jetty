@@ -30,11 +30,16 @@ namespace GenUtil
 	{
 		for (auto &t : fInputTasks)
 		{
-			// change this to use fData not the GetSomething... - use fData!
-			auto *glt = (GlauberTask*)t;
-			fpGlauberMC = glt->GetGlauberMC();
+			fpGlauberMC = t->GetData()->get<TGlauberMC>();
 			if (fpGlauberMC)
-				Linfo << "got GlauberMC at " << fpGlauberMC << " from task : " << t->GetName();
+			{
+				Linfo << GetName() << " got GlauberMC at " << fpGlauberMC << " from task : " << t->GetName();
+				break; // get the first only
+			}
+		}
+		if (!fpGlauberMC)
+		{
+			Ldebug << GetName() << " did NOT get GlauberMC - " << fpGlauberMC;
 		}
 		return GenTask::Init(opt);
 	}
