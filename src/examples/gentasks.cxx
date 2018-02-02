@@ -54,10 +54,10 @@ int gentasks (const std::string &s)
 	pythiaTAA.AddInputTask(&g0);
 	GenUtil::PythiaTask pythiaT("pythia", args.asString().c_str());
 	g0.AddTask(&pythiaT);
-	GenUtil::MultiplicityTask mult("mult");
+	GenUtil::MultiplicityTask mult("mult", args.asString().c_str());
 	g0.AddTask(&mult);
 	mult.AddInputTask(&pythiaTAA);
-	mult.AddInputTask(&pythiaT);
+	// mult.AddInputTask(&pythiaT);
 	mult.AddInputTask(&g0);
 
 	g0.Init();
