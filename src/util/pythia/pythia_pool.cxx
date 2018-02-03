@@ -164,22 +164,22 @@ namespace PyUtil
 		int nbinsB = ndiv;
 		if (eA > eB)
 		{
-			nbinsA = eA / (eB / ndiv);
+			nbinsA = eA / (eB / ndiv) + 1;
 		}
 		else
 		{
-			nbinsB = eB / (eA / ndiv);
+			nbinsB = eB / (eA / ndiv) + 1;
 		}
 		double lowCutoffFraction = 0.; // 0 is no cut off
 		double bwA = (eA - eA * lowCutoffFraction) / nbinsA / 2.;
 		double bwB = (eB - eB * lowCutoffFraction) / nbinsB / 2.;
 		_eAeBmap = new TH2I("_eAeBmap", "_eAeBmap",
-		                    nbinsA, eA * lowCutoffFraction + bwA, eA  + bwA,
-		                    nbinsB, eB * lowCutoffFraction + bwB, eB  + bwB);
+		                    nbinsA, eA * lowCutoffFraction - bwA, eA  + bwA,
+		                    nbinsB, eB * lowCutoffFraction - bwB, eB  + bwB);
 		_eAeBmap->SetDirectory(0);
 		_eAeBmapW = new TH2I("_eAeBmapW", "_eAeBmapW",
-		                     nbinsA, eA * lowCutoffFraction + bwA, eA + bwA,
-		                     nbinsB, eB * lowCutoffFraction + bwB, eB + bwB);
+		                     nbinsA, eA * lowCutoffFraction - bwA, eA + bwA,
+		                     nbinsB, eB * lowCutoffFraction - bwB, eB + bwB);
 		_eAeBmapW->SetDirectory(0);
 
 		Linfo << "setting up energy map with eA: " << eA << " eB: " << eB;
@@ -249,7 +249,10 @@ namespace PyUtil
 				pyindex = _pythia_pool.size();
 				_eAeBmap->SetBinContent(binx, biny, pyindex);
 				Args args(settings);
-				if (args.isSet("--silent-pythia-init") == false)
+				if (args.isSet("--silent-pythia-init"))
+				{
+					Lwarn << "silent pythia init...";
+				}
 				{
 					Linfo << endl << pythia_init_message;
 				}

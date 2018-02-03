@@ -946,8 +946,8 @@ void TGlauberMC::Collide(TGlauNucleon *nucleonB, TGlauNucleon *nucleonA) // MP
   fCollisions.push_back(c);
   if (fUpdateNNCrossSection)
   {
-    nucleonA->SetEnergy(nucleonA->GetEnergy() * 0.99);
-    nucleonB->SetEnergy(nucleonB->GetEnergy() * 0.99);
+    nucleonA->SetEnergy(nucleonA->GetEnergy() * 0.5);
+    nucleonB->SetEnergy(nucleonB->GetEnergy() * 0.5);
   }
 }
 Bool_t TGlauberMC::CalcResults(Double_t bgen)
