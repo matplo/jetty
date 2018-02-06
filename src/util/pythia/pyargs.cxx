@@ -207,10 +207,10 @@ namespace PyUtil
 				set("Beams:frameType=2");
 			}
 
-			Linfo << "reset Beams:eCM because eA=" << eA << " eB=" << eB;
+			Ltrace << "PyArgs::_cook: reset Beams:eCM because eA=" << eA << " eB=" << eB;
 			double sqrts = PyUtil::sqrts(eA, eB);
 			add(boost::str(boost::format("Beams:eCM=%f") % sqrts));
-			Linfo << "      Beams:eCM=" << getD("Beams:eCM");
+			Ltrace << "PyArgs::_cook:      Beams:eCM=" << getD("Beams:eCM");
 		}
 	}
 };

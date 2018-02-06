@@ -334,13 +334,14 @@ class TGlauberMC : public TNamed
     Event         fEv;             //Glauber event (results of calculation stored in tree)
     Bool_t        fBC[999][999];   //Array to record binary collision
     Bool_t        fUpdateNNCrossSection; // update NN xsection collision by collision - MP
+    Double_t      fAverageNucleonEloss; // average e-loss for wounded nucleons
     std::vector<TGlauberMC::Collision> fCollisions; // pairs of nucleons that collided - detailed record - MP
     Double_t      fEnergyPerNucleonA; // energy per nucleon A - MP
     Double_t      fEnergyPerNucleonB; // energy per nucleon B - MP
     Bool_t        CalcResults(Double_t bgen);
     Bool_t        CalcEvent(Double_t bgen);
   public:
-    TGlauberMC(const char* NA = "Pb", const char* NB = "Pb", Double_t xsect = 42, Double_t xsectsigma=0, Bool_t canUpdateNNxsection = kFALSE); // MP
+    TGlauberMC(const char* NA = "Pb", const char* NB = "Pb", Double_t xsect = 42, Double_t xsectsigma=0, Bool_t canUpdateNNxsection = kFALSE, Double_t averageNucleonEloss = 1.0); // MP
     void                SetEnergyPerNucleon(Double_t eA, Double_t eB) {fEnergyPerNucleonB = eB; fEnergyPerNucleonA = eA;} // -MP
     virtual            ~TGlauberMC() {Reset();}
     Double_t            CalcDens(TF1 &prof, Double_t xval, Double_t yval) const;

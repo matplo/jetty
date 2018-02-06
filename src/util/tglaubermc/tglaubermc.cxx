@@ -803,7 +803,7 @@ TVector3 &TGlauNucleus::ThrowNucleons(Double_t xshift)
 //---------------------------------------------------------------------------------
   ClassImp(TGlauberMC)
   ClassImp(TGlauberMC::Event)
-TGlauberMC::TGlauberMC(const char* NA, const char* NB, Double_t xsect, Double_t xsectsigma, Bool_t canUpdateNNxsection) :
+TGlauberMC::TGlauberMC(const char* NA, const char* NB, Double_t xsect, Double_t xsectsigma, Bool_t canUpdateNNxsection, Double_t averageNucleonEloss) :
   fANucleus(NA),fBNucleus(NB),
   fXSect(xsect),fXSectOmega(0),fXSectLambda(0),fXSectEvent(0),
   fNucleonsA(0),fNucleonsB(0),fNucleons(0),
@@ -813,6 +813,7 @@ TGlauberMC::TGlauberMC(const char* NA, const char* NB, Double_t xsect, Double_t 
   fMaxNpartFound(0),f2Cx(0),fPTot(0),fNNProf(0),
   fEv(),
   fUpdateNNCrossSection(canUpdateNNxsection), // MP
+  fAverageNucleonEloss(averageNucleonEloss), // MP
   fEnergyPerNucleonA(0), // MP
   fEnergyPerNucleonB(0) // MP
 {
@@ -946,8 +947,8 @@ void TGlauberMC::Collide(TGlauNucleon *nucleonB, TGlauNucleon *nucleonA) // MP
   fCollisions.push_back(c);
   if (fUpdateNNCrossSection)
   {
-    nucleonA->SetEnergy(nucleonA->GetEnergy() * 0.5);
-    nucleonB->SetEnergy(nucleonB->GetEnergy() * 0.5);
+    nucleonA->SetEnergy(nucleonA->GetEnergy() * fAverageNucleonEloss);
+    nucleonB->SetEnergy(nucleonB->GetEnergy() * fAverageNucleonEloss);
   }
 }
 Bool_t TGlauberMC::CalcResults(Double_t bgen)

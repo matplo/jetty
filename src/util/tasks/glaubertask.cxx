@@ -144,7 +144,16 @@ namespace GenUtil
 		Double_t omega         = fArgs.getD("--glauber-omega", -1);
 		Double_t noded         = fArgs.getD("--glauber-noded", -1);
 		Bool_t   updateNNxsect = fArgs.isSet("--glauber-update-NNxsect");
-		fpGlauberMC = new TGlauberMC(sysA.c_str(),sysB.c_str(),signn,sigwidth,updateNNxsect);
+		Double_t averageNucleonEloss = fArgs.getD("--glauber-average-N-eloss", 1.0);
+		if (averageNucleonEloss < 0 || averageNucleonEloss > 1.0)
+		{
+			Lfatal << "averageNucleonEloss should be a number within [0,1] " << averageNucleonEloss << " was given.";
+			return kError;
+		}
+		if (averageNucleonEloss < 1.0) updateNNxsect = kTRUE;
+		else updateNNxsect = kFALSE;
+		Linfo << "GlauberTask::Init " << GetName() << " updateNNxsect : " << updateNNxsect << " averageNucleonEloss : " << averageNucleonEloss;
+		fpGlauberMC = new TGlauberMC(sysA.c_str(),sysB.c_str(),signn,sigwidth,updateNNxsect,averageNucleonEloss);
 		fData->add(fpGlauberMC);
 
 		Linfo << "GlauberTask::Init " << GetName() << " GlauberMC at: " << fpGlauberMC;

@@ -4,8 +4,9 @@
 class TH2I;
 
 #include <vector>
-
 #include <Pythia8/Pythia.h>
+
+#include <jetty/util/pythia/pyargs.h>
 
 namespace PyUtil
 {
@@ -21,6 +22,7 @@ namespace PyUtil
 			void SetCommonSettings(const char *s);
 			void SetupECMs(double eA, double eB, int ndiv = 100);
 			Pythia8::Pythia * GetPythia(double eA, double eB, const char *new_settings = 0);
+			Pythia8::Pythia * GetPythiaSettingsInsensitive(double eA, double eB, const char *new_settings);
 
 			virtual ~PythiaPool();
 			void WriteECMsToFile(const char *fname);
@@ -43,11 +45,10 @@ namespace PyUtil
 			void DumpInfo();
 
 			std::vector<Pythia8::Pythia*> _pythia_pool;
-			std::vector<std::string> 	  _pythia_pool_settings; // store settings - will create new in place if settings changed
+			std::vector<PyUtil::Args> 	  _pythia_pool_settings; // store settings - will create new in place if settings changed
 			std::string 				  _common_settings;
 			TH2I 						  *_eAeBmap; // store indexes eA+eB system in a binned histogram
 			TH2I 						  *_eAeBmapW; // store indexes eA+eB system in a binned histogram
-
 	};
 
 }

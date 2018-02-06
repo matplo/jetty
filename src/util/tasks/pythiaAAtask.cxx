@@ -70,7 +70,8 @@ namespace GenUtil
 					tmp_fEA = fEA;
 					tmp_fEB = fEB;
 				}
-				auto ppythia = pypool.GetPythia(tmp_fEA, tmp_fEB);
+				string pysetup = SetupXSR(c.GetA(), c.GetB());
+				auto ppythia = pypool.GetPythia(tmp_fEA, tmp_fEB, pysetup.c_str());
 				if (!ppythia)
 				{
 					Lfatal << GetName() << " unable to get pythia with eA=" << tmp_fEA << " eB=" << tmp_fEB;
@@ -95,6 +96,59 @@ namespace GenUtil
 		return kGood;
 	}
 
+	std::string PythiaAATask::SetupXSR(TGlauNucleon *nA, TGlauNucleon *nB)
+	{
+		PyUtil::Args args;
+		args.merge(fArgs);
+
+		if (fISR == -1)
+		{
+			args.add("PartonLevel:ISR=off");
+		}
+		if (fISR == 1)
+		{
+			args.add("PartonLevel:ISR=on");
+		}
+		if (fISR == 0)
+		{
+			if (nA->GetNColl()-1 > 0 || nB->GetNColl()-1 > 0)
+				args.add("PartonLevel:ISR=off");
+			else
+				args.add("PartonLevel:ISR=on");
+		}
+
+		if (fFSR == -1)
+		{
+			args.add("PartonLevel:FSR=off");
+			args.add("PartonLevel:FSRinProcess=off");
+			args.add("PartonLevel:FSRinResonances=off");
+		}
+		if (fFSR == 1)
+		{
+			args.add("PartonLevel:FSR=on");
+			args.add("PartonLevel:FSRinProcess=on");
+			args.add("PartonLevel:FSRinResonances=on");
+		}
+		if (fFSR == 0)
+		{
+			if (nA->GetNColl()-1 > 0 || nB->GetNColl()-1 > 0)
+			{
+				Ltrace << "since one of the nucleons is wounded: " << (nA->GetNColl()-1 > 0) << " ? " << (nB->GetNColl()-1 > 0) << " turning off the FSR";
+				args.add("PartonLevel:FSR=off");
+				args.add("PartonLevel:FSRinProcess=off");
+				args.add("PartonLevel:FSRinResonances=off");
+			}
+			else
+			{
+				args.add("PartonLevel:FSR=on");
+				args.add("PartonLevel:FSRinProcess=on");
+				args.add("PartonLevel:FSRinResonances=on");
+			}
+		}
+
+		return args.asString();
+	}
+
 	unsigned int PythiaAATask::InitThis(const char *opt)
 	{
 		fArgs.merge(opt);
@@ -113,6 +167,8 @@ namespace GenUtil
 			pypool.SetupECMs(fEA, fEB, fArgs.getD("--pythia-pool-ndiv", 50));
 		}
 		fFixedNcoll = fArgs.getI("--AA-fixed-ncoll", 0);
+		fISR = fArgs.getI("--AA-ISR", 0); // XSR only for nucleons that are not wounded
+		fFSR = fArgs.getI("--AA-FSR", 0); // XSR only for nucleons that are not wounded
 		Linfo << "PythiaAATask::Init " << GetName() << " done.";
 		return kGood;
 	}

@@ -73,6 +73,55 @@ namespace SysUtil
 		static std::vector<std::string> _args_logged;
 	};
 
+	inline bool operator==(const Args& lhs, const Args& rhs)
+	{
+		auto lhsp = lhs.pairs();
+		auto rhsp = rhs.pairs();
+		for (auto &l : lhsp)
+		{
+			bool matched = false;
+			for (auto &r : rhsp)
+			{
+				if (r.first == l.first)
+				{
+					if (r.second == l.second)
+					{
+						matched = true;
+					}
+					else
+					{
+						matched = false;
+					}
+				}
+			}
+			if (matched == false)
+				return false;
+		}
+
+		for (auto &l : lhsp)
+		{
+			bool matched = false;
+			for (auto &r : rhsp)
+			{
+				if (r.first == l.first)
+				{
+					if (r.second == l.second)
+					{
+						matched = true;
+					}
+					else
+					{
+						matched = false;
+					}
+				}
+			}
+			if (matched == false)
+				return false;
+		}
+
+		return true;
+	}
+
 	template <class T>
 	void Args::set(const char *what, const T &value)
 	{
