@@ -186,6 +186,8 @@ namespace GenUtil
 		fFixedNcoll = fArgs.getI("--AA-fixed-ncoll", 0);
 		fISR = fArgs.getI("--AA-ISR", 0); // XSR only for nucleons that are not wounded
 		fFSR = fArgs.getI("--AA-FSR", 0); // XSR only for nucleons that are not wounded
+		Linfo << "PythiaAATask::Init ISR setting = " << fISR;
+		Linfo << "PythiaAATask::Init FSR setting = " << fFSR;
 		Linfo << "PythiaAATask::Init " << GetName() << " done.";
 		return kGood;
 	}
