@@ -17,6 +17,8 @@ namespace PyUtil
 
     double sqrts(double _eA, double _eB, double mA = 0.93827, double mB = 0.93827);
 
+	static double nucleon_mass = 0.93827;
+
 	void PrintParticle(const Pythia8::Particle &p);
 	void PrintParticle(const Pythia8::Event  &event, 	int idx);
 	void PrintParticle(const Pythia8::Pythia &pythia, 	int idx);

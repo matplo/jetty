@@ -48,12 +48,26 @@ int gentasks (const std::string &s)
 	}
 	Linfo << "random seed is: " << gRandom->GetSeed();
 
+	// PyUtil::Args args1("Beams:eB=20 Beams:eA=25 Beams:eB=15 Beams:eB=201");
+	// PyUtil::Args args2("Beams:eA=25 Beams:eB=20");
+	// Linfo << args1.asString();
+	// Linfo << args1.get("Beams:eA");
+	// Linfo << args1.get("Beams:eB");
+	// Linfo << args2.asString();
+	// Linfo << args2.get("Beams:eA");
+	// Linfo << args2.get("Beams:eB");
+	// Linfo << (args1==args2);
+	// Linfo << args1.asString();
+	// Linfo << args2.asString();
+	// Linfo << args1.pairs().size() << " " << args2.pairs().size();
+	// return 0;
+
 	GenUtil::GlauberTask g0("glauber", args.asString().c_str());
 	GenUtil::PythiaAATask pythiaTAA("pythiaAA", args.asString().c_str());
 	g0.AddTask(&pythiaTAA);
 	pythiaTAA.AddInputTask(&g0);
-	GenUtil::PythiaTask pythiaT("pythia", args.asString().c_str());
-	g0.AddTask(&pythiaT);
+	// GenUtil::PythiaTask pythiaT("pythia", args.asString().c_str());
+	// g0.AddTask(&pythiaT);
 	GenUtil::MultiplicityTask mult("mult", args.asString().c_str());
 	g0.AddTask(&mult);
 	mult.AddInputTask(&pythiaTAA);

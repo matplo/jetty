@@ -4,6 +4,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
+#include <boost/functional/hash.hpp>
 
 #include <algorithm>
 #include <fstream>
@@ -82,6 +83,13 @@ namespace SysUtil
 		: _args(v._args)
 	{
 		_init_logging();
+	}
+
+	int Args::getHash() const
+	{
+		boost::hash<std::string> string_hash;
+		std::string s = asString();
+		return string_hash(s);
 	}
 
 	bool Args::isSet(const char *what) const
@@ -195,7 +203,7 @@ namespace SysUtil
 		{
 			if (p.first == s)
 			{
-				Ldebug << "removing arg:" << p.first;
+				// Ltrace << "removing arg:" << p.first;
 				p.first = "";
 				p.second = "";
 			}
@@ -275,13 +283,29 @@ namespace SysUtil
 		return v;
 	}
 
+	void Args::reduce()
+	{
+		// merge(asString().c_str(), rehash);
+		auto prs = pairs();
+		_args.clear();
+		for (auto &e : prs)
+		{
+			string stmp = e.first;
+			if (e.second.size() > 0)
+			{
+				stmp += "=";
+				stmp += e.second;
+			}
+			add(stmp.c_str());
+		}
+	}
+
 	void Args::merge(const Args &args)
 	{
 		std::vector<string> v = breakup(args.asString().c_str(), ' ');
 		for (auto &s : v)
 		{
-			Ldebug << "merge.. " << s;
-			add(s);
+			add(s.c_str());
 		}
 	}
 
@@ -290,8 +314,7 @@ namespace SysUtil
 		std::vector<string> v = breakup(args, ' ');
 		for (auto &s : v)
 		{
-			Ldebug << "merge.. " << s;
-			add(s);
+			add(s.c_str());
 		}
 	}
 

@@ -21,7 +21,8 @@ namespace GenUtil
 		virtual unsigned int InitThis(const char *opt = "");
 		virtual unsigned int ExecThis(const char *opt = "");
 	protected:
-		std::string 	   SetupXSR(TGlauNucleon *nA, TGlauNucleon *nB);
+		// std::string 	   SetupXSR(TGlauNucleon *nA, TGlauNucleon *nB);
+		void 	   		   SetupXSR(TGlauNucleon *nA, TGlauNucleon *nB);
 		int			  	   fFixedNcoll;
 		double 			   fEA;
 		double 			   fEB;

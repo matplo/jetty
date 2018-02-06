@@ -40,6 +40,7 @@ namespace SysUtil
 
 		void 			merge(const Args &args);
 		void 			merge(const char *args);
+		void 			reduce();
 
 		void 			set(const char *what) 		 { add(what); }
 		void 			set(const std::string &what) { add(what.c_str()); }
@@ -61,6 +62,10 @@ namespace SysUtil
 		void 			readConfig(const char *fname);
 		void 			readConfigLines(const char *fname);
 
+		virtual	void 	cook() {;}
+
+		int getHash() 	const;
+
 	protected:
 		void				_convert(int argc, char **argv);
 		void		 		_init_logging();
@@ -70,56 +75,32 @@ namespace SysUtil
 		static unsigned int _instance_counter;
 
 		std::vector<std::string> _args; // keep all in a string
+
 		static std::vector<std::string> _args_logged;
+
 	};
 
 	inline bool operator==(const Args& lhs, const Args& rhs)
 	{
-		auto lhsp = lhs.pairs();
-		auto rhsp = rhs.pairs();
-		for (auto &l : lhsp)
-		{
-			bool matched = false;
-			for (auto &r : rhsp)
-			{
-				if (r.first == l.first)
-				{
-					if (r.second == l.second)
-					{
-						matched = true;
-					}
-					else
-					{
-						matched = false;
-					}
-				}
-			}
-			if (matched == false)
-				return false;
-		}
+		// auto lhsp = lhs.pairs();
+		// for (auto &l : lhsp)
+		// {
+		// 	if (rhs.get(l.first) != lhs.get(l.first))
+		// 		return false;
+		// }
+		// auto rhsp = rhs.pairs();
+		// for (auto &r : rhsp)
+		// {
+		// 	if (lhs.get(r.first) != rhs.get(r.first))
+		// 		return false;
+		// }
+		// return true;
 
-		for (auto &l : lhsp)
-		{
-			bool matched = false;
-			for (auto &r : rhsp)
-			{
-				if (r.first == l.first)
-				{
-					if (r.second == l.second)
-					{
-						matched = true;
-					}
-					else
-					{
-						matched = false;
-					}
-				}
-			}
-			if (matched == false)
-				return false;
-		}
+		// Args _lhs(lhs); _lhs.reduce();
+		// Args _rhs(rhs); _rhs.reduce();
+		// return (_lhs.asString() == _rhs.asString());
 
-		return true;
+		return (lhs.getHash() == rhs.getHash());
 	}
 
 	template <class T>

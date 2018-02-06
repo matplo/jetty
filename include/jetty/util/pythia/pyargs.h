@@ -11,43 +11,44 @@ namespace PyUtil
 		Args(int argc, char **argv)
 		: SysUtil::Args(argc, argv)
 		{
-			_cook();
+			cook();
 		}
 
 		Args(const std::vector<std::string> &v)
 		: SysUtil::Args(v)
 		{
-			_cook();
+			cook();
 		}
 
 		Args(const std::string &s, const char bchar = ' ')
 		: SysUtil::Args(s, bchar)
 		{
-			_cook();
+			cook();
 		}
 
 		Args(const char *s, const char bchar = ' ')
 		: SysUtil::Args(s, bchar)
 		{
-			_cook();
+			cook();
 		}
 
 		Args(const Args &v)
 		: SysUtil::Args(v)
 		{
-			_cook();
+			cook();
 		}
 
 		Args()
 		: SysUtil::Args()
 		{
-			_cook();
+			cook();
 		}
 
 		virtual ~Args() {;}
 
+		virtual void cook();
+
 	protected:
-		void _cook();
 
 	};
 };

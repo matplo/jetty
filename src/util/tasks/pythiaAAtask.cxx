@@ -3,6 +3,7 @@
 #include <jetty/util/tglaubermc/tglaubermc.h>
 #include <jetty/util/pythia/event_pool.h>
 #include <jetty/util/pythia/pythia_pool.h>
+#include <jetty/util/pythia/pyutil.h>
 #include <jetty/util/blog.h>
 #include <jetty/util/strutil.h>
 
@@ -67,11 +68,16 @@ namespace GenUtil
 				double tmp_fEB = c.GetB()->GetEnergy();
 				if (tmp_fEB == 0 && tmp_fEA == 0)
 				{
-					tmp_fEA = fEA;
-					tmp_fEB = fEB;
+					// tmp_fEA = fEA;
+					// tmp_fEB = fEB;
+					c.GetA()->SetEnergy(fEA);
+					c.GetB()->SetEnergy(fEB);
 				}
-				string pysetup = SetupXSR(c.GetA(), c.GetB());
-				auto ppythia = pypool.GetPythia(tmp_fEA, tmp_fEB, pysetup.c_str());
+				// string pysetup = SetupXSR(c.GetA(), c.GetB());
+				// auto ppythia = pypool.GetPythia(tmp_fEA, tmp_fEB, pysetup.c_str());
+				// speed up!
+				SetupXSR(c.GetA(), c.GetB());
+				auto ppythia = pypool.GetPythia(fArgs);
 				if (!ppythia)
 				{
 					Lfatal << GetName() << " unable to get pythia with eA=" << tmp_fEA << " eB=" << tmp_fEB;
@@ -96,57 +102,68 @@ namespace GenUtil
 		return kGood;
 	}
 
-	std::string PythiaAATask::SetupXSR(TGlauNucleon *nA, TGlauNucleon *nB)
+	void PythiaAATask::SetupXSR(TGlauNucleon *nA, TGlauNucleon *nB)
 	{
-		PyUtil::Args args;
-		args.merge(fArgs);
+		double eA = nA->GetEnergy();
+		double eB = nB->GetEnergy();
+		if (eA <= PyUtil::nucleon_mass) eA = PyUtil::nucleon_mass;
+		if (eB <= PyUtil::nucleon_mass) eB = PyUtil::nucleon_mass;
+		fArgs.set("Beams:eA", eA);
+		fArgs.set("Beams:eB", eB);
+
+		if (eA == eB)
+		{
+			fArgs.add("Beams:frameType=1");
+		}
+		else
+		{
+			fArgs.add("Beams:frameType=2");
+		}
 
 		if (fISR == -1)
 		{
-			args.add("PartonLevel:ISR=off");
+			fArgs.add("PartonLevel:ISR=off");
 		}
 		if (fISR == 1)
 		{
-			args.add("PartonLevel:ISR=on");
+			fArgs.add("PartonLevel:ISR=on");
 		}
 		if (fISR == 0)
 		{
 			if (nA->GetNColl()-1 > 0 || nB->GetNColl()-1 > 0)
-				args.add("PartonLevel:ISR=off");
+				fArgs.add("PartonLevel:ISR=off");
 			else
-				args.add("PartonLevel:ISR=on");
+				fArgs.add("PartonLevel:ISR=on");
 		}
 
 		if (fFSR == -1)
 		{
-			args.add("PartonLevel:FSR=off");
-			args.add("PartonLevel:FSRinProcess=off");
-			args.add("PartonLevel:FSRinResonances=off");
+			fArgs.add("PartonLevel:FSR=off");
+			fArgs.add("PartonLevel:FSRinProcess=off");
+			fArgs.add("PartonLevel:FSRinResonances=off");
 		}
 		if (fFSR == 1)
 		{
-			args.add("PartonLevel:FSR=on");
-			args.add("PartonLevel:FSRinProcess=on");
-			args.add("PartonLevel:FSRinResonances=on");
+			fArgs.add("PartonLevel:FSR=on");
+			fArgs.add("PartonLevel:FSRinProcess=on");
+			fArgs.add("PartonLevel:FSRinResonances=on");
 		}
 		if (fFSR == 0)
 		{
 			if (nA->GetNColl()-1 > 0 || nB->GetNColl()-1 > 0)
 			{
 				Ltrace << "since one of the nucleons is wounded: " << (nA->GetNColl()-1 > 0) << " ? " << (nB->GetNColl()-1 > 0) << " turning off the FSR";
-				args.add("PartonLevel:FSR=off");
-				args.add("PartonLevel:FSRinProcess=off");
-				args.add("PartonLevel:FSRinResonances=off");
+				fArgs.add("PartonLevel:FSR=off");
+				fArgs.add("PartonLevel:FSRinProcess=off");
+				fArgs.add("PartonLevel:FSRinResonances=off");
 			}
 			else
 			{
-				args.add("PartonLevel:FSR=on");
-				args.add("PartonLevel:FSRinProcess=on");
-				args.add("PartonLevel:FSRinResonances=on");
+				fArgs.add("PartonLevel:FSR=on");
+				fArgs.add("PartonLevel:FSRinProcess=on");
+				fArgs.add("PartonLevel:FSRinResonances=on");
 			}
 		}
-
-		return args.asString();
 	}
 
 	unsigned int PythiaAATask::InitThis(const char *opt)

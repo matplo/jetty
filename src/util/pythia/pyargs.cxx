@@ -14,7 +14,7 @@ using namespace std;
 namespace PyUtil
 {
 	//pythia args - args preprocessed
-	void Args::_cook()
+	void Args::cook()
 	{
 		std::string cfgfile = get("--config");
 		if (cfgfile.length() == 0)
@@ -38,21 +38,21 @@ namespace PyUtil
 		{
 			nEvent 		= userNEvent;
 		}
-		set("Main:numberOfEvents", nEvent);
+		add("Main:numberOfEvents", nEvent);
 		Ltrace << "[PyUtil::Args::_cook] Main:numberOfEvents = " << get("Main:numberOfEvents");
 
 		if (isSet("-h") || isSet("--help"))
 		{
-			set("--dry");
+			add("--dry");
 		}
 
 		if (isSet("--test"))
 		{
-			set("Main:numberOfEvents=1");
+			add("Main:numberOfEvents=1");
 			if (isSet("--out") == false)
 			{
-				set("--out=test_output_pyargs.root");
-				set("--default-test-output-pyargs");
+				add("--out=test_output_pyargs.root");
+				add("--default-test-output-pyargs");
 			}
 		}
 
@@ -76,9 +76,9 @@ namespace PyUtil
 		{
 			Lwarn << "something is not right with your pThat selection min=" << getD("PhaseSpace:pTHatMin") << " max=" <<  getD("PhaseSpace:pTHatMax") << endl;
 			// Lwarn << "setting pTHatMax=-1";
-			set("Beams:eCM=0"); // this will fail on initialization
-			set("--dry"); // this if checked should halt the execution
-			set("--invalid"); // or this...
+			add("Beams:eCM=0"); // this will fail on initialization
+			add("--dry"); // this if checked should halt the execution
+			add("--invalid"); // or this...
 		}
 
 		if (isSet("--minbias"))
@@ -167,11 +167,11 @@ namespace PyUtil
 			add("HardQCD:all=off");
 			add("PromptPhoton:all=off");
 			add("SoftQCD:all=off");
-			set("PhaseSpace:pTHatMin",0.0);
-			set("PhaseSpace:pTHatMax", -1.0);
+			add("PhaseSpace:pTHatMin",0.0);
+			add("PhaseSpace:pTHatMax", -1.0);
 			add("WeakSingleBoson:ffbar2gmZ=on");
-			set("PhaseSpace:mHatMin", 70);
-			set("PhaseSpace:mHatMax", 110);
+			add("PhaseSpace:mHatMin", 70);
+			add("PhaseSpace:mHatMax", 110);
 		}
 
 		if (isSet("--hardQCD"))
@@ -186,13 +186,13 @@ namespace PyUtil
 		}
 
 		if (isSet("Next:numberShowEvent") == false)
-			set("Next:numberShowEvent", 0);
+			add("Next:numberShowEvent", 0);
 		if (isSet("Next:numberShowInfo") == false)
-			set("Next:numberShowInfo", 0);
+			add("Next:numberShowInfo", 0);
 		if (isSet("Next:numberShowProcess") == false)
-			set("Next:numberShowProcess", 0);
+			add("Next:numberShowProcess", 0);
 		if (isSet("Next:numberCount") == false)
-			set("Next:numberCount", 0);
+			add("Next:numberCount", 0);
 
 		if (isSet("Beams:eA") || isSet("Beams:eB"))
 		{
@@ -200,11 +200,11 @@ namespace PyUtil
 			double eB = getD("Beams:eB");
 			if (eA == eB)
 			{
-				set("Beams:frameType=1");
+				add("Beams:frameType=1");
 			}
 			else
 			{
-				set("Beams:frameType=2");
+				add("Beams:frameType=2");
 			}
 
 			Ltrace << "PyArgs::_cook: reset Beams:eCM because eA=" << eA << " eB=" << eB;

@@ -1,5 +1,6 @@
-	#include <jetty/util/pythia/pythia_pool.h>
+#include <jetty/util/pythia/pythia_pool.h>
 #include <jetty/util/pythia/pyargs.h>
+#include <jetty/util/pythia/pyutil.h>
 #include <jetty/util/blog.h>
 #include <jetty/util/wrapper/wrapper.h>
 
@@ -80,12 +81,15 @@ namespace PyUtil
 						Linfo << "    ... : beam energies - central value: "
 							<< _eAeBmap->GetXaxis()->GetBinCenter(ibx)
 							<< " >< "
-							<< _eAeBmap->GetYaxis()->GetBinCenter(iby);
+							<< _eAeBmap->GetYaxis()->GetBinCenter(iby)
+							<< " <=> eCM = " << PyUtil::sqrts(_eAeBmap->GetXaxis()->GetBinCenter(ibx), _eAeBmap->GetYaxis()->GetBinCenter(iby));
 						Linfo << "    ... : beam energies - range: "
 							<< _eAeBmap->GetXaxis()->GetBinLowEdge(ibx) << "-" << _eAeBmap->GetXaxis()->GetBinLowEdge(ibx) + bwx
 							<< " >< "
 							<< _eAeBmap->GetYaxis()->GetBinLowEdge(iby) << "-" << _eAeBmap->GetXaxis()->GetBinLowEdge(iby) + bwy;
 						Linfo << "    ...   instance #: " << _eAeBmap->GetBinContent(ibx, iby);
+						int index = _eAeBmap->GetBinContent(ibx, iby) - 1;
+						Linfo << "    ...   settings : " << _pythia_pool_settings[index].asString();
 						if (_eAeBmapW)
 							Linfo << "    ...   used N: " << _eAeBmapW->GetBinContent(ibx, iby);
 					}
@@ -142,6 +146,7 @@ namespace PyUtil
 			Lwarn << "new pythia is at " << ppythia << " with settings: " << args.asString();
 			_pythia_pool_settings.push_back(args);
 			_pythia_pool.push_back(ppythia);
+			Lwarn << "current number of pythia instances in the pool: " << _pythia_pool.size();
 		}
 		else
 		{
@@ -188,6 +193,139 @@ namespace PyUtil
 		Linfo << " ... known range eB: " << _eAeBmap->GetYaxis()->GetXmin() << " - " << _eAeBmap->GetYaxis()->GetXmax();
 	}
 
+	Pythia8::Pythia * PythiaPool::CreatePythia(const PyUtil::Args &args)
+	{
+		// setup generator
+		Pythia8::Pythia *ppythia = new Pythia8::Pythia();
+
+		if (!ppythia)
+		{
+			Lfatal << "unable to create new pythia!";
+			return 0x0;
+		}
+
+		bool _is_initialized = false;
+		auto pairs = args.pairs();
+		for (unsigned int i = 0; i < pairs.size(); i++)
+		{
+			if (pairs[i].second.size() < 1) continue;
+			Linfo << "[init pythia] paired arg: #" << i << " " << pairs[i].first << " " << pairs[i].second;
+			string spypar = pairs[i].first + " = " + pairs[i].second;
+			ppythia->readString(spypar.c_str());
+		}
+		_is_initialized = ppythia->init();
+		if (_is_initialized)
+		{
+			Lwarn << "new pythia is at " << ppythia << " with settings: " << args.asString();
+			_pythia_pool_settings.push_back(args);
+			_pythia_pool_settings_hashes.push_back(args.getHash());
+			_pythia_pool.push_back(ppythia);
+			Lwarn << "current number of pythia instances in the pool: " << _pythia_pool.size();
+		}
+		else
+		{
+			Lerror << "pythia initialization failed with settings: " << args.asString();
+			delete ppythia;
+			ppythia = 0;
+		}
+		return ppythia;
+	}
+
+	Pythia8::Pythia * PythiaPool::GetPythia(const PyUtil::Args &new_settings)
+	{
+		Pythia8::Pythia *ret_pythia = 0x0;
+
+		double eA = new_settings.getD("Beams:eA");
+		double eB = new_settings.getD("Beams:eB");
+
+		if (_common_settings.size() == 0)
+		{
+			_common_settings = new_settings.asString();
+		}
+
+		if (eA <= PyUtil::nucleon_mass) eA = PyUtil::nucleon_mass;
+		if (eB <= PyUtil::nucleon_mass) eB = PyUtil::nucleon_mass;
+		if (!_eAeBmap)
+		{
+			SetupECMs(eA, eB);
+		}
+
+		// map exists...
+		Int_t binx    = _eAeBmap->GetXaxis()->FindBin(eA);
+		Int_t biny    = _eAeBmap->GetYaxis()->FindBin(eB);
+		Int_t pyindex = _eAeBmap->GetBinContent(binx,biny) - 1;
+		// Int_t ibin    = _eAeBmap->GetBin(binx,biny);
+		Ldebug << "eA = " << eA << " is bin : " << binx;
+		Ldebug << "eB = " << eB << " is bin : " << biny;
+		if (binx <= 0 || binx > _eAeBmap->GetXaxis()->GetNbins() ||
+		    biny <= 0 || biny > _eAeBmap->GetYaxis()->GetNbins())
+		{
+			Lfatal << "pythia requested outside the initial allocation - eA=" << eA << " && eB=" << eB << " - this will not work...";
+			Lfatal << " ... got A-bin = " << binx << " allowed: 1-" << _eAeBmap->GetXaxis()->GetNbins();
+			Lfatal << " ... known range eA: " << _eAeBmap->GetXaxis()->GetXmin() << " - " << _eAeBmap->GetXaxis()->GetXmax();
+			Lfatal << " ... got B-bin = " << biny << " allowed: 1-" << _eAeBmap->GetYaxis()->GetNbins();
+			Lfatal << " ... known range eB: " << _eAeBmap->GetYaxis()->GetXmin() << " - " << _eAeBmap->GetYaxis()->GetXmax();
+			ret_pythia = 0x0;
+			return ret_pythia;
+		}
+
+		if (pyindex >= 0) // if some pythia found - check the settings...
+		{
+			Ltrace << "indexed pythia found... " << pyindex << " checking N pythia array: " << _pythia_pool_settings.size();
+			for (unsigned int i = 0; i < _pythia_pool_settings.size(); i++)
+			{
+				if (_pythia_pool_settings_hashes[i] == new_settings.getHash())
+				{
+					ret_pythia = _pythia_pool[i];
+					Ltrace << "pool: found pythia at index: " << i << " number of known pythia instances: " << _pythia_pool.size();
+					break;
+				}
+				else
+				{
+					Ltrace << _pythia_pool_settings_hashes[i] << " ? " << new_settings.getHash();
+				}
+			}
+		}
+
+		if (!ret_pythia)
+		{
+			// init new pythia here
+			Lwarn << "creating new pythia instance ... " << eA << " -><- " << eB;
+			Linfo << " - params: " << new_settings.asString();
+			if (new_settings.isSet("--silent-pythia-init"))
+			{
+				Lwarn << "silent pythia init...";
+			}
+			string pythia_init_message;
+			{
+				LogUtil::cout_sink _cout_sink;
+				LogUtil::cerr_sink _cerr_sink;
+				// ret_pythia = CreatePythia(eA, eB, new_settings.asString().c_str());
+				ret_pythia = CreatePythia(new_settings);
+				pythia_init_message = _cout_sink.get_buffer()->str();
+				if (!ret_pythia)
+				{
+					pythia_init_message += " ";
+					pythia_init_message += _cerr_sink.get_buffer()->str();
+				}
+			}
+			if (ret_pythia)
+			{
+				pyindex = _pythia_pool.size();
+				Lwarn << "added hash: " << _pythia_pool_settings[_pythia_pool_settings.size()-1].getHash() << " should be " << new_settings.getHash();
+				Ltrace << ret_pythia << " number of known pythia instances: " << _pythia_pool.size();
+				_eAeBmap->SetBinContent(binx, biny, pyindex);
+				if (!new_settings.isSet("--silent-pythia-init"))
+				{
+					Linfo << endl << pythia_init_message;
+				}
+				Linfo << "pool: number of known pythia instances: " << _pythia_pool.size();
+			}
+		}
+		if (ret_pythia) _eAeBmapW->Fill(eA, eB);
+		return ret_pythia;
+	}
+
 	Pythia8::Pythia * PythiaPool::GetPythia(double eA, double eB, const char *new_settings)
 	{
 		Pythia8::Pythia *ret_pythia = 0x0;
@@ -201,6 +339,8 @@ namespace PyUtil
 				_common_settings = settings;
 		}
 
+		if (eA <= PyUtil::nucleon_mass) eA = PyUtil::nucleon_mass;
+		if (eB <= PyUtil::nucleon_mass) eB = PyUtil::nucleon_mass;
 		if (!_eAeBmap)
 		{
 			SetupECMs(eA, eB);
@@ -225,13 +365,20 @@ namespace PyUtil
 			return ret_pythia;
 		}
 
-		for (unsigned int i = 0; i < _pythia_pool_settings.size(); i++)
+		PyUtil::Args this_settings(settings);
+		this_settings.set("Beams:eA", eA);
+		this_settings.set("Beams:eB", eB);
+		this_settings.cook();
+		if (pyindex >= 0) // if some pythia found - check the settings...
 		{
-			if (_pythia_pool_settings[i] == settings)
+			for (unsigned int i = 0; i < _pythia_pool_settings.size(); i++)
 			{
-				ret_pythia = _pythia_pool[i];
-				Ltrace << "pool: found pythia at index: " << i << " number of known pythia instances: " << _pythia_pool.size();
-				break;
+				if (_pythia_pool_settings[i] == this_settings)
+				{
+					ret_pythia = _pythia_pool[i];
+					Ltrace << "pool: found pythia at index: " << i << " number of known pythia instances: " << _pythia_pool.size();
+					break;
+				}
 			}
 		}
 
@@ -239,11 +386,16 @@ namespace PyUtil
 		{
 			// init new pythia here
 			Lwarn << "creating new pythia instance ... " << eA << " -><- " << eB;
+			Linfo << " - params: " << this_settings.asString();
+			if (this_settings.isSet("--silent-pythia-init"))
+			{
+				Lwarn << "silent pythia init...";
+			}
 			string pythia_init_message;
 			{
 				LogUtil::cout_sink _cout_sink;
 				LogUtil::cerr_sink _cerr_sink;
-				ret_pythia = CreatePythia(eA, eB, settings.c_str());
+				ret_pythia = CreatePythia(eA, eB, this_settings.asString().c_str());
 				pythia_init_message = _cout_sink.get_buffer()->str();
 				if (!ret_pythia)
 				{
@@ -254,16 +406,14 @@ namespace PyUtil
 			if (ret_pythia)
 			{
 				pyindex = _pythia_pool.size();
+				Ltrace << ret_pythia << " number of known pythia instances: " << _pythia_pool.size();
 				_eAeBmap->SetBinContent(binx, biny, pyindex);
 				_eAeBmapW->Fill(eA, eB);
-				Args args(settings);
-				if (args.isSet("--silent-pythia-init"))
-				{
-					Lwarn << "silent pythia init...";
-				}
+				if (!this_settings.isSet("--silent-pythia-init"))
 				{
 					Linfo << endl << pythia_init_message;
 				}
+				Linfo << "pool: number of known pythia instances: " << _pythia_pool.size();
 			}
 		}
 		return ret_pythia;
