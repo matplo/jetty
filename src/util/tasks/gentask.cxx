@@ -157,27 +157,35 @@ namespace GenUtil
 		if (fStatus != kDefinedStop)
 		{
 			fStatus = this->ExecThis(opt);
-			for(auto t : fSubtasks)
+			if (fStatus != kGood)
 			{
-				auto istat = t->GetStatus();
-				if (istat != kGood)
+				iret = fStatus;
+				Ltrace << GetName() << "::Execute: skipping deps" << this->GetName() << " w/ status = " << fStatus;
+			}
+			else
+			{
+				for(auto t : fSubtasks)
 				{
-					Ltrace << GetName() << "::Execute: skipping " << t->GetName() << " w/ status = " << t->GetStatus();
-					continue;
-				}
-				auto iret_tmp = t->Execute(opt);
-				t->SetStatus(iret_tmp);
-				if (iret == kDefinedStop)
-				{
-					fStatus = kDefinedStop;
-					iret = fStatus;
-				}
-				if (iret_tmp == kError)
-				{
-					Lfatal << GetName() << "::Execute: " << t->GetName() << " returned with kError.";
-					fStatus = iret_tmp;
-					iret = fStatus;
-					break;
+					auto istat = t->GetStatus();
+					if (istat != kGood)
+					{
+						Ltrace << GetName() << "::Execute: skipping " << t->GetName() << " w/ status = " << t->GetStatus();
+						continue;
+					}
+					auto iret_tmp = t->Execute(opt);
+					t->SetStatus(iret_tmp);
+					if (iret == kDefinedStop)
+					{
+						fStatus = kDefinedStop;
+						iret = fStatus;
+					}
+					if (iret_tmp == kError)
+					{
+						Lfatal << GetName() << "::Execute: " << t->GetName() << " returned with kError.";
+						fStatus = iret_tmp;
+						iret = fStatus;
+						break;
+					}
 				}
 			}
 		}
