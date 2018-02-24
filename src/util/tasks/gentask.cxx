@@ -116,7 +116,7 @@ namespace GenUtil
 
 	unsigned int GenTask::Finalize(const char *opt)
 	{
-		if (fStatus == kGood)
+		if (fStatus == kGood || fStatus == kSkipEvent || fStatus == kDefinedStop)
 		{
 			fStatus = FinalizeThis(opt);
 			if (fStatus != kDone)
@@ -157,6 +157,7 @@ namespace GenUtil
 		if (fStatus == kSkipEvent)
 		{
 			// event skipped so we can reset to good...
+			Ltrace << GetName() << "::Execute: reset status " << fStatus << " to " << kGood;
 			fStatus = kGood;
 		}
 		if (fStatus != kDefinedStop)
@@ -166,8 +167,11 @@ namespace GenUtil
 			{
 				iret = fStatus;
 				Ltrace << GetName() << "::Execute: skipping deps " << this->GetName() << " w/ status = " << fStatus;
-				if (iret = kSkipEvent)
-					this->SetStatus(kGood);
+				if (iret == kSkipEvent)
+				{
+					Ltrace << GetName() << "::Execute: reset status " << fStatus << " to " << kGood;
+					fStatus = kGood;
+				}
 			}
 			else
 			{
@@ -177,6 +181,12 @@ namespace GenUtil
 					if (istat != kGood)
 					{
 						Ltrace << GetName() << "::Execute: skipping " << t->GetName() << " w/ status = " << t->GetStatus();
+						if (istat == kSkipEvent)
+						{
+							t->SetStatus(kGood);
+							Ltrace << GetName() << "::Execute: reset status of " << t->GetName()
+								<< " from " << iret << " to " << t->GetStatus();
+						}
 						continue;
 					}
 					auto iret_tmp = t->Execute(opt);
