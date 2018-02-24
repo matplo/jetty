@@ -154,13 +154,20 @@ namespace GenUtil
 			fStatus = kError;
 			return kError;
 		}
+		if (fStatus == kSkipEvent)
+		{
+			// event skipped so we can reset to good...
+			fStatus = kGood;
+		}
 		if (fStatus != kDefinedStop)
 		{
 			fStatus = this->ExecThis(opt);
 			if (fStatus != kGood)
 			{
 				iret = fStatus;
-				Ltrace << GetName() << "::Execute: skipping deps" << this->GetName() << " w/ status = " << fStatus;
+				Ltrace << GetName() << "::Execute: skipping deps " << this->GetName() << " w/ status = " << fStatus;
+				if (iret = kSkipEvent)
+					this->SetStatus(kGood);
 			}
 			else
 			{

@@ -11,7 +11,7 @@ namespace GenUtil
 	class GenTask
 	{
 	public:
-		enum { kBeforeInit, kGood, kDefinedStop, kInactive, kError, kDone };
+		enum { kBeforeInit, kGood, kDefinedStop, kSkipEvent, kInactive, kError, kDone };
 		GenTask(const char *name);
 		GenTask(const char *name, const char *params);
 		GenTask();
