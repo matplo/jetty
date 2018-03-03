@@ -77,7 +77,7 @@ int test2 ( int argc, char *argv[] )
 	TProfile *hptotareasfractionMdeta = new TProfile("hptotareasfractionMdeta", "hptotareasfractionMdeta", 100, 0, max_mult / deta);
 	TProfile *hptotareaghostfractionMdeta = new TProfile("hptotareaghostfractionMdeta", "hptotareaghostfractionMdeta", 100, 0, max_mult / deta);
 
-	ReadHepMCFile f(args.get("--file").c_str());
+	GenUtil::ReadHepMCFile f(args.get("--file").c_str());
 	while (f.NextEvent())
 	{
 		pbar.Update();
@@ -195,7 +195,7 @@ int test1 ( int argc, char *argv[] )
 	TProfile *hptotareasfractionMdeta = new TProfile("hptotareasfractionMdeta", "hptotareasfractionMdeta", 100, 0, max_mult / deta);
 	TProfile *hptotareaghostfractionMdeta = new TProfile("hptotareaghostfractionMdeta", "hptotareaghostfractionMdeta", 100, 0, max_mult / deta);
 
-	ReadHepMCFile f(args.get("--file").c_str());
+	GenUtil::ReadHepMCFile f(args.get("--file").c_str());
 	while (f.NextEvent())
 	{
 		pbar.Update();

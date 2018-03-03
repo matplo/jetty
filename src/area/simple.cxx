@@ -68,7 +68,7 @@ int simple ( int argc, char *argv[] )
 	TTree *t = new TTree("t", "t");
 	RStream::TStream astream("va", t);
 
-	ReadHepMCFile f(args.get("--file").c_str());
+	GenUtil::ReadHepMCFile f(args.get("--file").c_str());
 	while (f.NextEvent())
 	{
 		pbar.Update();

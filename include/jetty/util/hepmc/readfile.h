@@ -10,31 +10,34 @@
 #include <TParticle.h>
 #include <fastjet/PseudoJet.hh>
 
-class ReadHepMCFile
+namespace GenUtil
 {
-public:
-	ReadHepMCFile(const char *fname);
-	virtual ~ReadHepMCFile();
+	class ReadHepMCFile
+	{
+	public:
+		ReadHepMCFile(const char *fname);
+		virtual ~ReadHepMCFile();
 
-	bool 								NextEvent();
+		bool 								NextEvent();
 
-	HepMC::GenCrossSection* 			GetCrossSecion();
-	HepMC::PdfInfo* 					GetPDFinfo();
-	HepMC::WeightContainer*  			GetWeightContainer();
-	std::list<HepMC::GenVertex*> 		Vertices();
-	std::vector<HepMC::GenParticle*> 	HepMCParticles(bool only_final = true);
-	std::vector<fastjet::PseudoJet> 	PseudoJetParticles(bool only_final = true);
+		HepMC::GenCrossSection* 			GetCrossSecion();
+		HepMC::PdfInfo* 					GetPDFinfo();
+		HepMC::WeightContainer*  			GetWeightContainer();
+		std::list<HepMC::GenVertex*> 		Vertices();
+		std::vector<HepMC::GenParticle*> 	HepMCParticles(bool only_final = true);
+		std::vector<fastjet::PseudoJet> 	PseudoJetParticles(bool only_final = true);
 
-	long int 							CurrentEventNumber() { return fCurrentEvent;}
+		long int 							CurrentEventNumber() { return fCurrentEvent;}
 
-private:
-	HepMC::IO_GenEvent fIn;
-	HepMC::GenEvent* fEvent;
-	std::list<HepMC::GenVertex*> fVertices;
-	std::vector<HepMC::GenParticle*> fParticles;
-	std::vector<TParticle> fTParticles;
-	std::vector<fastjet::PseudoJet> fPseudoJets;
-	long int fCurrentEvent;
-};
+	private:
+		HepMC::IO_GenEvent fIn;
+		HepMC::GenEvent* fEvent;
+		std::list<HepMC::GenVertex*> fVertices;
+		std::vector<HepMC::GenParticle*> fParticles;
+		std::vector<TParticle> fTParticles;
+		std::vector<fastjet::PseudoJet> fPseudoJets;
+		long int fCurrentEvent;
+	};
+}
 
 #endif

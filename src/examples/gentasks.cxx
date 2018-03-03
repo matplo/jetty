@@ -10,6 +10,8 @@
 #include <jetty/util/tasks/pythiatask.h>
 #include <jetty/util/tasks/pythiaAAtask.h>
 #include <jetty/util/tasks/multiplicitytask.h>
+#include <jetty/util/hepmc/readertask.h>
+#include <jetty/util/hepmc/readfile.h>
 
 #include <jetty/util/pythia/event_pool.h>
 #include <jetty/util/pythia/pythia_pool.h>
@@ -101,6 +103,41 @@ int gentasks (const std::string &s)
 	Linfo << "gentasks is done." << endl;
 	return 0;
 }
+
+int gentasks_hepmc (const std::string &s)
+{
+	// test(s); return;
+	PyUtil::Args args(s);
+
+	GenUtil::HepMCReaderTask r("hepmc_reader", args.asString().c_str());
+	r.Init();
+	r.DumpTaskListInfo();
+
+	int nEv = args.getI("--nev", 5);
+	if (args.isSet("-h") || args.isSet("--help"))
+		nEv = 1;
+
+	LoopUtil::TPbar pbar(nEv);
+	for (int i = 0; i < nEv; i++)
+	{
+		pbar.Update();
+		r.Execute("<an option>");
+		if (r.GetStatus() != GenUtil::GenTask::kGood)
+			break;
+		GenUtil::ReadHepMCFile *f = r.GetData()->get<GenUtil::ReadHepMCFile>();
+		Ldebug << f->CurrentEventNumber() << " number of particles: " << f->PseudoJetParticles(true).size();
+	}
+
+	r.Finalize();
+
+	Linfo << "N exec calls: " << r.GetNExecCalls();
+	// Linfo << "pythiaTAA N exec calls: " << pythiaTAA.GetNExecCalls();
+
+	Linfo << "gentasks_hepmc is done." << endl;
+	return 0;
+
+}
+
 
 int gentasks_test (const std::string &s)
 {

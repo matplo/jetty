@@ -36,5 +36,10 @@ int main ( int argc, char *argv[] )
         rv = gentasks(args.asString());
     }
 
+    if (args.isSet("--gentasks-hepmc"))
+    {
+        rv = gentasks_hepmc(args.asString());
+    }
+
     return rv;
 }

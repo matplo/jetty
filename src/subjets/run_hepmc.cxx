@@ -60,7 +60,7 @@ int run_hepmc (const std::string &s)
 	auto nEv = args.getI("--nev", 0);
 
 	LoopUtil::TPbar pbar(nEv);
-	ReadHepMCFile f(args.get("--input").c_str());
+	GenUtil::ReadHepMCFile f(args.get("--input").c_str());
 	while (f.NextEvent())
 	{
 		if (nEv > 0)

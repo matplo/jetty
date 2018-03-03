@@ -7,7 +7,7 @@ int main ( int argc, char *argv[] )
 	SysUtil::Args args(argc, argv);
 	Linfo << args.asString();
 
-	ReadHepMCFile f(args.get("--file").c_str());
+	GenUtil::ReadHepMCFile f(args.get("--file").c_str());
 	while (f.NextEvent())
 	{
 		Linfo << "number of particles:" << f.HepMCParticles(false).size();
