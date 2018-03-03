@@ -67,6 +67,9 @@ namespace GenUtil
 		_instance_counter += 1;
 		fTaskId = fTasks.size();
 		fTasks.push_back(this);
+		std::string _prefix = fArgs.get("--output-prefix");
+		std::string _postfix = fArgs.get("--output-postfix");
+		fName = _prefix + fName + _postfix;
 	}
 
 	GenTask::GenTask()

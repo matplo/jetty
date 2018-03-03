@@ -8,6 +8,7 @@ set(SOURCES_LIB
 	run_pythia.cxx
 	run_jets.cxx
 	run_test.cxx
+	subjettask.cxx
 )
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
@@ -30,7 +31,7 @@ if (HEPMC_FOUND)
 	target_include_directories(${NAME_LIB} PUBLIC ${HEPMC_INCLUDE_DIRS})
 	add_definitions(-DUSE_HEPMC)
 endif()
-target_link_libraries(${NAME_LIB} ${PYTHIA8_LDFLAGS} ${FASTJET_LIBS} libRecursiveTools.a ${ROOT_LIBRARIES} ${PROJECT_NAME}_util ${PROJECT_NAME}_util_pythia)
+target_link_libraries(${NAME_LIB} ${PYTHIA8_LDFLAGS} ${FASTJET_LIBS} libRecursiveTools.a ${ROOT_LIBRARIES} ${PROJECT_NAME}_util ${PROJECT_NAME}_util_pythia ${PROJECT_NAME}_util_tasks)
 if (HEPMC_FOUND)
 	target_link_libraries(${NAME_LIB} ${HEPMC_LIBRARIES} ${PROJECT_NAME}_util_hepmc)
 endif()

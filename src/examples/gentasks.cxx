@@ -13,6 +13,8 @@
 #include <jetty/util/hepmc/readertask.h>
 #include <jetty/util/hepmc/readfile.h>
 
+#include <jetty/subjets/subjettask.h>
+
 #include <jetty/util/pythia/event_pool.h>
 #include <jetty/util/pythia/pythia_pool.h>
 #include <jetty/util/tglaubermc/tglaubermc.h>
@@ -110,6 +112,9 @@ int gentasks_hepmc (const std::string &s)
 	PyUtil::Args args(s);
 
 	GenUtil::HepMCReaderTask r("hepmc_reader", args.asString().c_str());
+	GenUtil::SubjetTask sj("subjets", args.asString().c_str());
+	r.AddTask(&sj);
+
 	r.Init();
 	r.DumpTaskListInfo();
 

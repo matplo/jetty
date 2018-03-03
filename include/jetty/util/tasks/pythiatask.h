@@ -25,6 +25,7 @@ namespace GenUtil
 		virtual 			~PythiaTask();
 		virtual unsigned int InitThis(const char *opt = "");
 		virtual unsigned int ExecThis(const char *opt = "");
+		Pythia8::Pythia * 	 GetPythia() {return fpPythia;}
 	protected:
 		Pythia8::Pythia 		*fpPythia;
 	};
