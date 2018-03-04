@@ -19,13 +19,13 @@ namespace GenUtil
 	class PythiaTask : public EventPoolTask
 	{
 	public:
-		PythiaTask(const char *name) : EventPoolTask(name), fpPythia(0) {;}
-		PythiaTask(const char *name, const char *params) : EventPoolTask(name, params), fpPythia(0) {;}
+		PythiaTask(const char *name) : EventPoolTask(name), fpPythia(0x0) {;}
+		PythiaTask(const char *name, const char *params) : EventPoolTask(name, params), fpPythia(0x0) {;}
 		PythiaTask() : EventPoolTask(), fpPythia(0) {;}
 		virtual 			~PythiaTask();
 		virtual unsigned int InitThis(const char *opt = "");
 		virtual unsigned int ExecThis(const char *opt = "");
-		Pythia8::Pythia * 	 GetPythia() {return fpPythia;}
+		Pythia8::Pythia * 	 GetPythia();
 	protected:
 		Pythia8::Pythia 		*fpPythia;
 	};

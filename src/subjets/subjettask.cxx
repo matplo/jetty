@@ -78,10 +78,13 @@ namespace GenUtil
 		for (auto &t : fInputTasks)
 		{
 			GenUtil::PythiaTask *tp = (GenUtil::PythiaTask*)t;
+			Ldebug << GetName() << " processing input from task " << t->GetName();
 			if (tp)
 			{
+				Ldebug << GetName() << " got GenUtil::PythiaTask input from task " << t->GetName();
 				if (tp->GetPythia())
 				{
+					Ldebug << GetName() << " got non 0x0 pythia from " << t->GetName() << " at " << tp->GetPythia();
 					// note this will be the last pythia in the pool!
 					icode = tp->GetPythia()->info.code();
 					xsec_code = tp->GetPythia()->info.sigmaGen(icode);
@@ -91,10 +94,12 @@ namespace GenUtil
 			if (evpool)
 			{
 				// handle pythia stuff here
+				Ldebug << GetName() << " adding particles from " << t->GetName();
 			}
 			auto hepmc = t->GetData()->get<GenUtil::ReadHepMCFile>();
 			if (hepmc)
 			{
+				Ldebug << GetName() << " adding particles from " << t->GetName();
 				auto _pv = hepmc->PseudoJetParticles(true);
 				parts.insert(parts.end(), _pv.begin(), _pv.end());
 			}

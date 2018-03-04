@@ -112,9 +112,11 @@ int gentasks_hepmc (const std::string &s)
 	PyUtil::Args args(s);
 
 	GenUtil::HepMCReaderTask r("hepmc_reader", args.asString().c_str());
-	GenUtil::SubjetTask sj("subjets", args.asString().c_str());
-	r.AddTask(&sj);
 
+	GenUtil::SubjetTask sj("subjets", args.asString().c_str());
+	sj.AddInputTask(&r);
+
+	r.AddTask(&sj);
 	r.Init();
 	r.DumpTaskListInfo();
 

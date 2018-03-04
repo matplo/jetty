@@ -76,6 +76,11 @@ namespace GenUtil
 		return status;
 	}
 
+	Pythia8::Pythia * PythiaTask::GetPythia()
+	{
+		return fData->get<Pythia8::Pythia>();
+	}
+
 	///---
 	SpectraPtHatBins::~SpectraPtHatBins()
 	{
