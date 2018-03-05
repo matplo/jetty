@@ -5,7 +5,6 @@
 #include <fastjet/ClusterSequence.hh>
 #include <fastjet/contrib/SoftDrop.hh>
 
-
 namespace JettyFJUtils
 {
 	std::vector<fastjet::PseudoJet> soft_drop_jets(std::vector<fastjet::PseudoJet> jets, double z_cut = 0.1, double beta = 2.0, double Rjet = 1.0);

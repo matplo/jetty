@@ -25,6 +25,62 @@ namespace fj = fastjet;
 
 namespace GenUtil
 {
+	SubjetTask::Settings::Settings() :
+		R(0.4),
+		A(fastjet::antikt_algorithm),
+		maxEta(3.),
+		jptcut(0.),
+		jptcutmax(1e4),
+		sjR(0.1),
+		sjA(fastjet::antikt_algorithm),
+		sd_z_cut(0.1),
+		sd_beta(0.0),
+		sd_r_jet(R)
+	{;}
+
+	std::string SubjetTask::Settings::str()
+	{
+		std::ostringstream _ss;
+		_ss << "R" << R << "_"
+			<< "A" << A << "_"
+			<< "r" << sjR << "_"
+			<< "sjA" << sjA << "_"
+			<< "sdzcut" << sd_z_cut << "_"
+			<< "sdbeta" << sd_beta << "_"
+			<< "sdr" << sd_r_jet << "_"
+			<< "maxEta" << maxEta << "_"
+			<< "minpt" << jptcut << "_"
+			<< "maxpt" << jptcutmax;
+		std::string _cs = _ss.str();
+		return _cs;
+	}
+
+	void SubjetTask::Settings::setup_from_string(const char *s, const char *comment)
+	{
+		PyUtil::Args args(s);
+		R = args.getD("--R", R);
+		if (comment!=0) Linfo << comment << " running with R = " << R;
+		A = fj::JetAlgorithm(args.getI("--A", A));
+		if (comment!=0) Linfo << comment << " running with Algo = " << A;
+		maxEta = args.getD("--eta", maxEta);
+		if (comment!=0) Linfo << comment << " running with particle |eta| < " << maxEta;
+		jptcut = args.getD("--jptcut", jptcut);
+		if (comment!=0) Linfo << comment << " running with a cut on jet pT > " << jptcut;
+		jptcutmax = args.getD("--jptcutmax", jptcutmax);
+		if (comment!=0) Linfo << comment << " running with a cut on jet pT < " << jptcutmax;
+		sjR = args.getD("--sjR", sjR);
+		if (comment!=0) Linfo << comment << " running with subjet R = " << sjR;
+		sjA = fj::JetAlgorithm(args.getI("--sjA", sjA));
+		if (comment!=0) Linfo << comment << " running with subjet Algo = " << sjA;
+		sd_z_cut = args.getD("--sd-z-cut", sd_z_cut);
+		if (comment!=0) Linfo << comment << " running with SD z cut = " << sd_z_cut;
+		sd_beta = args.getD("--sd-beta", sd_beta);
+		if (comment!=0) Linfo << comment << " running with SD beta = " << sd_beta;
+		sd_r_jet = args.getD("--sd-r-jet", sd_r_jet);
+		if (comment!=0) Linfo << comment << " running with SD r jet = " << sd_r_jet;
+	}
+
+
 	SubjetTask::~SubjetTask()
 	{
 		Ltrace << "destructor " << GetName();
@@ -33,7 +89,12 @@ namespace GenUtil
 	unsigned int SubjetTask::InitThis(const char *opt)
 	{
 		fArgs.merge(opt);
-		string outname = GetName(); outname += ".root";
+
+		fSettings.setup_from_string(fArgs.asString().c_str(), GetName().c_str());
+
+		std::ostringstream _ss;
+		_ss << GetName() << "_" << fSettings.str() << ".root";
+		string outname = _ss.str();
 		fOutput = new TFile(outname.c_str(), "recreate");
 		if (!fOutput)
 		{
@@ -44,18 +105,6 @@ namespace GenUtil
 		fOutput->cd();
 		fOutputTree = new TTree("jt", "jt");
 		fTStream    = new RStream::TStream("j", fOutputTree);
-
-		fSettings.R = fArgs.getD("--R", 0.4);
-		Linfo << GetName() << " running with R = " << fSettings.R;
-		fSettings.maxEta = fArgs.getD("--eta", 3.);
-		Linfo << GetName() << " running with particle |eta| < " << fSettings.maxEta;
-		fSettings.jptcut = fArgs.getD("--jptcut", 0.);
-		Linfo << GetName() << " running with a cut on jet pT > " << fSettings.jptcut;
-		fSettings.jptcutmax = fArgs.getD("--jptcutmax", 1e4);
-		Linfo << GetName() << " running with a cut on jet pT < " << fSettings.jptcutmax;
-		fSettings.sjR = fArgs.getD("--sjR", 0.1);
-		Linfo << GetName() << " running with subjet R = " << fSettings.sjR;
-
 
 		return kGood;
 	}
@@ -106,7 +155,7 @@ namespace GenUtil
 		}
 
 		// do subjet stuff
-		fj::JetDefinition jet_def(fj::antikt_algorithm, fSettings.R);
+		fj::JetDefinition jet_def(fSettings.A, fSettings.R);
 		fj::ClusterSequence cs(parts, jet_def);
 		auto jets = fj::sorted_by_pt(cs.inclusive_jets());
 		Ldebug << "number of particles : " << parts.size();
@@ -126,7 +175,9 @@ namespace GenUtil
 
 			jts << "j" << j;
 
-			auto sj_info = new JettyFJUtils::SJInfo(&j, fSettings.sjR);
+			auto sj_info = new JettyFJUtils::SJInfo(&j,
+			                                        fSettings.sjR, fSettings.sjA,
+			                                        fSettings.sd_z_cut, fSettings.sd_beta, fSettings.sd_r_jet);
 			j.set_user_info(sj_info);
 
 			auto sjs = sj_info->subjets();
@@ -172,16 +223,16 @@ namespace GenUtil
 	unsigned int SubjetTask::FinalizeThis(const char *opt)
 	{
 		fArgs.merge(opt);
-		if (fArgs.isSet("--write"))
+		// if (fArgs.isSet("--write"))
+		// {
+		if (fOutput)
 		{
-			if (fOutput)
-			{
-				fOutput->cd();
-				fOutputTree->Write();
-				fOutput->Write();
-				Linfo << GetName() << " Finalize " << " file written: " << fOutput->GetName();
-			}
+			fOutput->cd();
+			fOutputTree->Write();
+			fOutput->Write();
+			Linfo << GetName() << " Finalize " << " file written: " << fOutput->GetName();
 		}
+		//}
 		return kDone;
 	}
 }

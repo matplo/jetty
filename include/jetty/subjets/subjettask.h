@@ -2,6 +2,7 @@
 #define __JETTY_UTIL_SUBJETTASK_HH
 
 #include <jetty/util/tasks/eventpooltask.h>
+#include <fastjet/JetDefinition.hh>
 
 #include <string>
 class TH1F;
@@ -22,14 +23,22 @@ namespace GenUtil
 		class Settings
 		{
 		public:
-			Settings() : R(0.4), maxEta(3.), jptcut(0.), jptcutmax(1e4), sjR(0.1) {;}
+			Settings();
 			~Settings () {;}
 
+			std::string str();
+			void setup_from_string(const char *s, const char *comment = 0x0);
+
 			double R;
+			fastjet::JetAlgorithm    A; //algorithm
 			double maxEta;
 			double jptcut;
 			double jptcutmax;
 			double sjR;
+			fastjet::JetAlgorithm    sjA; //algorithm
+			double sd_z_cut;
+			double sd_beta;
+			double sd_r_jet;
 		};
 
 		SubjetTask(const char *name) : EventPoolTask(name), fOutput(0), fOutputTree(0), fTStream(0), fSettings() {;}

@@ -113,10 +113,26 @@ int gentasks_hepmc (const std::string &s)
 
 	GenUtil::HepMCReaderTask r("hepmc_reader", args.asString().c_str());
 
-	GenUtil::SubjetTask sj("subjets", args.asString().c_str());
-	sj.AddInputTask(&r);
+	GenUtil::SubjetTask sj_kt("subjets_kt", (args.asString() + "--sjA=0").c_str());
+	sj_kt.AddInputTask(&r);
+	r.AddTask(&sj_kt);
 
-	r.AddTask(&sj);
+	GenUtil::SubjetTask sj_ca("subjets_ca", (args.asString() + "--sjA=1").c_str());
+	sj_ca.AddInputTask(&r);
+	r.AddTask(&sj_ca);
+
+	GenUtil::SubjetTask sj_akt("subjets_akt", (args.asString() + "--sjA=2").c_str());
+	sj_akt.AddInputTask(&r);
+	r.AddTask(&sj_akt);
+
+	GenUtil::SubjetTask sj_akt_sjR15("subjets_akt_sjR15", (args.asString() + "--sjA=2 --sjR=0.15").c_str());
+	sj_akt_sjR15.AddInputTask(&r);
+	r.AddTask(&sj_akt_sjR15);
+
+	GenUtil::SubjetTask sj_akt_sjR20("subjets_akt_sjR20", (args.asString() + "--sjA=2 --sjR=0.2").c_str());
+	sj_akt_sjR20.AddInputTask(&r);
+	r.AddTask(&sj_akt_sjR20);
+
 	r.Init();
 	r.DumpTaskListInfo();
 

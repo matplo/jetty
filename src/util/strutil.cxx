@@ -2,6 +2,7 @@
 
 #include <string>
 #include <exception>
+#include <iostream>
 
 namespace StrUtil
 {
@@ -52,8 +53,8 @@ namespace StrUtil
 		}
 		catch (const std::exception &e)
 		{
-			// cerr << e.what() << endl;
-			// cerr << "[e] failed to stol (" << str << ")" << endl;
+			// std::cerr << e.what() << std::endl;
+			// std::cerr << "[e] failed to stol (" << str << ")" << std::endl;
 			d = defret;
 		}
 		return d;
@@ -68,8 +69,8 @@ namespace StrUtil
 		}
 		catch (const std::exception &e)
 		{
-			// cerr << e.what() << endl;
-			// cerr << "[e] failed to int(stol (" << str << ") )" << endl;
+			// std::cerr << e.what() << std::endl;
+			// std::cerr << "[e] failed to int(stol (" << str << ") )" << std::endl;
 			d = defret;
 		}
 		return d;
