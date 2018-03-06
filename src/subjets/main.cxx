@@ -4,6 +4,7 @@
 #include <jetty/subjets/run_test.h>
 #ifdef USE_HEPMC
 #include <jetty/subjets/run_hepmc.h>
+#include <jetty/subjets/run_tasks.h>
 #endif
 int main ( int argc, char *argv[] )
 {
@@ -25,6 +26,11 @@ int main ( int argc, char *argv[] )
 	if (args.isSet("--hepmc"))
 	{
 		rv = run_hepmc(args.asString());
+	}
+
+	if (args.isSet("--tasks"))
+	{
+		rv = run_tasks(args.asString());
 	}
 #endif
 

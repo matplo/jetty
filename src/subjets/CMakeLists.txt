@@ -8,6 +8,7 @@ set(SOURCES_LIB
 	run_pythia.cxx
 	run_jets.cxx
 	run_test.cxx
+	run_tasks.cxx
 	subjettask.cxx
 )
 
