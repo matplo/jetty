@@ -78,6 +78,9 @@ namespace GenUtil
 		fVertices.clear();
 		fParticles.clear();
 
+		if (fEvent)
+			delete fEvent;
+
 		fEvent = fIn.read_next_event();
 		if (!fEvent)
 			return false;
