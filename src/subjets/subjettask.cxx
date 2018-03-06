@@ -58,6 +58,7 @@ namespace GenUtil
 	void SubjetTask::Settings::setup_from_string(const char *s, const char *comment)
 	{
 		PyUtil::Args args(s);
+		if (comment!=0) Linfo << comment << " reading settings from string: " << s;
 		R = args.getD("--R", R);
 		if (comment!=0) Linfo << comment << " running with R = " << R;
 		A = fj::JetAlgorithm(args.getI("--A", A));
@@ -89,7 +90,6 @@ namespace GenUtil
 	unsigned int SubjetTask::InitThis(const char *opt)
 	{
 		fArgs.merge(opt);
-
 		fSettings.setup_from_string(fArgs.asString().c_str(), GetName().c_str());
 
 		std::ostringstream _ss;
