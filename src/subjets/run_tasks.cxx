@@ -88,7 +88,7 @@ int run_tasks (const std::string &s)
 	// Linfo << "pythiaTAA N exec calls: " << pythiaTAA.GetNExecCalls();
 
 	delete r;
-	Linfo << "gentasks_hepmc is done." << endl;
+	Linfo << "subjet tasks (with PYTHIA8) done." << endl;
 	return 0;
 
 }
