@@ -5,6 +5,8 @@
 #include <Pythia8/Event.h>
 #include <vector>
 
+#include <fastjet/PseudoJet.hh>
+
 namespace PyUtil
 {
 	class EventPool
@@ -13,6 +15,8 @@ namespace PyUtil
 		EventPool();
 		const std::vector<Pythia8::Particle> & GetAllParticles();
 		const std::vector<Pythia8::Particle> & GetFinalParticles();
+		const std::vector<fastjet::PseudoJet> & GetFinalPseudoJets();
+
 		Pythia8::Particle RandomParticle(bool remove_event = true);
 		const std::vector<Pythia8::Event> & GetPool() const
 		{
@@ -25,6 +29,7 @@ namespace PyUtil
 		std::vector<Pythia8::Event> 	fPool;
 		std::vector<Pythia8::Particle> 	fAllParticles;
 		std::vector<Pythia8::Particle> 	fFinalParticles;
+		std::vector<fastjet::PseudoJet> fFinalPseudoJets;
 	};
 };
 

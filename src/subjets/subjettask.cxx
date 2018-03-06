@@ -144,6 +144,8 @@ namespace GenUtil
 			{
 				// handle pythia stuff here
 				Ldebug << GetName() << " adding particles from " << t->GetName();
+				auto _pv = evpool->GetFinalPseudoJets();
+				parts.insert(parts.end(), _pv.begin(), _pv.end());
 			}
 			auto hepmc = t->GetData()->get<GenUtil::ReadHepMCFile>();
 			if (hepmc)

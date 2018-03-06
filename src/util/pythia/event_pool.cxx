@@ -8,6 +8,7 @@ namespace PyUtil
 		: fPool()
 		, fAllParticles()
 		, fFinalParticles()
+		, fFinalPseudoJets()
 		{
 			;
 		}
@@ -37,6 +38,26 @@ namespace PyUtil
 			}
 		}
 		return fFinalParticles;
+	}
+
+	const std::vector<fastjet::PseudoJet> & EventPool::GetFinalPseudoJets()
+	{
+		fFinalPseudoJets.clear();
+		for (unsigned int ie = 0; ie < fPool.size(); ie++)
+		{
+			for (int ip = 0; ip < fPool[ie].size(); ip++)
+			{
+				if (fPool[ie][ip].isFinal())
+				{
+					fastjet::PseudoJet psj ( fPool[ie][ip].px(), fPool[ie][ip].py(), fPool[ie][ip].pz(), fPool[ie][ip].e());
+					psj.set_user_index(ie * 10000 + ip);
+					if (ip > 10000)
+						Lwarn << "setting user index particle beyond offset 10k - not reliable - needs a fix";
+					fFinalPseudoJets.push_back(psj);
+				}
+			}
+		}
+		return fFinalPseudoJets;
 	}
 
 	Pythia8::Particle EventPool::RandomParticle(bool remove_event)
