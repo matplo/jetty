@@ -28,7 +28,7 @@ int main ( int argc, char *argv[] )
 		rv = run_hepmc(args.asString());
 	}
 
-	if (args.isSet("--pythia-tasks"))
+	if (args.isSet("--sj-tasks"))
 	{
 		rv = run_tasks(args.asString());
 	}
