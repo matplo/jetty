@@ -169,7 +169,7 @@ namespace GenUtil
 			if (fStatus != kGood)
 			{
 				iret = fStatus;
-				Ltrace << GetName() << "::Execute: skipping deps " << this->GetName() << " w/ status = " << fStatus;
+				Ltrace << GetName() << "::Execute: skipping deps of " << this->GetName() << " w/ status = " << fStatus;
 				if (iret == kSkipEvent)
 				{
 					Ltrace << GetName() << "::Execute: reset status " << fStatus << " to " << kGood;
@@ -181,16 +181,13 @@ namespace GenUtil
 				for(auto t : fSubtasks)
 				{
 					auto istat = t->GetStatus();
-					if (istat != kGood)
+					if (istat != kGood && istat != kSkipEvent)
 					{
-						Ltrace << GetName() << "::Execute: skipping " << t->GetName() << " w/ status = " << t->GetStatus();
 						if (istat == kSkipEvent)
 						{
 							t->SetStatus(kGood);
-							Ltrace << GetName() << "::Execute: reset status of " << t->GetName()
-								<< " from " << iret << " to " << t->GetStatus();
+							Ltrace << GetName() << "::Execute: reset status of " << t->GetName() << " from " << iret << " to " << t->GetStatus();
 						}
-						continue;
 					}
 					auto iret_tmp = t->Execute(opt);
 					t->SetStatus(iret_tmp);
