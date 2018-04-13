@@ -153,6 +153,7 @@ namespace GenUtil
 				Ldebug << GetName() << " adding particles from " << t->GetName();
 				auto _pv = hepmc->PseudoJetParticles(true);
 				parts.insert(parts.end(), _pv.begin(), _pv.end());
+				wxsec = hepmc->GetCrossSecion()->cross_section();
 			}
 		}
 

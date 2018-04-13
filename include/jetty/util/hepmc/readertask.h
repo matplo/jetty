@@ -22,6 +22,9 @@ namespace GenUtil
 		virtual 			~HepMCReaderTask();
 		virtual unsigned int InitThis(const char *opt = "");
 		virtual unsigned int ExecThis(const char *opt = "");
+
+		ReadHepMCFile 		*GetReader() {return fReader;}
+
 	protected:
 		ReadHepMCFile 		*fReader;
 	};
