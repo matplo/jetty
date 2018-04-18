@@ -2,6 +2,7 @@
 #include <jetty/util/hepmc/readfile.h>
 #include <jetty/util/blog.h>
 #include <jetty/util/strutil.h>
+#include <jetty/util/sysutil.h>
 
 #include <cstdio>
 #include <string>
@@ -16,7 +17,32 @@ namespace GenUtil
 	unsigned int HepMCReaderTask::ExecThis(const char *opt)
 	{
 		Ltrace << "HepMCReaderTask::ExecThis " << GetName() << " with option: " << opt;
-		if (fReader->NextEvent() == false) return kDefinedStop;
+		if (fReader->NextEvent() == false)
+		{
+			if (fFileList.empty())
+			{
+				return kDefinedStop;
+			}
+			else
+			{
+				fData->remove(fReader);
+				// delete fReader;
+				std::string _stmp = fFileList.back();
+				Lwarn <<  "HepMCReaderTask::ExecThis " << GetName() << " file : " << _stmp;
+				fReader = new ReadHepMCFile(_stmp.c_str());
+				fFileList.pop_back();
+				if (fReader)
+				{
+					fData->add(fReader);
+					return ExecThis(opt);
+				}
+				else
+				{
+					Lfatal << "HepMCReaderTask::Init " << GetName() << " unable to create the hepmc file reader.";
+					return kError;
+				}
+			}
+		}
 		return kGood;
 	}
 
@@ -29,16 +55,50 @@ namespace GenUtil
 		if (fStatus == kBeforeInit)
 		{
 			// check if this is a directory
-			// then load files
-			// then make sure you swap files when needed in ExecThis
-			// add possibility to add text file with a list of files as input
-			// need a new class? - extend ReadHepMCFile - this sounds reasonable...
-			// read x-section from HEPMC
-			fReader = new ReadHepMCFile(fArgs.get("--hepmc-input").c_str());
+			std::string _hepmc_input = fArgs.get("--hepmc-input");
+			std::string _hepmc_input_fpattern = fArgs.get("--hepmc-input-pattern");
+			if (_hepmc_input.size() > 0)
+			{
+				if (SysUtil::is_file(_hepmc_input))
+				{
+					Linfo << "HepMCReaderTask::Init " << GetName() << " input file : " << _hepmc_input;
+					fFileList.push_back(_hepmc_input);
+				}
+				else
+				{
+					// assume it is a directory...
+					if (SysUtil::is_directory(_hepmc_input))
+					{
+						if (_hepmc_input_fpattern.size() > 0)
+						{
+							fFileList = SysUtil::find_files_exact(_hepmc_input.c_str(), _hepmc_input_fpattern.c_str());
+							Linfo << "HepMCReaderTask::Init " << GetName() << " found " << fFileList.size() << " files in " << _hepmc_input << " with pattern " << _hepmc_input_fpattern;
+						}
+						else
+						{
+							fFileList = SysUtil::find_files_ext(_hepmc_input.c_str(), ".hepmc");
+							Linfo << "HepMCReaderTask::Init " << GetName() << " found " << fFileList.size() << " files in " << _hepmc_input << " with extention .hepmc";
+						}
+					}
+				}
+			}
+
+			if (fFileList.empty())
+			{
+				Lfatal << "HepMCReaderTask::Init " << GetName() << " no files to read from....";
+				return kError;
+			}
+			else
+			{
+				std::string _stmp = fFileList.back();
+				Lwarn <<  "HepMCReaderTask::InitThis " << GetName() << " file : " << _stmp;
+				fReader = new ReadHepMCFile(_stmp.c_str());
+				fFileList.pop_back();
+			}
 
 			if (!fReader)
 			{
-				Lfatal << GetName() << " unable to create new reader!";
+				Lfatal << "HepMCReaderTask::Init " << GetName() << " unable to create the hepmc file reader.";
 				return kError;
 			}
 

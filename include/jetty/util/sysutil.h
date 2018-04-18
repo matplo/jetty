@@ -11,8 +11,13 @@
 
 namespace SysUtil
 {
+	bool file_exists_stat (const std::string& name);
 	bool file_exists (const std::string& name);
 	// std::string expand_path_name(const std::string& spath);
+
+	bool is_file (const std::string& pathname);
+	bool is_link (const std::string& pathname);
+	bool is_directory (const std::string& pathname);
 
 	bool find_file(const boost::filesystem::path& dir_path, const boost::filesystem::path& file_name, boost::filesystem::path& path_found);
 

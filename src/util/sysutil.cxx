@@ -10,21 +10,48 @@
 
 #include <algorithm>
 #include <iostream>
+#include <fstream>
+
+#include <sys/stat.h>
 
 namespace SysUtil
 {
-	bool file_exists (const std::string& name)
+	// https://stackoverflow.com/questions/12774207/fastest-way-to-check-if-a-file-exist-using-standard-c-c11-c?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+	bool file_exists_stat (const std::string& name)
 	{
 	  struct stat buffer;
 	  return (stat (name.c_str(), &buffer) == 0);
 	}
 
-	// std::vector<std::string> stokens(std::string s, char c)
-	// {
-	// 	std::vector<std::string> v;
-	// 	return v;
-	// }
+	bool file_exists (const std::string& name)
+	{
+	    std::ifstream f(name.c_str());
+	    return f.good();
+	}
 
+	bool is_file (const std::string& pathname)
+	{
+		struct stat sb;
+		if (stat(pathname.c_str(), &sb) == 0 && S_ISREG(sb.st_mode))
+			return true;
+		return false;
+	}
+
+	bool is_link (const std::string& pathname)
+	{
+		struct stat sb;
+		if (stat(pathname.c_str(), &sb) == 0 && S_ISLNK(sb.st_mode))
+			return true;
+		return false;
+	}
+
+	bool is_directory (const std::string& pathname)
+	{
+		struct stat sb;
+		if (stat(pathname.c_str(), &sb) == 0 && S_ISDIR(sb.st_mode))
+			return true;
+		return false;
+	}
 
 	bool find_file(const boost::filesystem::path& dir_path, const boost::filesystem::path& file_name, boost::filesystem::path& path_found)
 	{

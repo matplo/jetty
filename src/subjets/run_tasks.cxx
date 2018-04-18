@@ -26,6 +26,19 @@
 #include <iostream>
 using namespace std;
 
+Long64_t n_events_hepmc(const char *s)
+{
+	Linfo << "figuring out number of hepmc events...";
+	GenUtil::HepMCReaderTask r_hepmc("hepmc_reader_tmp", s);
+	r_hepmc.Init();
+	while (r_hepmc.GetStatus() == GenUtil::GenTask::kGood)
+	{
+		r_hepmc.Execute();
+	}
+	r_hepmc.Finalize();
+	return r_hepmc.GetNExecCalls();
+}
+
 int run_tasks (const std::string &s)
 {
 	// test(s); return;
@@ -33,10 +46,13 @@ int run_tasks (const std::string &s)
 
 	GenUtil::GenTask *r = 0;
 
+	Long64_t n_hepmc = 0;
 	if (args.isSet("--hepmc-input"))
 	{
 		GenUtil::HepMCReaderTask *r_hepmc = new GenUtil::HepMCReaderTask("hepmc_reader", args.asString().c_str());
 		r = r_hepmc;
+		n_hepmc = n_events_hepmc(args.asString().c_str());
+		Linfo << "found " << n_hepmc << " HEPMC events...";
 	}
 	else
 	{
@@ -77,7 +93,16 @@ int run_tasks (const std::string &s)
 	r->Init();
 	r->DumpTaskListInfo();
 
-	int nEv = args.getI("--nev", 5);
+	int nEv = args.getI("--nev", -1);
+	if (nEv == -1)
+	{
+		if (n_hepmc > 0)
+			nEv = n_hepmc;
+		else
+			nEv = 10;
+	}
+	if (nEv > n_hepmc && n_hepmc > 0)
+		nEv = n_hepmc;
 	if (args.isSet("-h") || args.isSet("--help"))
 		nEv = 1;
 

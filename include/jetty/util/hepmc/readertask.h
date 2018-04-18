@@ -16,9 +16,9 @@ namespace GenUtil
 	class HepMCReaderTask : public GenTask
 	{
 	public:
-		HepMCReaderTask(const char *name) : GenTask(name), fReader(0) {;}
-		HepMCReaderTask(const char *name, const char *params) : GenTask(name, params), fReader(0) {;}
-		HepMCReaderTask() : GenTask(), fReader(0) {;}
+		HepMCReaderTask(const char *name) : GenTask(name), fReader(0), fFileList() {;}
+		HepMCReaderTask(const char *name, const char *params) : GenTask(name, params), fReader(0), fFileList() {;}
+		HepMCReaderTask() : GenTask(), fReader(0), fFileList() {;}
 		virtual 			~HepMCReaderTask();
 		virtual unsigned int InitThis(const char *opt = "");
 		virtual unsigned int ExecThis(const char *opt = "");
@@ -27,6 +27,7 @@ namespace GenUtil
 
 	protected:
 		ReadHepMCFile 		*fReader;
+		std::vector<std::string> fFileList;
 	};
 }
 
