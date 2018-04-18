@@ -31,10 +31,11 @@ namespace GenUtil
 
 	void GenTask::DumpTaskListInfo()
 	{
-	    Linfo << "number of tasks: " << fTasks.size();
+	    Linfo << "GenTask::DumpTaskListInfo() number of tasks: " << fTasks.size();
 		for (auto &t : fTasks)
 		{
-			Linfo << "task id: " << t->GetId() << " " << t->GetName() << " status: " << t->GetStatus();
+			if (t)
+				Linfo << " -- task id: " << t->GetId() << " " << t->GetName() << " status: " << t->GetStatus();
 		}
 	}
 
@@ -46,6 +47,10 @@ namespace GenUtil
 			delete fShared;
 			fShared = 0;
 			fTasks.clear();
+		}
+		else
+		{
+			fTasks.erase(fTasks.begin() + this->GetId());
 		}
 		fInputTasks.clear();
 		delete fData;

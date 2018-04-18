@@ -31,6 +31,7 @@ Long64_t n_events_hepmc(const char *s)
 	Linfo << "figuring out number of hepmc events...";
 	GenUtil::HepMCReaderTask r_hepmc("hepmc_reader_tmp", s);
 	r_hepmc.Init();
+	r_hepmc.DumpTaskListInfo();
 	while (r_hepmc.GetStatus() == GenUtil::GenTask::kGood)
 	{
 		r_hepmc.Execute();
