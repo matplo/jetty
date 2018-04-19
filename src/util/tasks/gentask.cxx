@@ -39,22 +39,32 @@ namespace GenUtil
 		}
 	}
 
+
+	void GenTask::Cleanup()
+	{
+		for (auto &t : fTasks)
+		{
+			if (t)
+				delete t;
+		}
+		fTasks.clear();
+
+		fShared->set_debug(1);
+		delete fShared;
+		fShared = 0;
+	}
+
 	GenTask::~GenTask()
 	{
-		_instance_counter -= 1;
-		if (fShared && _instance_counter == 0)
-		{
-			delete fShared;
-			fShared = 0;
-			fTasks.clear();
-		}
-		else
-		{
-			fTasks.erase(fTasks.begin() + this->GetId());
-		}
-		fInputTasks.clear();
+		Ltrace << GetName() << " destroy begin...";
+		// fData->set_debug(1);
 		delete fData;
 		fData = 0;
+		Ltrace << GetName() << " removing this " << this->GetId() << " one from the list of tasks";
+		fTasks[this->GetId()] = 0x0;
+		int counter = 0;
+		for (auto &t : fTasks) if (t != 0) counter++;
+		Ltrace << GetName() << " remaining tasks: " << counter << " out of " << fTasks.size() << " slots";
 	    Ltrace << GetName() << " destroyed.";
 	}
 

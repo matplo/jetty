@@ -47,6 +47,7 @@ namespace GenUtil
 		const std::vector<GenTask*> GetTasks() {return fTasks;}
 
 		static void 			DumpTaskListInfo();
+		static void 			Cleanup();
 
 		void 					AddInputTask(GenTask *t);
 
