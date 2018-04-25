@@ -41,5 +41,10 @@ int main ( int argc, char *argv[] )
         rv = gentasks_hepmc(args.asString());
     }
 
+    if (args.isSet("--gpythia"))
+    {
+        rv = gpythia(args.asString());
+    }
+
     return rv;
 }

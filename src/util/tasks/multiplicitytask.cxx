@@ -55,10 +55,10 @@ namespace GenUtil
 			//Linfo << "from : " << t->GetName() << " dN/dEta in abs(eta) < 1 per Npart / 2.: " << dNdeta / 2. / npart / 2.
 			//	<< " npart = " << npart;
 		}
-		Ldebug << "charged particle multiplicity in this event #" << fNExecCalls << " = "  << fMult->GetMultiplicity(MultiplicityEstimator::kFSChPerEv, -1, 1);
-		Ldebug << "    charged dN/deta in abs(1) in this event #" << fNExecCalls << " = "  << fMult->GetMultiplicity(MultiplicityEstimator::kFSChPerEv, -1, 1) / 2.;
-		Ldebug << "  total particle multiplicity in this event #" << fNExecCalls << " = "  << fMult->GetMultiplicity(MultiplicityEstimator::kFSPerEv, -1, 1);
-		Ldebug << "      total dN/deta in abs(1) in this event #" << fNExecCalls << " = "  << fMult->GetMultiplicity(MultiplicityEstimator::kFSPerEv, -1, 1) / 2.;
+		// Ldebug << "charged particle multiplicity in this event #" << fNExecCalls << " = "  << fMult->GetMultiplicity(MultiplicityEstimator::kFSChPerEv, -1, 1);
+		// Ldebug << "    charged dN/deta in abs(1) in this event #" << fNExecCalls << " = "  << fMult->GetMultiplicity(MultiplicityEstimator::kFSChPerEv, -1, 1) / 2.;
+		// Ldebug << "  total particle multiplicity in this event #" << fNExecCalls << " = "  << fMult->GetMultiplicity(MultiplicityEstimator::kFSPerEv, -1, 1);
+		// Ldebug << "      total dN/deta in abs(1) in this event #" << fNExecCalls << " = "  << fMult->GetMultiplicity(MultiplicityEstimator::kFSPerEv, -1, 1) / 2.;
 
 		fMult->NotifyEvent();
 		return kGood;

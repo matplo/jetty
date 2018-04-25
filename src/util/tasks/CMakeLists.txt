@@ -9,6 +9,7 @@ set(SOURCES_LIB
 	pythiatask.cxx
 	pythiaAAtask.cxx
 	multiplicitytask.cxx
+	gpythiatask.cxx
 )
 
 # Headers from sources

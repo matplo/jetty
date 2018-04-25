@@ -24,6 +24,7 @@ namespace GenUtil
 		virtual unsigned int InitThis(const char *opt = "");
 		virtual unsigned int ExecThis(const char *opt = "");
 		virtual unsigned int FinalizeThis(const char *opt = "");
+		MultiplicityEstimator *GetEstimator() {return fMult;}
 	protected:
 		MultiplicityEstimator *fMult;
 	};

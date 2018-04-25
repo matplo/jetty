@@ -167,13 +167,16 @@ namespace PyUtil
 		}
 		int nbinsA = ndiv;
 		int nbinsB = ndiv;
-		if (eA > eB)
+		if (eA != eB)
 		{
-			nbinsA = eA / (eB / ndiv) + 1;
-		}
-		else
-		{
-			nbinsB = eB / (eA / ndiv) + 1;
+			if (eA > eB)
+			{
+				nbinsA = eA / (eB / ndiv) + 1;
+			}
+			else
+			{
+				nbinsB = eB / (eA / ndiv) + 1;
+			}
 		}
 		double lowCutoffFraction = 0.; // 0 is no cut off
 		double bwA = (eA - eA * lowCutoffFraction) / nbinsA / 2.;

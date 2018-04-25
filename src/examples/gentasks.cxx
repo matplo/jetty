@@ -10,6 +10,8 @@
 #include <jetty/util/tasks/pythiatask.h>
 #include <jetty/util/tasks/pythiaAAtask.h>
 #include <jetty/util/tasks/multiplicitytask.h>
+#include <jetty/util/tasks/gpythiatask.h>
+
 #include <jetty/util/hepmc/readertask.h>
 #include <jetty/util/hepmc/readfile.h>
 
@@ -94,6 +96,58 @@ int gentasks (const std::string &s)
 		if (g0.GetStatus() == GenUtil::GenTask::kError)
 			break;
 		Ldebug << "number of collisions: " << g0.GetGlauberMC()->GetNcoll();
+		// Ldebug << " -> number of final state particles: " << pythiaTAA.GetEventPool()->GetFinalParticles().size();
+	}
+
+	g0.Finalize();
+
+	Linfo << "glauber N exec calls: " << g0.GetNExecCalls();
+	// Linfo << "pythiaTAA N exec calls: " << pythiaTAA.GetNExecCalls();
+
+	Linfo << "gentasks is done." << endl;
+	return 0;
+}
+
+int gpythia (const std::string &s)
+{
+	// test(s); return;
+	PyUtil::Args args(s);
+
+	if (args.isSet("--random-seed"))
+	{
+		gRandom->SetSeed(args.getI("--random-seed", 0));
+	}
+	Linfo << "random seed is: " << gRandom->GetSeed();
+
+	GenUtil::GlauberTask g0("glauber", args.asString().c_str());
+	GenUtil::PythiaAATask pythiaTAA("pythiaAA", args.asString().c_str());
+	g0.AddTask(&pythiaTAA);
+	pythiaTAA.AddInputTask(&g0);
+	GenUtil::MultiplicityTask mult("mult", args.asString().c_str());
+	g0.AddTask(&mult);
+	mult.AddInputTask(&pythiaTAA);
+	mult.AddInputTask(&g0);
+
+	GenUtil::GPythiaTask gpythia("gpythia", args.asString().c_str());
+	g0.AddTask(&gpythia);
+	gpythia.AddInputTask(&g0);
+	gpythia.AddInputTask(&mult);
+
+	g0.Init();
+	g0.DumpTaskListInfo();
+
+	int nEv = args.getI("--nev", 5);
+	if (args.isSet("-h") || args.isSet("--help"))
+		nEv = 1;
+
+	LoopUtil::TPbar pbar(nEv);
+	for (int i = 0; i < nEv; i++)
+	{
+		pbar.Update();
+		g0.Execute("<an option>");
+		if (g0.GetStatus() == GenUtil::GenTask::kError)
+			break;
+		// Ldebug << "number of collisions: " << g0.GetGlauberMC()->GetNcoll();
 		// Ldebug << " -> number of final state particles: " << pythiaTAA.GetEventPool()->GetFinalParticles().size();
 	}
 
