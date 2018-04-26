@@ -85,7 +85,7 @@ namespace GenUtil
 		for (unsigned int i = 0; i < kMEMax; i++)
 		{
 			string sname = fName + GetEstimatorName(i);
-			fHist[i] = new TH1F(sname.c_str(), sname.c_str(), 200, -10, 10);
+			fHist[i] = new TH1F(sname.c_str(), sname.c_str(), 600, -30, 30);
 			fHist[i]->SetDirectory(0);
 			fHist[i]->Sumw2();
 		}
