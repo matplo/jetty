@@ -80,6 +80,8 @@ namespace GenUtil
 		gt << "b" << glauber->GetGlauberMC()->GetB();
 		gt << "m10" << mult->GetEstimator()->GetMultiplicity(MultiplicityEstimator::kFSPerEv, -10, 10);
 		gt << "m10ch" << mult->GetEstimator()->GetMultiplicity(MultiplicityEstimator::kFSChPerEv, -10, 10);
+		gt << "m20" << mult->GetEstimator()->GetMultiplicity(MultiplicityEstimator::kFSPerEv, -20, 20);
+		gt << "m30" << mult->GetEstimator()->GetMultiplicity(MultiplicityEstimator::kFSPerEv, -30, 30);
 		gt << "m1" << mult->GetEstimator()->GetMultiplicity(MultiplicityEstimator::kFSPerEv, -1, 1);
 		gt << "m1ch" << mult->GetEstimator()->GetMultiplicity(MultiplicityEstimator::kFSChPerEv, -1, 1);
 		gt << "m1x2" << mult->GetEstimator()->GetMultiplicity(MultiplicityEstimator::kFSPerEv, -2, 1);
