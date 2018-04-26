@@ -66,12 +66,12 @@ namespace GenUtil
 
 	unsigned int MultiplicityTask::FinalizeThis(const char *opt)
 	{
-		fArgs.merge(opt);
-		if (fArgs.isSet("--write"))
-		{
-			if (fMult)
-				fMult->Write();
-		}
+		// fArgs.merge(opt);
+		// if (fArgs.isSet("--write"))
+		// {
+		if (fMult)
+			fMult->Write();
+		//}
 		return kDone;
 	}
 
