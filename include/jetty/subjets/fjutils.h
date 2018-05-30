@@ -34,8 +34,12 @@ namespace JettyFJUtils
 		double sd_zg() {_do_soft_drop(); return _sd_jet.structure_of<fastjet::contrib::SoftDrop>().symmetry();}
 		double sd_mu() {_do_soft_drop(); return _sd_jet.structure_of<fastjet::contrib::SoftDrop>().mu();}
 
-		double rm();
 		std::vector<double> z();
+		std::vector<double> c_pt();
+		std::vector<double> c_phi();
+		std::vector<double> c_eta();
+
+		double rm();
 		std::vector<fastjet::PseudoJet> subjets();
 
 		bool has_at_least_2_subjets() {_do_subjets(); if (_sj.size() < 2) return false; return true;}
@@ -56,6 +60,10 @@ namespace JettyFJUtils
 		std::vector<fastjet::PseudoJet> _sj;
 
 		std::vector<double> 			_z;
+		std::vector<double> 			_c_pt;
+		std::vector<double> 			_c_phi;
+		std::vector<double> 			_c_eta;
+
 		double 							_rm;
 
 		double 							_sd_z_cut;

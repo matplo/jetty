@@ -208,6 +208,9 @@ namespace GenUtil
 			jts << "sj_zg" << TMath::Min(sjs[0].perp(), sjs[1].perp()) / j.perp();
 			//auto zs   = sj_info->z();
 			jts << "z" << sj_info->z();
+			jts << "c_pt" << sj_info->c_pt();
+			jts << "c_phi" << sj_info->c_phi();
+			jts << "c_eta" << sj_info->c_eta();
 
 			//auto rm  = sj_info->rm();
 			jts << "rm" << sj_info->rm();

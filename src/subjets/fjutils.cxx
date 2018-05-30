@@ -83,6 +83,9 @@ namespace JettyFJUtils
 		, _sj_cs(0x0)
 		, _sj()
 		, _z()
+		, _c_pt()
+		, _c_phi()
+		, _c_eta()
 		, _rm(-1)
 		, _sd_z_cut(sd_z_cut)
 		, _sd_beta(sd_beta)
@@ -104,6 +107,9 @@ namespace JettyFJUtils
 		, _sj_cs(0x0)
 		, _sj()
 		, _z()
+		, _c_pt()
+		, _c_phi()
+		, _c_eta()
 		, _rm(-1)
 		, _sd_z_cut(sd_z_cut)
 		, _sd_beta(sd_beta)
@@ -124,6 +130,9 @@ namespace JettyFJUtils
 		, _sj_cs(0x0)
 		, _sj()
 		, _z()
+		, _c_pt()
+		, _c_phi()
+		, _c_eta()
 		, _rm(-1)
 		, _sd_z_cut(sd_z_cut)
 		, _sd_beta(sd_beta)
@@ -216,5 +225,53 @@ namespace JettyFJUtils
 			}
 		}
 		return _z;
+	}
+
+	std::vector<double> SJInfo::c_pt()
+	{
+		if (_jet != 0x0)
+		{
+			if (_jet->has_constituents() && _c_pt.size() < 1)
+			{
+				for (auto c : fj::sorted_by_pt(_jet->constituents()))
+				{
+					double z = c.perp();
+					_c_pt.push_back(z);
+				}
+			}
+		}
+		return _c_pt;
+	}
+
+	std::vector<double> SJInfo::c_phi()
+	{
+		if (_jet != 0x0)
+		{
+			if (_jet->has_constituents() && _c_phi.size() < 1)
+			{
+				for (auto c : fj::sorted_by_pt(_jet->constituents()))
+				{
+					double z = c.phi();
+					_c_phi.push_back(z);
+				}
+			}
+		}
+		return _c_phi;
+	}
+
+	std::vector<double> SJInfo::c_eta()
+	{
+		if (_jet != 0x0)
+		{
+			if (_jet->has_constituents() && _c_eta.size() < 1)
+			{
+				for (auto c : fj::sorted_by_pt(_jet->constituents()))
+				{
+					double z = c.eta();
+					_c_eta.push_back(z);
+				}
+			}
+		}
+		return _c_eta;
 	}
 }
