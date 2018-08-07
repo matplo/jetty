@@ -1,5 +1,6 @@
 #include <jetty/subjets/fjutils.h>
 #include <fastjet/contrib/SoftDrop.hh>
+#include <jetty/util/blog.h>
 
 namespace fj = fastjet;
 
@@ -33,6 +34,62 @@ namespace JettyFJUtils
 				soft_dropped.push_back(sd_jet);
 		}
 		return soft_dropped;
+	}
+
+	LundEntries::~LundEntries()
+	{
+		delete _cajet;
+		_logzDeltaR.clear();
+		_log1oDeltaR.clear();
+		_deltaR.clear();
+		_z.clear();
+	}
+
+	LundEntries::LundEntries() : _logzDeltaR(), _log1oDeltaR(), _deltaR(), _z(), _cajet(0)
+	{
+		;
+	}
+
+	LundEntries::LundEntries(const fj::PseudoJet &j) : _logzDeltaR(), _log1oDeltaR(), _deltaR(), _z(), _cajet(0)
+	{
+	   std::vector<fastjet::PseudoJet> constituents = j.constituents();
+	   fastjet::JetAlgorithm jetalgo(fastjet::cambridge_algorithm);
+	   fastjet::JetDefinition fJetDef(jetalgo, 1., static_cast<fastjet::RecombinationScheme>(0), fastjet::BestFJ30 );
+	   try
+	   {
+			fastjet::ClusterSequence fClustSeqSA(constituents, fJetDef);
+			std::vector<fastjet::PseudoJet> fOutputJets;
+			fOutputJets.clear();
+			fOutputJets = fClustSeqSA.inclusive_jets(0);
+
+			fastjet::PseudoJet jj;
+			fastjet::PseudoJet j1;
+			fastjet::PseudoJet j2;
+
+			_cajet = new fj::PseudoJet(fOutputJets[0]);
+
+			jj = fOutputJets[0];
+			while(jj.has_parents(j1,j2))
+			{
+				if (j1.perp() < j2.perp())
+				{
+					std::swap(j1,j2);
+				}
+				double delta_R  = j1.delta_R(j2);
+				double z        = j2.perp() / ( j1.perp() + j2.perp());
+				double y        = log(1.0 / delta_R);
+				double lnpt_rel = log(z * delta_R);
+				_logzDeltaR.push_back(lnpt_rel);
+				_log1oDeltaR.push_back(y);
+				_deltaR.push_back(delta_R);
+				_z.push_back(z);
+				jj = j1;
+			}
+	   }
+	   catch (fastjet::Error)
+	   {
+			Lwarn << "FJ Exception caught when calculating Lund plot";
+	   }
 	}
 
 	std::vector<double> zs(const fastjet::PseudoJet &j)

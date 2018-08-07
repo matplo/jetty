@@ -178,6 +178,15 @@ namespace GenUtil
 
 			jts << "j" << j;
 
+			// Linfo << "n constits: " << j.constituents().size();
+
+			JettyFJUtils::LundEntries lund(j);
+			if (lund.CAjet())
+			{
+				jts << "lund_logzdr" << lund.LogzDeltaR();
+				jts << "lund_log1odr" << lund.Log1oDeltaR();
+			}
+
 			auto sj_info = new JettyFJUtils::SJInfo(&j,
 			                                        fSettings.sjR, fSettings.sjA,
 			                                        fSettings.sd_z_cut, fSettings.sd_beta, fSettings.sd_r_jet);

@@ -12,6 +12,25 @@ namespace JettyFJUtils
 	double radial_moment(const fastjet::PseudoJet jet);
 	std::vector<double> radial_moments(const std::vector<fastjet::PseudoJet> &jets);
 
+	class LundEntries
+	{
+	public:
+		LundEntries(const fastjet::PseudoJet &j);
+		virtual ~LundEntries();
+		std::vector<double> LogzDeltaR()  {return _logzDeltaR;}
+		std::vector<double> Log1oDeltaR() {return _log1oDeltaR;}
+		std::vector<double> deltaR() 	  {return _deltaR;}
+		std::vector<double> z() 	 	  {return _z;}
+		fastjet::PseudoJet *CAjet() 	  {return _cajet;}
+	private:
+		std::vector<double>  _logzDeltaR;
+		std::vector<double>  _log1oDeltaR;
+		std::vector<double>  _deltaR;
+		std::vector<double>  _z;
+		fastjet::PseudoJet 	 *_cajet;
+		LundEntries();
+	};
+
 	class SJInfo : public fastjet::PseudoJet::UserInfoBase
 	{
 	public:
