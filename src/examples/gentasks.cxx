@@ -160,6 +160,45 @@ int gpythia (const std::string &s)
 	return 0;
 }
 
+int glauber (const std::string &s)
+{
+	// test(s); return;
+	PyUtil::Args args(s);
+
+	if (args.isSet("--random-seed"))
+	{
+		gRandom->SetSeed(args.getI("--random-seed", 0));
+	}
+	Linfo << "random seed is: " << gRandom->GetSeed();
+
+	GenUtil::GlauberTask g0("glauber", args.asString().c_str());
+	g0.Init();
+	g0.DumpTaskListInfo();
+
+	int nEv = args.getI("--nev", 5);
+	if (args.isSet("-h") || args.isSet("--help"))
+		nEv = 1;
+
+	LoopUtil::TPbar pbar(nEv);
+	for (int i = 0; i < nEv; i++)
+	{
+		pbar.Update();
+		g0.Execute("<an option>");
+		if (g0.GetStatus() == GenUtil::GenTask::kError)
+			break;
+		// Ldebug << "number of collisions: " << g0.GetGlauberMC()->GetNcoll();
+		// Ldebug << " -> number of final state particles: " << pythiaTAA.GetEventPool()->GetFinalParticles().size();
+	}
+
+	g0.Finalize();
+
+	Linfo << "glauber N exec calls: " << g0.GetNExecCalls();
+	// Linfo << "pythiaTAA N exec calls: " << pythiaTAA.GetNExecCalls();
+
+	Linfo << "glauber task is done." << endl;
+	return 0;
+}
+
 int gentasks_hepmc (const std::string &s)
 {
 	// test(s); return;

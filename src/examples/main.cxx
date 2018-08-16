@@ -46,5 +46,10 @@ int main ( int argc, char *argv[] )
         rv = gpythia(args.asString());
     }
 
+    if (args.isSet("--glauber"))
+    {
+        rv = glauber(args.asString());
+    }
+
     return rv;
 }

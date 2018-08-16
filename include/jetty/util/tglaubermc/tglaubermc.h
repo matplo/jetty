@@ -143,6 +143,9 @@ class TGlauNucleon : public TObject
     void       SetInNucleusA()                            {fInNucleusA=1;}
     void       SetInNucleusB()                            {fInNucleusA=0;}
     void       SetXYZ(Double_t x, Double_t y, Double_t z) {fX=x; fY=y; fZ=z;}
+
+    static    Double_t InitRadius()                        {return 1.;}
+
     ClassDef(TGlauNucleon,4) // TGlauNucleon class
 };
 //---------------------------------------------------------------------------------

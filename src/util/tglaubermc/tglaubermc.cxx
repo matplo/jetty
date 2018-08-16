@@ -38,7 +38,7 @@ void runAndSaveNtuple(const Int_t n,
                       const Double_t signn,
                       const Double_t sigwidth,
                       const Double_t mind,
-		      const Double_t omega,
+		                  const Double_t omega,
                       const Double_t noded,
                       const char *fname)
 {
