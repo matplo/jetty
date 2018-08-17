@@ -30,6 +30,27 @@ namespace GenUtil
 	    Linfo << GetName() << " -> "
 	    	<< " x-sect = " << fpGlauberMC->GetTotXSect()
 	    	<< " +- " << fpGlauberMC->GetTotXSectErr() << " b ";
+	    TString name = OutputFileName();
+		Linfo << GetName() << " writing file: " << name;
+		TFile out(name,"recreate",name,9);
+		TNtuple  *nt = fpGlauberMC->GetNtuple();
+		if (nt)
+			nt->Write();
+		else
+			Lwarn << GetName() << " no glauber ntuple to write.";
+		out.Close();
+		Linfo << GetName() << " done.";
+		return kDone;
+	}
+
+	const char * GlauberTask::OutputFileName()
+	{
+		if (!fpGlauberMC)
+		{
+			Lwarn << GetName() << " GlauberMC not initialized. Nothing to be done.";
+			return "invalid.root";
+		}
+
 		string fname            = fArgs.get("--glauber-fname", "");
 		const Double_t omega    = fArgs.getD("--glauber-omega", -1);
 		const Double_t noded    = fArgs.getD("--glauber-noded", -1);
@@ -53,16 +74,7 @@ namespace GenUtil
 			else
 				name = Form("%s%s%s.root",fpGlauberMC->Str(),om.Data(),nd.Data());
 		}
-		Linfo << GetName() << " writing file: " << name;
-		TFile out(name,"recreate",name,9);
-		TNtuple  *nt = fpGlauberMC->GetNtuple();
-		if (nt)
-			nt->Write();
-		else
-			Lwarn << GetName() << " no glauber ntuple to write.";
-		out.Close();
-		Linfo << GetName() << " done.";
-		return kDone;
+		return name.Data();
 	}
 
 	unsigned int GlauberTask::ExecThis(const char *opt)
@@ -174,6 +186,15 @@ namespace GenUtil
 		}
 
 		string slabel = StrUtil::sT(GetName()) + "_GlauberMC";
+
+		// if (fArgs.isSet("--write-collisions"))
+		// {
+		// 	string outfname = OutputFileName();
+		// 	// outfname = // change name
+		// 	fOutputFile = new TFile(outfname, 'recreate');
+		// 	fCollisionsTree = new TTree("t", "t");
+		// 	t->Branch("cols", $Coll)
+		// }
 
 		return kGood;
 	}

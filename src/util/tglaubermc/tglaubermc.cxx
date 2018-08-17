@@ -1300,6 +1300,7 @@ void TGlauberMC::Run(Int_t nevents, Double_t b)
     TString name(Form("nt_%s_%s",fANucleus.GetName(),fBNucleus.GetName()));
     TString title(Form("%s + %s (x-sect = %.1f mb) str %s",fANucleus.GetName(),fBNucleus.GetName(),fXSect,Str()));
     TString vars("Npart:Ncoll:Nhard:B:BNN:Ncollpp:Ncollpn:Ncollnn:VarX:VarY:VarXY:NpartA:NpartB:AreaW");
+    Linfo << "TGlauberMC::Run - fDetail is " << fDetail;
     if (fDetail>1)
       vars+=":Psi1:Ecc1:Psi2:Ecc2:Psi3:Ecc3:Psi4:Ecc4:Psi5:Ecc5";
     if (fDetail>2)

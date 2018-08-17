@@ -24,6 +24,7 @@ namespace GenUtil
 		TGlauberMC 	*GetGlauberMC() {return fpGlauberMC;}
 
 	protected:
+		const char 		*OutputFileName();
 		TGlauberMC 		*fpGlauberMC;
 		double 			 fFixedb;
 	};
