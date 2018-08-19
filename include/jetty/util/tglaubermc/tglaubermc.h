@@ -86,7 +86,7 @@ void runAndSaveNtuple(const Int_t n,
                       const Double_t signn    = 67.6,
                       const Double_t sigwidth = -1,
                       const Double_t mind     = 0.4,
-		      const Double_t omega    = -1,
+        		      const Double_t omega    = -1,
                       const Double_t noded    = -1,
                       const char *fname       = 0);
 //---------------------------------------------------------------------------------
@@ -291,20 +291,21 @@ class TGlauberMC : public TNamed
             TGlauNucleon fA;
             TGlauNucleon fB;
             Double_t fXSect;
+            Double_t fActiveTArea;
         public:
             Collision()
-                : fA(), fB(), fXSect(0)
+                : fA(), fB(), fXSect(0), fActiveTArea(0)
                 { ; }
-            Collision(const TGlauNucleon *b, const TGlauNucleon *a, Double_t xsect)
-                : fA(*a), fB(*b), fXSect(xsect)
-                { ; }
+            Collision(const TGlauNucleon *b, const TGlauNucleon *a, Double_t xsect);
             Collision(const Collision &c)
-                : fA(c.fA), fB(c.fB), fXSect(c.fXSect)
+                : fA(c.fA), fB(c.fB), fXSect(c.fXSect), fActiveTArea(c.fActiveTArea)
                 { ; }
             virtual ~Collision() {;}
             TGlauNucleon *GetA() { return &fA; }
             TGlauNucleon *GetB() { return &fB; }
             Double_t GetXsection() { return fXSect; }
+            Double_t CalculateActiveTArea(const TGlauNucleon *B, const TGlauNucleon *A);
+            Double_t GetActiveTArea() {return fActiveTArea;}
         ClassDef(TGlauberMC::Collision, 1)
     };
   protected:
@@ -409,6 +410,9 @@ class TGlauberMC : public TNamed
     virtual Double_t UpdateNNCrossSection(TGlauNucleon *, TGlauNucleon *); // MP modif
     virtual void Collide(TGlauNucleon *nucleonB, TGlauNucleon *nucleonA); // MP modif
     std::vector<TGlauberMC::Collision> GetCollisions() {return fCollisions;}
+    std::vector<TGlauberMC::Collision> * GetpCollisions() {return &fCollisions;}
+    TTree *fCollisionsTree;
+    void SetCollisionsTree(TTree *t) {fCollisionsTree = t;}
     ClassDef(TGlauberMC,6) // TGlauberMC class
 };
 //---------------------------------------------------------------------------------

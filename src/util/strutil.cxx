@@ -16,6 +16,20 @@ namespace StrUtil
 		}
 	}
 
+	void replace_substring(std::string& _s, const char* old_s, const char* new_s)
+	{
+		std::string sold_s (old_s);
+		std::string snew_s (new_s);
+		replace_substring(_s, sold_s, snew_s);
+	}
+
+	std::string replace_substring_copy(std::string& _s, const char* old_s, const char* new_s)
+	{
+		std::string sold_s (old_s);
+		std::string snew_s (new_s);
+		return replace_substring_copy(_s, sold_s, snew_s);
+	}
+
 	std::string replace_substring_copy(std::string& this_s, const std::string& old_s, const std::string& new_s)
 	{
 		std::string copy_s(this_s);

@@ -815,7 +815,8 @@ TGlauberMC::TGlauberMC(const char* NA, const char* NB, Double_t xsect, Double_t 
   fUpdateNNCrossSection(canUpdateNNxsection), // MP
   fAverageNucleonEloss(averageNucleonEloss), // MP
   fEnergyPerNucleonA(0), // MP
-  fEnergyPerNucleonB(0) // MP
+  fEnergyPerNucleonB(0), // MP
+  fCollisionsTree(0) // MP
 {
   if (xsectsigma>0) {
     fXSectOmega = xsectsigma;
@@ -939,6 +940,39 @@ Double_t TGlauberMC::UpdateNNCrossSection(TGlauNucleon *nucleonB, TGlauNucleon *
   return d2;
 }
 ClassImp(TGlauberMC::Collision)
+TGlauberMC::Collision::Collision(const TGlauNucleon *b, const TGlauNucleon *a, Double_t xsect)
+    : fA(*a), fB(*b), fXSect(xsect), fActiveTArea(0)
+    {
+      fActiveTArea = CalculateActiveTArea(&fA, &fB);
+    }
+
+Double_t TGlauberMC::Collision::CalculateActiveTArea(const TGlauNucleon *B, const TGlauNucleon *A)
+{
+  Double_t _area = 0;
+    Double_t d = hypot(B->GetX() - A->GetX(), B->GetY() - A->GetY());
+    Double_t _Ar = TMath::Sqrt(fXSect/TMath::Pi() * 10.) / 2.;
+    Double_t _Br = TMath::Sqrt(fXSect/TMath::Pi() * 10.) / 2.;
+    if (d < _Ar + _Br)
+    {
+      Double_t a = _Ar * _Ar;
+      Double_t b = _Br * _Br;
+
+      Double_t x = (a - b + d * d) / (2 * d);
+      Double_t z = x * x;
+      Double_t y = TMath::Sqrt(a - z);
+
+      if (d < TMath::Abs(_Br - _Ar))
+      {
+        _area = TMath::Pi() * TMath::Min(a, b);
+      }
+      else
+      {
+        _area = a * TMath::ASin(y / _Ar) + b * TMath::ASin(y / _Br) - y * (x + TMath::Sqrt(z + b - a));
+      }
+    }
+    return _area / 2.; // per nucleon
+}
+
 void TGlauberMC::Collide(TGlauNucleon *nucleonB, TGlauNucleon *nucleonA) // MP
 {
   nucleonB->Collide();
@@ -1192,6 +1226,20 @@ Bool_t TGlauberMC::CalcResults(Double_t bgen)
   }
   if (fEv.Npart > fMaxNpartFound)
     fMaxNpartFound = fEv.Npart;
+  if (fCollisionsTree)
+  {
+      std::vector<TGlauberMC::Collision> *_pCollisions = &fCollisions;
+      TBranch *b = fCollisionsTree->GetBranch("colls");
+      if (b == 0x0)
+      {
+        fCollisionsTree->Branch("colls", &_pCollisions);
+      }
+      else
+      {
+        fCollisionsTree->SetBranchAddress("colls", &_pCollisions);
+      }
+      fCollisionsTree->Fill();
+  }
   return kTRUE;
 }
 Double_t TGlauberMC::CalcDens(TF1 &prof, Double_t xval, Double_t yval) const

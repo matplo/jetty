@@ -1,10 +1,15 @@
 #include <jetty/util/tasks/gentask.h>
 #include <jetty/util/blog.h>
 #include <jetty/util/strutil.h>
-#include <jetty/util/tglaubermc/tglaubermc.h>
 #include <jetty/util/tasks/glaubertask.h>
 #include <jetty/util/pythia/param_sigmas.h>
 #include <jetty/util/pythia/pyutil.h>
+#include <jetty/util/tglaubermc/tglaubermc.h>
+
+#include <jetty/util/rstream/tstream.h>
+
+#include <TTree.h>
+#include <TFile.h>
 
 #include <cstdio>
 #include <string>
@@ -32,13 +37,20 @@ namespace GenUtil
 	    	<< " +- " << fpGlauberMC->GetTotXSectErr() << " b ";
 	    TString name = OutputFileName();
 		Linfo << GetName() << " writing file: " << name;
-		TFile out(name,"recreate",name,9);
+		TFile out(name, "recreate", name,9);
 		TNtuple  *nt = fpGlauberMC->GetNtuple();
 		if (nt)
 			nt->Write();
 		else
 			Lwarn << GetName() << " no glauber ntuple to write.";
 		out.Close();
+		if (fOutputFile)
+		{
+			fOutputFile->Write();
+			fOutputFile->Close();
+			delete fOutputFile;
+			fOutputFile = 0;
+		}
 		Linfo << GetName() << " done.";
 		return kDone;
 	}
@@ -87,6 +99,17 @@ namespace GenUtil
 			auto colls = fpGlauberMC->GetCollisions();
 			// for (auto &c : colls)
 			// 	Ltrace << " -- " << c.GetA()->GetEnergy() << " - " << c.GetB()->GetEnergy();
+			RStream::TStream &outT = *fTStream;
+			Double_t _totalTArea = 0;
+			for (auto &c : colls)
+			{
+				_totalTArea = _totalTArea + c.GetActiveTArea();
+			}
+
+			outT << "ncoll" << fpGlauberMC->GetNcoll();
+			outT << "npart" << fpGlauberMC->GetNpart();
+			outT << "tarea" << _totalTArea;
+			outT << endl;
 		}
 		return kGood;
 	}
@@ -187,14 +210,18 @@ namespace GenUtil
 
 		string slabel = StrUtil::sT(GetName()) + "_GlauberMC";
 
-		// if (fArgs.isSet("--write-collisions"))
-		// {
-		// 	string outfname = OutputFileName();
-		// 	// outfname = // change name
-		// 	fOutputFile = new TFile(outfname, 'recreate');
-		// 	fCollisionsTree = new TTree("t", "t");
-		// 	t->Branch("cols", $Coll)
-		// }
+		if (fArgs.isSet("--write-collisions"))
+		{
+			string outfname = OutputFileName();
+			StrUtil::replace_substring(outfname, ".root", "gtask.root");
+			// outfname = // change name
+			fOutputFile = new TFile(outfname.c_str(), "recreate");
+			fCollisionsTree = new TTree("t", "t");
+			fpGlauberMC->SetCollisionsTree(fCollisionsTree);
+
+			fOutputTree = new TTree("tg", "tg");
+			fTStream    = new RStream::TStream("_", fOutputTree);
+		}
 
 		return kGood;
 	}

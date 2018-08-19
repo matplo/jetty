@@ -7,15 +7,25 @@
 #include <jetty/util/tasks/gentask.h>
 
 class TGlauberMC;
+class TTree;
+class TFile;
+
+namespace RStream
+{
+	class TStream;
+}
 
 namespace GenUtil
 {
 	class GlauberTask : public GenTask
 	{
 	public:
-		GlauberTask(const char *name) : GenTask(name), fpGlauberMC(0), fFixedb(-1.) {;}
-		GlauberTask(const char *name, const char *params) : GenTask(name, params), fpGlauberMC(0), fFixedb(-1.) {;}
-		GlauberTask() : GenTask(), fpGlauberMC(0), fFixedb(-1.) {;}
+		GlauberTask(const char *name) :
+			GenTask(name), fpGlauberMC(0), fFixedb(-1.), fOutputFile(0), fCollisionsTree(0) {;}
+		GlauberTask(const char *name, const char *params) :
+			GenTask(name, params), fpGlauberMC(0), fFixedb(-1.), fOutputFile(0), fCollisionsTree(0) {;}
+		GlauberTask() :
+			GenTask(), fpGlauberMC(0), fFixedb(-1.), fOutputFile(0), fCollisionsTree(0) {;}
 		virtual 			~GlauberTask();
 		virtual unsigned int InitThis(const char *opt = "");
 		virtual unsigned int ExecThis(const char *opt = "");
@@ -27,6 +37,12 @@ namespace GenUtil
 		const char 		*OutputFileName();
 		TGlauberMC 		*fpGlauberMC;
 		double 			 fFixedb;
+
+		TFile 			*fOutputFile;
+		TTree 			*fCollisionsTree;
+
+		TTree 			 *fOutputTree;
+		RStream::TStream *fTStream;
 	};
 }
 
