@@ -946,31 +946,26 @@ TGlauberMC::Collision::Collision(const TGlauNucleon *b, const TGlauNucleon *a, D
       fActiveTArea = CalculateActiveTArea(&fA, &fB);
     }
 
+Double_t intersection_area(Double_t d, Double_t R, Double_t r)
+{
+  if (d <= TMath::Abs(R-r))
+    return TMath::Pi() * TMath::Min(R, r) * TMath::Min(R, r);
+  if (d >= r + R)
+    return 0;
+  Double_t r2 = r*r;
+  Double_t R2 = R*R;
+  Double_t d2 = d*d;
+  Double_t alpha = TMath::ACos((d2 + r2 - R2) / (2*d*r));
+  Double_t beta = TMath::ACos((d2 + R2 - r2) / (2*d*R));
+  return (r2 * alpha + R2 * beta - 0.5 * (r2 * TMath::Sin(2*alpha) + R2 * TMath::Sin(2*beta)));
+}
+
 Double_t TGlauberMC::Collision::CalculateActiveTArea(const TGlauNucleon *B, const TGlauNucleon *A)
 {
-  Double_t _area = 0;
     Double_t d = hypot(B->GetX() - A->GetX(), B->GetY() - A->GetY());
-    Double_t _Ar = TMath::Sqrt(fXSect/TMath::Pi() * 10.) / 2.;
-    Double_t _Br = TMath::Sqrt(fXSect/TMath::Pi() * 10.) / 2.;
-    if (d < _Ar + _Br)
-    {
-      Double_t a = _Ar * _Ar;
-      Double_t b = _Br * _Br;
-
-      Double_t x = (a - b + d * d) / (2 * d);
-      Double_t z = x * x;
-      Double_t y = TMath::Sqrt(a - z);
-
-      if (d < TMath::Abs(_Br - _Ar))
-      {
-        _area = TMath::Pi() * TMath::Min(a, b);
-      }
-      else
-      {
-        _area = a * TMath::ASin(y / _Ar) + b * TMath::ASin(y / _Br) - y * (x + TMath::Sqrt(z + b - a));
-      }
-    }
-    return _area / 2.; // per nucleon
+    Double_t r = 1.; //TMath::Sqrt(fXSect/TMath::Pi() * 10.) / 2.;
+    Double_t a = intersection_area(d, r, r);
+    return a;
 }
 
 void TGlauberMC::Collide(TGlauNucleon *nucleonB, TGlauNucleon *nucleonA) // MP

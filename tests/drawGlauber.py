@@ -16,12 +16,13 @@ def load_libs():
 		s_path = os.path.expandvars(sldpath)
 		t.gSystem.AddDynamicPath(s_path)
 	# print t.gSystem.GetDynamicPath()
-	libs = ['libjetty_util',
+	libs = ['libboost_thread.dylib',
+			'libjetty_util',
 			'libjetty_util_rstream',
 			'libjetty_util_pythia',
 			'libjetty_util_tglaubermc']
 	for slib in libs:
-		tutils.load_lib(slib)
+		tutils.load_lib(slib, False)
 
 
 def drawGlauber():

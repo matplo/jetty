@@ -10,6 +10,7 @@
 
 #include <TTree.h>
 #include <TFile.h>
+#include <TH2D.h>
 
 #include <cstdio>
 #include <string>
@@ -101,14 +102,60 @@ namespace GenUtil
 			// 	Ltrace << " -- " << c.GetA()->GetEnergy() << " - " << c.GetB()->GetEnergy();
 			RStream::TStream &outT = *fTStream;
 			Double_t _totalTArea = 0;
+			Double_t _intArea = 0;
+			const Int_t _nbins = 4000;
+			const Double_t _dArange = 20.;
+			TH2D hA("hA", "hA", _nbins, -1. * _dArange, _dArange, _nbins, -1. * _dArange, _dArange);
+			const Double_t _bsize = _dArange * 2. / _nbins;
+			const Double_t _bsize2 = _bsize * _bsize;
+			Linfo << _bsize;
+			Double_t _rN = 0.0;
+			Double_t _rN2 = 0.0;
 			for (auto &c : colls)
 			{
+				if (_rN == 0.0)
+				{
+					// auto signn = c.GetXsection(); // assume all collisions the same
+				    // _rN = TMath::Sqrt(signn/TMath::Pi() * 10.) / 2.;
+				    _rN = 1.;
+				    _rN2 = _rN * _rN;
+				}
+				Int_t ncells = 0;
+				for (Double_t _x = -_dArange + _bsize / 2.; _x < _dArange + _bsize / 2.; _x = _x + _bsize)
+				{
+					for (Double_t _y = -_dArange + _bsize / 2.; _y < _dArange + _bsize / 2.; _y = _y + _bsize)
+					{
+						// use the radius and fill the histogram
+						Double_t _dA = hypot(_x - c.GetA()->GetX(), _y - c.GetA()->GetY());
+						Double_t _dB = hypot(_x - c.GetB()->GetX(), _y - c.GetB()->GetY());
+						Double_t _dA2 = _dA * _dA;
+						Double_t _dB2 = _dB * _dB;
+						// Double_t _dA2 = TMath::Power(_x - c.GetA()->GetX(), 2) + TMath::Power(_y - c.GetA()->GetY(), 2);
+						// Double_t _dB2 = TMath::Power(_x - c.GetB()->GetX(), 2) + TMath::Power(_y - c.GetB()->GetY(), 2);
+						Int_t ibx = hA.GetXaxis()->FindBin(_x);
+						Int_t iby = hA.GetYaxis()->FindBin(_y);
+						if (_dA2 < _rN2 && _dB2 < _rN2)
+						{
+							// hA.Fill(_Xn, _Yn);
+							hA.SetBinContent(ibx, iby, 1);
+							ncells++;
+						}
+					}
+				}
+				_intArea = hA.Integral(); // * 40. / 400.;
+				// analytic - sum of overlaps
 				_totalTArea = _totalTArea + c.GetActiveTArea();
+				Linfo << "total : " << c.GetActiveTArea() << " int : " << _intArea << " : " << _intArea * _bsize2;
+				Linfo << "total : " << c.GetActiveTArea() << " int : " << ncells << " : " << ncells * _bsize2;
+				Linfo << " - ratio : " << (c.GetActiveTArea()) / (_intArea * _bsize2);
+				// hA.Reset("ICE");
+				hA.Reset();
 			}
 
 			outT << "ncoll" << fpGlauberMC->GetNcoll();
 			outT << "npart" << fpGlauberMC->GetNpart();
 			outT << "tarea" << _totalTArea;
+			outT << "iarea" << _intArea;
 			outT << endl;
 		}
 		return kGood;
