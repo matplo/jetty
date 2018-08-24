@@ -103,21 +103,23 @@ namespace GenUtil
 			RStream::TStream &outT = *fTStream;
 			Double_t _totalTArea = 0;
 			Double_t _intArea = 0;
-			const Int_t _nbins = 4000;
-			const Double_t _dArange = 20.;
+			const Int_t _nbins = 40;
+			const Double_t _dArange = 16.;
 			TH2D hA("hA", "hA", _nbins, -1. * _dArange, _dArange, _nbins, -1. * _dArange, _dArange);
 			const Double_t _bsize = _dArange * 2. / _nbins;
 			const Double_t _bsize2 = _bsize * _bsize;
-			Linfo << _bsize;
+			// Linfo << _bsize;
 			Double_t _rN = 0.0;
 			Double_t _rN2 = 0.0;
 			for (auto &c : colls)
 			{
 				if (_rN == 0.0)
 				{
-					// auto signn = c.GetXsection(); // assume all collisions the same
+					Double_t signn = c.GetXsection(); // assume all collisions the same
 				    // _rN = TMath::Sqrt(signn/TMath::Pi() * 10.) / 2.;
-				    _rN = 1.;
+				    _rN = TMath::Sqrt(signn/TMath::Pi() / 10.);
+				    // Linfo << "sigma = " << signn << " r = " << _rN;
+				    // _rN = 1.;
 				    _rN2 = _rN * _rN;
 				}
 				Int_t ncells = 0;
@@ -142,16 +144,16 @@ namespace GenUtil
 						}
 					}
 				}
-				_intArea = hA.Integral(); // * 40. / 400.;
 				// analytic - sum of overlaps
 				_totalTArea = _totalTArea + c.GetActiveTArea();
-				Linfo << "total : " << c.GetActiveTArea() << " int : " << _intArea << " : " << _intArea * _bsize2;
-				Linfo << "total : " << c.GetActiveTArea() << " int : " << ncells << " : " << ncells * _bsize2;
-				Linfo << " - ratio : " << (c.GetActiveTArea()) / (_intArea * _bsize2);
-				// hA.Reset("ICE");
-				hA.Reset();
+				// Linfo << "total : " << c.GetActiveTArea() << " int : " << _intArea << " : " << _intArea * _bsize2;
+				// Linfo << "total : " << c.GetActiveTArea() << " int : " << ncells << " : " << ncells * _bsize2;
+				// Linfo << " - ratio : " << (c.GetActiveTArea()) / (_intArea * _bsize2);
+				// hA.Reset(); - do not reset to get the area per event
 			}
-
+			// numerical sum of overlap
+			_intArea = hA.Integral() * _bsize2;
+			// Linfo << " summed : " << _totalTArea << " - no double counting : " << _intArea;
 			outT << "ncoll" << fpGlauberMC->GetNcoll();
 			outT << "npart" << fpGlauberMC->GetNpart();
 			outT << "tarea" << _totalTArea;
