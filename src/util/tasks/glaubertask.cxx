@@ -121,7 +121,7 @@ namespace GenUtil
 				{
 					Double_t signn = c.GetXsection(); // assume all collisions the same
 				    _rN = TMath::Sqrt(signn/(TMath::Pi() * 10.)) / 2.;
-				    Linfo << "sigma = " << signn << " r = " << _rN;
+				    // Linfo << "sigma = " << signn << " r = " << _rN;
 				    // _rN = 1.;
 				    _rN2 = _rN * _rN;
 				    outT << "r" << _rN;
@@ -170,7 +170,8 @@ namespace GenUtil
 			outT << "tarea" << _totalTArea;
 			outT << "iarea" << _intArea;
 			outT << "tmaxarea" << _maxArea;
-			Linfo << _maxOverlapArea;
+			outT << "taf" << _totalTArea / _maxArea;
+			// Linfo << _maxOverlapArea;
 			outT << endl;
 		}
 		return kGood;
