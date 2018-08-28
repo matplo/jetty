@@ -931,7 +931,7 @@ Bool_t TGlauberMC::CalcEvent(Double_t bgen)
 Double_t TGlauberMC::UpdateNNCrossSection(TGlauNucleon *nucleonB, TGlauNucleon *nucleonA) // MP
 {
   // "ball" diameter = distance at which two balls interact
-  Double_t d2 = (Double_t)fXSectEvent/(TMath::Pi()*10); // in fm^2
+  Double_t d2 = (Double_t)fXSectEvent/(TMath::Pi()*10.); // in fm^2
   if (nucleonB->GetEnergy() > 0 || nucleonA->GetEnergy() > 0)
   {
     Double_t signn = PyUtil::ParamSigmas::Instance().Get(PyUtil::ParamSigmas::kINEL, nucleonA->GetEnergy(), nucleonB->GetEnergy());
@@ -963,7 +963,7 @@ Double_t intersection_area(Double_t d, Double_t R, Double_t r)
 Double_t TGlauberMC::Collision::CalculateActiveTArea(const TGlauNucleon *B, const TGlauNucleon *A)
 {
     Double_t d = hypot(B->GetX() - A->GetX(), B->GetY() - A->GetY());
-    Double_t r = 1.; //TMath::Sqrt(fXSect/TMath::Pi() * 10.) / 2.;
+    Double_t r = TMath::Sqrt(fXSect/(TMath::Pi()*10.)) / 2.;
     Double_t a = intersection_area(d, r, r);
     return a;
 }
