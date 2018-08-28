@@ -77,6 +77,7 @@ using namespace std;
 #define _runglauber_ 3
 #endif
 #endif
+Double_t CalculateIntersectionArea(Double_t d, Double_t R, Double_t r); //MP
 //---------------------------------------------------------------------------------
 TF1 *getNNProf(Double_t snn=67.6, Double_t omega=0.4, Double_t G=1);
 //---------------------------------------------------------------------------------

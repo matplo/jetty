@@ -946,7 +946,7 @@ TGlauberMC::Collision::Collision(const TGlauNucleon *b, const TGlauNucleon *a, D
       fActiveTArea = CalculateActiveTArea(&fA, &fB);
     }
 
-Double_t intersection_area(Double_t d, Double_t R, Double_t r)
+Double_t CalculateIntersectionArea(Double_t d, Double_t R, Double_t r)
 {
   if (d <= TMath::Abs(R-r))
     return TMath::Pi() * TMath::Min(R, r) * TMath::Min(R, r);
@@ -964,7 +964,7 @@ Double_t TGlauberMC::Collision::CalculateActiveTArea(const TGlauNucleon *B, cons
 {
     Double_t d = hypot(B->GetX() - A->GetX(), B->GetY() - A->GetY());
     Double_t r = TMath::Sqrt(fXSect/(TMath::Pi()*10.)) / 2.;
-    Double_t a = intersection_area(d, r, r);
+    Double_t a = CalculateIntersectionArea(d, r, r);
     return a;
 }
 

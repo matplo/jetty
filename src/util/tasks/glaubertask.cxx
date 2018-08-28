@@ -113,19 +113,22 @@ namespace GenUtil
 			Double_t _rN2 = 0.0;
 			Double_t _intD = 0.0;
 			Double_t _intD2 = 0.0;
+			Double_t _maxArea = 0.0;
+			Double_t _maxOverlapArea = 0.0;
 			for (auto &c : colls)
 			{
 				if (_rN == 0.0)
 				{
 					Double_t signn = c.GetXsection(); // assume all collisions the same
 				    _rN = TMath::Sqrt(signn/(TMath::Pi() * 10.)) / 2.;
-				    // Linfo << "sigma = " << signn << " r = " << _rN;
+				    Linfo << "sigma = " << signn << " r = " << _rN;
 				    // _rN = 1.;
 				    _rN2 = _rN * _rN;
 				    outT << "r" << _rN;
 				    outT << "sigma" << signn;
 				    _intD = _rN * 2.;
 				    _intD2 = _intD * _intD;
+				    _maxOverlapArea = CalculateIntersectionArea(0, _rN, _rN);
 				}
 				Int_t ncells = 0;
 				for (Double_t _x = -_dArange + _bsize / 2.; _x < _dArange + _bsize / 2.; _x = _x + _bsize)
@@ -151,7 +154,7 @@ namespace GenUtil
 				}
 				// analytic - sum of overlaps
 				_totalTArea = _totalTArea + c.GetActiveTArea();
-
+				_maxArea = _maxArea + _maxOverlapArea;
 				// comment if not debugging
 				// _intArea = hA.Integral() * _bsize2;
 				// Linfo << "total : " << c.GetActiveTArea() << " int : " << _intArea << " : " << _intArea;
@@ -166,6 +169,8 @@ namespace GenUtil
 			outT << "npart" << fpGlauberMC->GetNpart();
 			outT << "tarea" << _totalTArea;
 			outT << "iarea" << _intArea;
+			outT << "tmaxarea" << _maxArea;
+			Linfo << _maxOverlapArea;
 			outT << endl;
 		}
 		return kGood;
