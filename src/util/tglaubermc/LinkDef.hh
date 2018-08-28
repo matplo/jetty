@@ -9,5 +9,6 @@
 #pragma link C++ class TGlauberMC+;
 #pragma link C++ class TGlauberMC::Event+;
 #pragma link C++ class TGlauberMC::Collision+;
+#pragma link C++ function CalculateIntersectionArea;
 
 #endif
