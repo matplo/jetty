@@ -32,13 +32,29 @@ namespace GenUtil
 	{
 		int npart = 2;
 		Ldebug << "fpGlauberMC: " << fpGlauberMC;
+		std::vector<TGlauberMC::Collision> colls;
 		if (fpGlauberMC)
+		{
 			npart = fpGlauberMC->GetNpart();
+			colls = fpGlauberMC->GetCollisions();
+		}
 		for (auto &t : fInputTasks)
 		{
 			auto evpool = t->GetData()->get<PyUtil::EventPool>();
 			if (!evpool) continue;
 			fMult->AddEvent(evpool->GetFinalParticles(), 1./(npart/2.));
+			// write a tree for each collision
+			std::vector<Pythia8::Event> & pyevents = evpool->GetPool();
+			for (unsigned int ie = 0; ie < pyevents.size(); ie++)
+			{
+				for (int ip = 0; ip < pyevents[ie].size(); ip++)
+				{
+					if (pyevents[ie][ip].isFinal())
+						auto p = pyevents[ie][ip];
+				}
+			}
+			// write a tree for each event - AA
+
 			// auto fstate_parts = evpool->GetFinalParticles();
 			// std::vector<double> etas;
 			// for ( auto & p : fstate_parts )
@@ -176,7 +192,6 @@ namespace GenUtil
 
 	void MultiplicityEstimator::Write(TFile *fout)
 	{
-		bool own_file = false;
 		if (!fout)
 		{
 			string fname = fName;
