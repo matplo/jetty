@@ -100,79 +100,82 @@ namespace GenUtil
 			auto colls = fpGlauberMC->GetCollisions();
 			// for (auto &c : colls)
 			// 	Ltrace << " -- " << c.GetA()->GetEnergy() << " - " << c.GetB()->GetEnergy();
-			RStream::TStream &outT = *fTStream;
-			Double_t _totalTArea = 0;
-			Double_t _intArea = 0;
-			const Int_t _nbins = 160;
-			const Double_t _dArange = 16.;
-			TH2D hA("hA", "hA", _nbins, -1. * _dArange, _dArange, _nbins, -1. * _dArange, _dArange);
-			const Double_t _bsize = _dArange * 2. / _nbins;
-			const Double_t _bsize2 = _bsize * _bsize;
-			// Linfo << "grid size:" << _bsize;
-			Double_t _rN = 0.0;
-			Double_t _rN2 = 0.0;
-			Double_t _intD = 0.0;
-			Double_t _intD2 = 0.0;
-			Double_t _maxArea = 0.0;
-			Double_t _maxOverlapArea = 0.0;
-			for (auto &c : colls)
+			if (fTStream)
 			{
-				if (_rN == 0.0)
+				RStream::TStream &outT = *fTStream;
+				Double_t _totalTArea = 0;
+				Double_t _intArea = 0;
+				const Int_t _nbins = 160;
+				const Double_t _dArange = 16.;
+				TH2D hA("hA", "hA", _nbins, -1. * _dArange, _dArange, _nbins, -1. * _dArange, _dArange);
+				const Double_t _bsize = _dArange * 2. / _nbins;
+				const Double_t _bsize2 = _bsize * _bsize;
+				// Linfo << "grid size:" << _bsize;
+				Double_t _rN = 0.0;
+				Double_t _rN2 = 0.0;
+				Double_t _intD = 0.0;
+				Double_t _intD2 = 0.0;
+				Double_t _maxArea = 0.0;
+				Double_t _maxOverlapArea = 0.0;
+				for (auto &c : colls)
 				{
-					Double_t signn = c.GetXsection(); // assume all collisions the same
-				    _rN = TMath::Sqrt(signn/(TMath::Pi() * 10.)) / 2.;
-				    // Linfo << "sigma = " << signn << " r = " << _rN;
-				    // _rN = 1.;
-				    _rN2 = _rN * _rN;
-				    outT << "r" << _rN;
-				    outT << "sigma" << signn;
-				    _intD = _rN * 2.;
-				    _intD2 = _intD * _intD;
-				    _maxOverlapArea = CalculateIntersectionArea(0, _rN, _rN);
-				}
-				Int_t ncells = 0;
-				for (Double_t _x = -_dArange + _bsize / 2.; _x < _dArange + _bsize / 2.; _x = _x + _bsize)
-				{
-					for (Double_t _y = -_dArange + _bsize / 2.; _y < _dArange + _bsize / 2.; _y = _y + _bsize)
+					if (_rN == 0.0)
 					{
-						// use the radius and fill the histogram
-						Double_t _dA = hypot(_x - c.GetA()->GetX(), _y - c.GetA()->GetY());
-						Double_t _dA2 = _dA * _dA;
-						if (_dA2 > _rN2)
-							continue;
-						Double_t _dB = hypot(_x - c.GetB()->GetX(), _y - c.GetB()->GetY());
-						Double_t _dB2 = _dB * _dB;
-						if (_dB2 > _rN2)
-							continue;
-						Int_t ibx = hA.GetXaxis()->FindBin(_x);
-						Int_t iby = hA.GetYaxis()->FindBin(_y);
-
-						// hA.Fill(_Xn, _Yn);
-						hA.SetBinContent(ibx, iby, 1);
-						ncells++;
+						Double_t signn = c.GetXsection(); // assume all collisions the same
+					    _rN = TMath::Sqrt(signn/(TMath::Pi() * 10.)) / 2.;
+					    // Linfo << "sigma = " << signn << " r = " << _rN;
+					    // _rN = 1.;
+					    _rN2 = _rN * _rN;
+					    outT << "r" << _rN;
+					    outT << "sigma" << signn;
+					    _intD = _rN * 2.;
+					    _intD2 = _intD * _intD;
+					    _maxOverlapArea = CalculateIntersectionArea(0, _rN, _rN);
 					}
+					Int_t ncells = 0;
+					for (Double_t _x = -_dArange + _bsize / 2.; _x < _dArange + _bsize / 2.; _x = _x + _bsize)
+					{
+						for (Double_t _y = -_dArange + _bsize / 2.; _y < _dArange + _bsize / 2.; _y = _y + _bsize)
+						{
+							// use the radius and fill the histogram
+							Double_t _dA = hypot(_x - c.GetA()->GetX(), _y - c.GetA()->GetY());
+							Double_t _dA2 = _dA * _dA;
+							if (_dA2 > _rN2)
+								continue;
+							Double_t _dB = hypot(_x - c.GetB()->GetX(), _y - c.GetB()->GetY());
+							Double_t _dB2 = _dB * _dB;
+							if (_dB2 > _rN2)
+								continue;
+							Int_t ibx = hA.GetXaxis()->FindBin(_x);
+							Int_t iby = hA.GetYaxis()->FindBin(_y);
+
+							// hA.Fill(_Xn, _Yn);
+							hA.SetBinContent(ibx, iby, 1);
+							ncells++;
+						}
+					}
+					// analytic - sum of overlaps
+					_totalTArea = _totalTArea + c.GetActiveTArea();
+					_maxArea = _maxArea + _maxOverlapArea;
+					// comment if not debugging
+					// _intArea = hA.Integral() * _bsize2;
+					// Linfo << "total : " << c.GetActiveTArea() << " int : " << _intArea << " : " << _intArea;
+					// Linfo << "total : " << c.GetActiveTArea() << " int : " << ncells << " : " << ncells * _bsize2;
+					// Linfo << " - ratio : " << (c.GetActiveTArea()) / (_intArea);
+					// hA.Reset(); // - do not reset to get the area per event
 				}
-				// analytic - sum of overlaps
-				_totalTArea = _totalTArea + c.GetActiveTArea();
-				_maxArea = _maxArea + _maxOverlapArea;
-				// comment if not debugging
-				// _intArea = hA.Integral() * _bsize2;
-				// Linfo << "total : " << c.GetActiveTArea() << " int : " << _intArea << " : " << _intArea;
-				// Linfo << "total : " << c.GetActiveTArea() << " int : " << ncells << " : " << ncells * _bsize2;
-				// Linfo << " - ratio : " << (c.GetActiveTArea()) / (_intArea);
-				// hA.Reset(); // - do not reset to get the area per event
-			}
-			// numerical sum of overlap
-			_intArea = hA.Integral() * _bsize2;
-			// Linfo << " summed : " << _totalTArea << " - no double counting : " << _intArea;
-			outT << "ncoll" << fpGlauberMC->GetNcoll();
-			outT << "npart" << fpGlauberMC->GetNpart();
-			outT << "tarea" << _totalTArea;
-			outT << "iarea" << _intArea;
-			outT << "tmaxarea" << _maxArea;
-			outT << "taf" << _totalTArea / _maxArea;
-			// Linfo << _maxOverlapArea;
-			outT << endl;
+				// numerical sum of overlap
+				_intArea = hA.Integral() * _bsize2;
+				// Linfo << " summed : " << _totalTArea << " - no double counting : " << _intArea;
+				outT << "ncoll" << fpGlauberMC->GetNcoll();
+				outT << "npart" << fpGlauberMC->GetNpart();
+				outT << "tarea" << _totalTArea;
+				outT << "iarea" << _intArea;
+				outT << "tmaxarea" << _maxArea;
+				outT << "taf" << _totalTArea / _maxArea;
+				// Linfo << _maxOverlapArea;
+				outT << endl;
+			} // if fTStream for collisions
 		}
 		return kGood;
 	}

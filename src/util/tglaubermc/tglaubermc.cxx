@@ -941,9 +941,10 @@ Double_t TGlauberMC::UpdateNNCrossSection(TGlauNucleon *nucleonB, TGlauNucleon *
 }
 ClassImp(TGlauberMC::Collision)
 TGlauberMC::Collision::Collision(const TGlauNucleon *b, const TGlauNucleon *a, Double_t xsect)
-    : fA(*a), fB(*b), fXSect(xsect), fActiveTArea(0)
+    : fA(*a), fB(*b), fXSect(xsect), fActiveTArea(0), fBNN(0)
     {
       fActiveTArea = CalculateActiveTArea(&fA, &fB);
+      fBNN = hypot(fB.GetX() - fA.GetX(), fB.GetY() - fA.GetY());
     }
 
 Double_t CalculateIntersectionArea(Double_t d, Double_t R, Double_t r)

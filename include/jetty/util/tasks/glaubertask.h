@@ -21,11 +21,11 @@ namespace GenUtil
 	{
 	public:
 		GlauberTask(const char *name) :
-			GenTask(name), fpGlauberMC(0), fFixedb(-1.), fOutputFile(0), fCollisionsTree(0) {;}
+			GenTask(name), fpGlauberMC(0), fFixedb(-1.), fOutputFile(0), fCollisionsTree(0), fOutputTree(0), fTStream(0) {;}
 		GlauberTask(const char *name, const char *params) :
-			GenTask(name, params), fpGlauberMC(0), fFixedb(-1.), fOutputFile(0), fCollisionsTree(0) {;}
+			GenTask(name, params), fpGlauberMC(0), fFixedb(-1.), fOutputFile(0), fCollisionsTree(0), fOutputTree(0), fTStream(0) {;}
 		GlauberTask() :
-			GenTask(), fpGlauberMC(0), fFixedb(-1.), fOutputFile(0), fCollisionsTree(0) {;}
+			GenTask(), fpGlauberMC(0), fFixedb(-1.), fOutputFile(0), fCollisionsTree(0), fOutputTree(0), fTStream(0) {;}
 		virtual 			~GlauberTask();
 		virtual unsigned int InitThis(const char *opt = "");
 		virtual unsigned int ExecThis(const char *opt = "");

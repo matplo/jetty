@@ -293,13 +293,14 @@ class TGlauberMC : public TNamed
             TGlauNucleon fB;
             Double_t fXSect;
             Double_t fActiveTArea;
+            Double_t fBNN;
         public:
             Collision()
-                : fA(), fB(), fXSect(0), fActiveTArea(0)
+                : fA(), fB(), fXSect(0), fActiveTArea(0), fBNN(0)
                 { ; }
             Collision(const TGlauNucleon *b, const TGlauNucleon *a, Double_t xsect);
             Collision(const Collision &c)
-                : fA(c.fA), fB(c.fB), fXSect(c.fXSect), fActiveTArea(c.fActiveTArea)
+                : fA(c.fA), fB(c.fB), fXSect(c.fXSect), fActiveTArea(c.fActiveTArea), fBNN(c.fBNN)
                 { ; }
             virtual ~Collision() {;}
             TGlauNucleon *GetA() { return &fA; }
@@ -307,6 +308,7 @@ class TGlauberMC : public TNamed
             Double_t GetXsection() { return fXSect; }
             Double_t CalculateActiveTArea(const TGlauNucleon *B, const TGlauNucleon *A);
             Double_t GetActiveTArea() {return fActiveTArea;}
+            Double_t GetBNN() {return fBNN;}
         ClassDef(TGlauberMC::Collision, 1)
     };
   protected:
