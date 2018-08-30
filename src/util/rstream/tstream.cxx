@@ -70,6 +70,54 @@ namespace RStream
 		FillBranch(s.c_str(), nc);
 	}
 
+	void TStream::FillBranch(const char *name, const vector<Pythia8::Particle> &in)
+	{
+		std::vector<double> pt;
+		std::vector<double> phi;
+		std::vector<double> eta;
+		std::vector<double> y;
+		std::vector<double> m;
+		std::vector<int> id;
+		std::vector<int> q;
+		for (unsigned int i = 0; i < in.size(); i++)
+		{
+			pt.push_back(in[i].pT());
+			phi.push_back(in[i].phi());
+			eta.push_back(in[i].eta());
+			y.push_back(in[i].y());
+			m.push_back(in[i].m());
+			id.push_back(in[i].id());
+			if (in[i].isCharged())
+				q.push_back(1);
+			else
+				q.push_back(0);
+		}
+
+		string s = name;
+
+		s = name;
+		s += "pt";
+		FillBranch(s.c_str(), pt);
+		s = name;
+		s += "phi";
+		FillBranch(s.c_str(), phi);
+		s = name;
+		s += "eta";
+		FillBranch(s.c_str(), eta);
+		s = name;
+		s += "y";
+		FillBranch(s.c_str(), y);
+		s = name;
+		s += "m";
+		FillBranch(s.c_str(), m);
+		s = name;
+		s += "id";
+		FillBranch(s.c_str(), id);
+		s = name;
+		s += "q";
+		FillBranch(s.c_str(), q);
+	}
+
 	void TStream::FillBranch(const char *name, const fastjet::PseudoJet &in)
 	{
 		string s = name;
@@ -202,6 +250,14 @@ namespace RStream
 	}
 
 	TStream& operator<<(TStream& out, const std::vector<fastjet::PseudoJet> &in)
+	{
+	   assert(out.fCurrentName.size() > 0);
+	   out.FillBranch(out.fCurrentName.c_str(), in);
+	   out.fCurrentName = "";
+	   return out;
+	}
+
+	TStream& operator<<(TStream& out, const std::vector<Pythia8::Particle> &in)
 	{
 	   assert(out.fCurrentName.size() > 0);
 	   out.FillBranch(out.fCurrentName.c_str(), in);

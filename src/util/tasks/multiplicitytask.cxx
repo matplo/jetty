@@ -1,6 +1,7 @@
 #include <jetty/util/tasks/multiplicitytask.h>
 #include <jetty/util/tglaubermc/tglaubermc.h>
 #include <jetty/util/pythia/event_pool.h>
+#include <jetty/util/rstream/tstream.h>
 
 #include <jetty/util/blog.h>
 #include <algorithm>
@@ -25,6 +26,12 @@ namespace GenUtil
 		estimName += "_ME";
 		fMult = new MultiplicityEstimator(estimName.c_str());
 		fData->add(fMult); // no need to destroy
+
+		fStoreParticles = fArgs.isSet("--store-particles");
+
+		fOutputFile = new TFile(fOutputPath.c_str(), "recreate");
+		fOutputTree = new TTree("tAA", "tAA");
+		fNNTree     = new TTree("tNN", "tNN");
 		return kGood;
 	}
 
@@ -32,11 +39,9 @@ namespace GenUtil
 	{
 		int npart = 2;
 		Ldebug << "fpGlauberMC: " << fpGlauberMC;
-		std::vector<TGlauberMC::Collision> colls;
 		if (fpGlauberMC)
 		{
 			npart = fpGlauberMC->GetNpart();
-			colls = fpGlauberMC->GetCollisions();
 		}
 		for (auto &t : fInputTasks)
 		{
@@ -44,17 +49,40 @@ namespace GenUtil
 			if (!evpool) continue;
 			fMult->AddEvent(evpool->GetFinalParticles(), 1./(npart/2.));
 			// write a tree for each collision
-			std::vector<Pythia8::Event> & pyevents = evpool->GetPool();
-			for (unsigned int ie = 0; ie < pyevents.size(); ie++)
+			// and
+			// write a tree for each event - AA
+			if (fStoreParticles)
 			{
-				for (int ip = 0; ip < pyevents[ie].size(); ip++)
+				auto pyevents = evpool->GetPool();
+				Ldebug << "number of pythia events: " << pyevents.size();
+				std::vector<Pythia8::Particle> AAEventParticles;
+				auto AAstream = RStream::TStream("ev", fOutputTree);
+				auto NNstream = RStream::TStream("ev", fNNTree);
+				for (unsigned int ie = 0; ie < pyevents.size(); ie++)
 				{
-					if (pyevents[ie][ip].isFinal())
-						auto p = pyevents[ie][ip];
+					Ldebug << " - pythia event : " << ie << "number of pythia particles: " << pyevents[ie].size();
+					for (int ip = 0; ip < pyevents[ie].size(); ip++)
+					{
+						std::vector<Pythia8::Particle> ppEventParticles;
+						if (pyevents[ie][ip].isFinal())
+						{
+							auto p = pyevents[ie][ip];
+							ppEventParticles.push_back(p);
+							AAEventParticles.push_back(p);
+						}
+						// fill the pp collisions tree
+						NNstream << "p_" << ppEventParticles << endl;
+					}
+				}
+				// fill the AA collisions tree
+				AAstream << "p_" << AAEventParticles << endl;
+
+				// now fill the glauber information
+				if (fpGlauberMC)
+				{
+					auto colls = fpGlauberMC->GetCollisions();
 				}
 			}
-			// write a tree for each event - AA
-
 			// auto fstate_parts = evpool->GetFinalParticles();
 			// std::vector<double> etas;
 			// for ( auto & p : fstate_parts )
@@ -87,6 +115,13 @@ namespace GenUtil
 		// {
 		if (fMult)
 			fMult->Write();
+		if (fOutputFile)
+		{
+			Linfo << GetName() << "writing " << fOutputFile->GetPath();
+			fOutputFile->Write();
+			fOutputFile->Close();
+			delete fOutputFile;
+		}
 		//}
 		return kDone;
 	}
@@ -192,6 +227,7 @@ namespace GenUtil
 
 	void MultiplicityEstimator::Write(TFile *fout)
 	{
+		Bool_t own_file = false;
 		if (!fout)
 		{
 			string fname = fName;

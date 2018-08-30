@@ -7,6 +7,7 @@
 class TH1F;
 class TFile;
 class TParticle;
+class TTree;
 
 namespace GenUtil
 {
@@ -17,9 +18,9 @@ namespace GenUtil
 	class MultiplicityTask : public EventPoolTask
 	{
 	public:
-		MultiplicityTask(const char *name) : EventPoolTask(name), fMult(0) {;}
-		MultiplicityTask(const char *name, const char *params) : EventPoolTask(name, params), fMult(0) {;}
-		MultiplicityTask() : EventPoolTask(), fMult(0) {;}
+		MultiplicityTask(const char *name) : EventPoolTask(name), fMult(0), fNNTree(0), fStoreParticles(false) {;}
+		MultiplicityTask(const char *name, const char *params) : EventPoolTask(name, params), fMult(0), fNNTree(0), fStoreParticles(false) {;}
+		MultiplicityTask() : EventPoolTask(), fMult(0), fNNTree(0), fStoreParticles(false) {;}
 		virtual 			~MultiplicityTask();
 		virtual unsigned int InitThis(const char *opt = "");
 		virtual unsigned int ExecThis(const char *opt = "");
@@ -27,6 +28,8 @@ namespace GenUtil
 		MultiplicityEstimator *GetEstimator() {return fMult;}
 	protected:
 		MultiplicityEstimator *fMult;
+		TTree                 *fNNTree;
+		bool 				  fStoreParticles;
 	};
 
 	class MultiplicityEstimator

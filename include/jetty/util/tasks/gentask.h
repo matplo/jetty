@@ -6,6 +6,9 @@
 #include <jetty/util/wrapper/wrapper.h>
 #include <jetty/util/pythia/pyargs.h>
 
+class TFile;
+class TTree;
+
 namespace GenUtil
 {
 	class GenTask
@@ -68,9 +71,11 @@ namespace GenUtil
 		static Wrapper *				fShared;
 		static std::vector<GenTask*> 	fTasks;
 
-	private:
 		std::string 			fOutputPath;
+		TFile 				   *fOutputFile;
+		TTree 				   *fOutputTree;
 
+	private:
 	};
 };
 

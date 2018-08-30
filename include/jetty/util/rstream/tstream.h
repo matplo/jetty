@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 #include <fastjet/PseudoJet.hh>
+#include <Pythia8/Event.h>
 
 class TTree;
 class TBranch;
@@ -41,6 +42,9 @@ namespace RStream
 		friend TStream& operator<<(TStream& out, const double &val);
 
 		friend TStream& operator <<(TStream& out, std::ostream& (*os)(std::ostream&));
+
+		void FillBranch(const char *name, const std::vector<Pythia8::Particle> &in);
+		friend TStream& operator<<(TStream& out, const std::vector<Pythia8::Particle> &in);
 
 	   std::string CurrentBranchName() const {return fCurrentName;}
 

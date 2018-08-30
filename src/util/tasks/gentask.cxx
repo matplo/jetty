@@ -70,6 +70,7 @@ namespace GenUtil
 
 	GenTask::GenTask(const char *name)
 		: fName(name), fArgs(), fSubtasks(), fParent(0), fStatus(kBeforeInit), fNExecCalls(0), fTaskId(0), fInputTasks(), fData(new Wrapper)
+		, fOutputPath(""), fOutputFile(0), fOutputTree(0)
 	{
 		_instance_counter += 1;
 		fTaskId = fTasks.size();
@@ -78,6 +79,7 @@ namespace GenUtil
 
 	GenTask::GenTask(const char *name, const char *params)
 		: fName(name), fArgs(params), fSubtasks(), fParent(0), fStatus(kBeforeInit), fNExecCalls(0), fTaskId(0), fInputTasks(), fData(new Wrapper)
+		, fOutputPath(""), fOutputFile(0), fOutputTree(0)
 	{
 		_instance_counter += 1;
 		fTaskId = fTasks.size();
@@ -85,15 +87,18 @@ namespace GenUtil
 		std::string _prefix = fArgs.get("--task-prefix");
 		std::string _postfix = fArgs.get("--task-postfix");
 		fName = _prefix + fName + _postfix;
+		fOutputPath = fName + ".root";
 	}
 
 	GenTask::GenTask()
 		: fName("GenTask"), fArgs(), fSubtasks(), fParent(0), fStatus(kBeforeInit), fNExecCalls(0), fTaskId(0), fInputTasks(), fData(new Wrapper)
+		, fOutputPath(""), fOutputFile(0), fOutputTree(0)
 	{
 		_instance_counter += 1;
 		std::string tmpname = "GenTask_";
 		tmpname += StrUtil::sT(_instance_counter);
 		SetName(tmpname);
+		fOutputPath = GetName() + ".root";
 		fTaskId = fTasks.size();
 		fTasks.push_back(this);
 	}
