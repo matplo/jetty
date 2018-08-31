@@ -61,18 +61,18 @@ namespace GenUtil
 				for (unsigned int ie = 0; ie < pyevents.size(); ie++)
 				{
 					Ldebug << " - pythia event : " << ie << "number of pythia particles: " << pyevents[ie].size();
+					std::vector<Pythia8::Particle> ppEventParticles;
 					for (int ip = 0; ip < pyevents[ie].size(); ip++)
 					{
-						std::vector<Pythia8::Particle> ppEventParticles;
 						if (pyevents[ie][ip].isFinal())
 						{
 							auto p = pyevents[ie][ip];
 							ppEventParticles.push_back(p);
 							AAEventParticles.push_back(p);
 						}
-						// fill the pp collisions tree
-						NNstream << "p_" << ppEventParticles << endl;
 					}
+					// fill the pp collisions tree
+					NNstream << "p_" << ppEventParticles << endl;
 				}
 				// fill the AA collisions tree
 				AAstream << "p_" << AAEventParticles << endl;
