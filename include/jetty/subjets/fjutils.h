@@ -21,12 +21,17 @@ namespace JettyFJUtils
 		std::vector<double> Log1oDeltaR() {return _log1oDeltaR;}
 		std::vector<double> deltaR() 	  {return _deltaR;}
 		std::vector<double> z() 	 	  {return _z;}
+		std::vector<double> pt1() 	 	  {return _pt1;}
+		std::vector<double> pt2() 	 	  {return _pt2;}
 		fastjet::PseudoJet *CAjet() 	  {return _cajet;}
 	private:
 		std::vector<double>  _logzDeltaR;
 		std::vector<double>  _log1oDeltaR;
 		std::vector<double>  _deltaR;
 		std::vector<double>  _z;
+		std::vector<double>  _pt1;
+		std::vector<double>  _pt2;
+
 		fastjet::PseudoJet 	 *_cajet;
 		LundEntries();
 	};
