@@ -185,6 +185,10 @@ namespace GenUtil
 			{
 				jts << "lund_logzdr" << lund.LogzDeltaR();
 				jts << "lund_log1odr" << lund.Log1oDeltaR();
+				jts << "lund_z" << lund.z();
+				jts << "lund_dR" << lund.deltaR();
+				jts << "lund_pt1" << lund.pt1();
+				jts << "lund_pt2" << lund.pt2();
 			}
 
 			auto sj_info = new JettyFJUtils::SJInfo(&j,
