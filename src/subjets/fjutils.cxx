@@ -1,6 +1,7 @@
 #include <jetty/subjets/fjutils.h>
 #include <fastjet/contrib/SoftDrop.hh>
 #include <jetty/util/blog.h>
+#include <jetty/util/pythia/pdg_mass.h>
 
 namespace fj = fastjet;
 
@@ -45,14 +46,15 @@ namespace JettyFJUtils
 		_z.clear();
 		_pt1.clear();
 		_pt2.clear();
+		_lpdg.clear();
 	}
 
-	LundEntries::LundEntries() : _logzDeltaR(), _log1oDeltaR(), _deltaR(), _z(), _pt1(), _pt2(), _cajet(0)
+	LundEntries::LundEntries() : _logzDeltaR(), _log1oDeltaR(), _deltaR(), _z(), _pt1(), _pt2(), _lpdg(), _cajet(0)
 	{
 		;
 	}
 
-	LundEntries::LundEntries(const fj::PseudoJet &j) : _logzDeltaR(), _log1oDeltaR(), _deltaR(), _z(), _pt1(), _pt2(), _cajet(0)
+	LundEntries::LundEntries(const fj::PseudoJet &j) : _logzDeltaR(), _log1oDeltaR(), _deltaR(), _z(), _pt1(), _pt2(), _lpdg(), _cajet(0)
 	{
 	   std::vector<fastjet::PseudoJet> constituents = j.constituents();
 	   fastjet::JetAlgorithm jetalgo(fastjet::cambridge_algorithm);
@@ -87,6 +89,10 @@ namespace JettyFJUtils
 				_log1oDeltaR.push_back(y);
 				_deltaR.push_back(delta_R);
 				_z.push_back(z);
+				// get the PID of the leading constituent
+				std::vector<fastjet::PseudoJet> _c = fastjet::sorted_by_pt(jj.constituents());
+				int _pdg = PyUtil::PDGMass::Instance().PDG(_c[0].m());
+				_lpdg.push_back(_pdg);
 				jj = j1;
 			}
 	   }

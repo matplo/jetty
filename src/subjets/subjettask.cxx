@@ -189,6 +189,7 @@ namespace GenUtil
 				jts << "lund_dR" << lund.deltaR();
 				jts << "lund_pt1" << lund.pt1();
 				jts << "lund_pt2" << lund.pt2();
+				jts << "lund_lpdg" << lund.lpdg();
 			}
 
 			auto sj_info = new JettyFJUtils::SJInfo(&j,

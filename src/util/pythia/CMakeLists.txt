@@ -13,6 +13,7 @@ set(SOURCES_LIB
 	pythia_pool.cxx
 	event_pool.cxx
 	param_sigmas.cxx
+	pdg_mass.cxx
 )
 
 # Headers from sources
