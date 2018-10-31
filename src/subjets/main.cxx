@@ -32,6 +32,11 @@ int main ( int argc, char *argv[] )
 	{
 		rv = run_tasks(args.asString());
 	}
+
+	if (args.isSet("--ca-task"))
+	{
+		rv = run_ca_task(args.asString());
+	}
 #endif
 
 	if (args.isSet("--testrun"))
