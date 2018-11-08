@@ -56,6 +56,12 @@ namespace PyUtil
 			}
 		}
 
+		if (isSet("--time-seed"))
+		{
+			add("Random:setSeed=on");
+			add("Random:seed=0");
+		}
+
 		double pTHatMin = getD("-pTHatMin", -99);
 		if (pTHatMin == -99)
 			pTHatMin = getD("--pTHatMin", -99); // backward compat.
@@ -179,10 +185,62 @@ namespace PyUtil
 			add("HardQCD:all=on");
 		}
 
+		if (isSet("--hardQCDlf"))
+		{
+			add("HardQCD:all=off");
+			add("HardQCD:gg2gg=on");
+			add("HardQCD:qg2qg=on");
+			add("HardQCD:qqbar2gg=on");
+			add("HardQCD:gg2qqbar=on");
+			add("HardQCD:qq2qq=on");
+			add("HardQCD:qqbar2qqbarNew=on");
+
+			add("HardQCD:hardccbar=off");
+			add("HardQCD:hardbbbar=off");
+		}
+
+		if (isSet("--hardQCDcharm"))
+		{
+			add("HardQCD:all=off");
+			add("HardQCD:hardccbar=on");
+		}
+
+		if (isSet("--hardQCDbeauty"))
+		{
+			add("HardQCD:all=off");
+			add("HardQCD:hardbbbar=on");
+		}
+
 		if (isSet("--promptPhoton"))
 		{
 			add("PromptPhoton:all=on");
 			// add("SoftQCD:all=off");
+		}
+
+		if (isSet("--hardQCDgluons"))
+		{
+			add("HardQCD:all=off");
+			add("HardQCD:gg2gg=on");
+			add("HardQCD:qg2qg=on");
+			add("HardQCD:qqbar2gg=on");
+		}
+
+		if (isSet("--hardQCDquarks"))
+		{
+			add("HardQCD:all=off");
+			add("HardQCD:gg2qqbar=on");
+			add("HardQCD:qq2qq=on");
+			add("HardQCD:qqbar2qqbarNew=on");
+			add("HardQCD:hardccbar=on");
+			add("HardQCD:hardbbbar=on");
+		}
+
+		if (isSet("--hardQCDuds"))
+		{
+			add("HardQCD:all=off");
+			add("HardQCD:gg2qqbar=on");
+			add("HardQCD:qq2qq=on");
+			add("HardQCD:qqbar2qqbarNew=on");
 		}
 
 		if (isSet("Next:numberShowEvent") == false)
