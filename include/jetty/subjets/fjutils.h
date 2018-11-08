@@ -28,6 +28,9 @@ namespace JettyFJUtils
 	private:
 		std::vector<double>  _logzDeltaR;
 		std::vector<double>  _log1oDeltaR;
+		std::vector<double>  _e;
+		std::vector<double>  _m;
+		std::vector<unsigned int> _nc;
 		std::vector<double>  _deltaR;
 		std::vector<double>  _z;
 		std::vector<double>  _pt1;

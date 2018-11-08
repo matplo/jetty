@@ -49,12 +49,14 @@ namespace JettyFJUtils
 		_lpdg.clear();
 	}
 
-	LundEntries::LundEntries() : _logzDeltaR(), _log1oDeltaR(), _deltaR(), _z(), _pt1(), _pt2(), _lpdg(), _cajet(0)
+	LundEntries::LundEntries() : _logzDeltaR(), _log1oDeltaR(), _e(), _m(), _nc(), _deltaR(), _z(), _pt1(), _pt2(), _lpdg(), _cajet(0)
 	{
 		;
 	}
 
-	LundEntries::LundEntries(const fj::PseudoJet &j) : _logzDeltaR(), _log1oDeltaR(), _deltaR(), _z(), _pt1(), _pt2(), _lpdg(), _cajet(0)
+	LundEntries::LundEntries(const fj::PseudoJet &j) : _logzDeltaR(), _log1oDeltaR(),
+														_e(), _m(), _nc(), _deltaR(),
+														_z(), _pt1(), _pt2(), _lpdg(), _cajet(0)
 	{
 	   std::vector<fastjet::PseudoJet> constituents = j.constituents();
 	   fastjet::JetAlgorithm jetalgo(fastjet::cambridge_algorithm);
@@ -81,6 +83,9 @@ namespace JettyFJUtils
 				}
 				_pt1.push_back(j1.perp());
 				_pt2.push_back(j2.perp());
+				_e.push_back(jj.e());
+				_m.push_back(jj.m());
+				_nc.push_back(jj.constituents().size());
 				double delta_R  = j1.delta_R(j2);
 				double z        = j2.perp() / ( j1.perp() + j2.perp());
 				double y        = log(1.0 / delta_R);
