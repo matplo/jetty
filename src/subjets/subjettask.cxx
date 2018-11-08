@@ -185,6 +185,9 @@ namespace GenUtil
 			{
 				jts << "lund_logzdr" << lund.LogzDeltaR();
 				jts << "lund_log1odr" << lund.Log1oDeltaR();
+				jts << "lund_e" << lund.e();
+				jts << "lund_m" << lund.m();
+				jts << "lund_nc" << lund.nc();
 				jts << "lund_z" << lund.z();
 				jts << "lund_dR" << lund.deltaR();
 				jts << "lund_pt1" << lund.pt1();

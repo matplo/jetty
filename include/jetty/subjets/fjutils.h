@@ -20,6 +20,9 @@ namespace JettyFJUtils
 		std::vector<double> LogzDeltaR()  {return _logzDeltaR;}
 		std::vector<double> Log1oDeltaR() {return _log1oDeltaR;}
 		std::vector<double> deltaR() 	  {return _deltaR;}
+		std::vector<double> e() 	 	  {return _e;}
+		std::vector<double> m() 	 	  {return _m;}
+		std::vector<unsigned int> nc() 	 	  {return _nc;}
 		std::vector<double> z() 	 	  {return _z;}
 		std::vector<double> pt1() 	 	  {return _pt1;}
 		std::vector<double> pt2() 	 	  {return _pt2;}
