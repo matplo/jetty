@@ -85,7 +85,6 @@ namespace JettyFJUtils
 				_pt2.push_back(j2.perp());
 				_e.push_back(jj.e());
 				_m.push_back(jj.m());
-				_nc.push_back(jj.constituents().size());
 				double delta_R  = j1.delta_R(j2);
 				double z        = j2.perp() / ( j1.perp() + j2.perp());
 				double y        = log(1.0 / delta_R);
@@ -96,6 +95,7 @@ namespace JettyFJUtils
 				_z.push_back(z);
 				// get the PID of the leading constituent
 				std::vector<fastjet::PseudoJet> _c = fastjet::sorted_by_pt(jj.constituents());
+				_nc.push_back(int(_c.size()));
 				int _pdg = PyUtil::PDGMass::Instance().PDG(_c[0].m());
 				_lpdg.push_back(_pdg);
 				jj = j1;

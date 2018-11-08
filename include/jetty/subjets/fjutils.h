@@ -22,7 +22,7 @@ namespace JettyFJUtils
 		std::vector<double> deltaR() 	  {return _deltaR;}
 		std::vector<double> e() 	 	  {return _e;}
 		std::vector<double> m() 	 	  {return _m;}
-		std::vector<unsigned int> nc() 	 	  {return _nc;}
+		std::vector<int> 	nc() 	 	  {return _nc;}
 		std::vector<double> z() 	 	  {return _z;}
 		std::vector<double> pt1() 	 	  {return _pt1;}
 		std::vector<double> pt2() 	 	  {return _pt2;}
@@ -33,7 +33,7 @@ namespace JettyFJUtils
 		std::vector<double>  _log1oDeltaR;
 		std::vector<double>  _e;
 		std::vector<double>  _m;
-		std::vector<unsigned int> _nc;
+		std::vector<int> 	_nc;
 		std::vector<double>  _deltaR;
 		std::vector<double>  _z;
 		std::vector<double>  _pt1;
