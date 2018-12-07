@@ -1,4 +1,5 @@
 #include <jetty/eic/eic_tasks.h>
+#include <jetty/eic/eicspectratask.h>
 
 #include <jetty/util/pythia/pythia_wrapper.h>
 #include <jetty/util/pythia/pyargs.h>
@@ -88,6 +89,10 @@ int eic_tasks (const std::string &s)
 	GenUtil::SubjetTask sj_ca_sjR10("subjets_ca_sjR10", (args.asString() + " --sjA=1 --sjR=0.10").c_str());
 	sj_ca_sjR10.AddInputTask(r);
 	r->AddTask(&sj_ca_sjR10);
+
+	EIC::SpectraTask eic_spectra_0("eic_spectra", (args.asString() + " --R1=0.05 --R2=0.50 --maxEta=20.").c_str());
+	eic_spectra_0.AddInputTask(r);
+	r->AddTask(&eic_spectra_0);
 
 	r->Init();
 	r->DumpTaskListInfo();

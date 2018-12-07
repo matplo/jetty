@@ -5,6 +5,7 @@ set(NAME_EXE ${MODULE}_exe)
 
 set(SOURCES_LIB
 	eic_tasks.cxx
+	eicspectratask.cxx
 )
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
