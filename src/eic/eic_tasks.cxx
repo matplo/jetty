@@ -94,6 +94,14 @@ int eic_tasks (const std::string &s)
 	eic_spectra_tof0.AddInputTask(r);
 	r->AddTask(&eic_spectra_tof0);
 
+	EIC::SpectraTask eic_spectra_tof0a("eic_spectra_tof0a", (args.asString() + " --tofR1=0.05 --tofR2=1.0 --eta=10. --deltat=50.").c_str());
+	eic_spectra_tof0a.AddInputTask(r);
+	r->AddTask(&eic_spectra_tof0a);
+
+	EIC::SpectraTask eic_spectra_tof0b("eic_spectra_tof0b", (args.asString() + " --tofR1=0.05 --tofR2=1.0 --eta=10. --deltat=100.").c_str());
+	eic_spectra_tof0b.AddInputTask(r);
+	r->AddTask(&eic_spectra_tof0b);
+
 	EIC::SpectraTask eic_spectra_tof1("eic_spectra_tof1", (args.asString() + " --tofR1=0.05 --tofR2=5.0 --eta=10. --deltat=10.").c_str());
 	eic_spectra_tof1.AddInputTask(r);
 	r->AddTask(&eic_spectra_tof1);
