@@ -8,6 +8,7 @@ class TH1F;
 class TFile;
 class TTree;
 class TParticle;
+class TF1;
 
 namespace RStream
 {
@@ -31,11 +32,12 @@ namespace EIC
 			double R1;
 			double R2;
 			double maxEta;
+			double deltaT;
 		};
 
-		SpectraTask(const char *name) : EventPoolTask(name), fOutput(0), fOutputTree(0), fTStream(0), fSettings() {;}
-		SpectraTask(const char *name, const char *params) : EventPoolTask(name, params), fOutput(0), fOutputTree(0), fTStream(0), fSettings() {;}
-		SpectraTask() : EventPoolTask(), fOutput(0), fOutputTree(0), fTStream(0), fSettings() {;}
+		SpectraTask(const char *name) : EventPoolTask(name), fOutput(0), fOutputTree(0), fDeltaTGauss(0), fTStream(0), fSettings() {;}
+		SpectraTask(const char *name, const char *params) : EventPoolTask(name, params), fOutput(0), fOutputTree(0), fDeltaTGauss(0), fTStream(0), fSettings() {;}
+		SpectraTask() : EventPoolTask(), fOutput(0), fOutputTree(0), fDeltaTGauss(0), fTStream(0), fSettings() {;}
 		virtual 			~SpectraTask();
 		virtual unsigned int InitThis(const char *opt = "");
 		virtual unsigned int ExecThis(const char *opt = "");
@@ -43,6 +45,7 @@ namespace EIC
 	protected:
 		TFile *fOutput;
 		TTree *fOutputTree;
+		TF1 *fDeltaTGauss;
 		RStream::TStream *fTStream;
 		Settings fSettings;
 	};

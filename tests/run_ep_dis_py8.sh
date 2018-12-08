@@ -21,5 +21,7 @@ space_showers="SpaceShower:dipoleRecoil=on PDF:lepton=off TimeShower:QEDshowerBy
 
 # jetty_spectra_exe --spectra ${eic_base_settings} ${hard_bias} --nev=10000
 
-jetty_eic_exe --eic ${eic_base_settings} ${hard_bias} ${space_showers} --nev=10000
+nev=${1}
+[ -z "$1" ] && nev=10000
+jetty_eic_exe --eic ${eic_base_settings} ${hard_bias} ${space_showers} --nev=${nev}
 

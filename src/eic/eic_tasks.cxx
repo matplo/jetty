@@ -90,9 +90,17 @@ int eic_tasks (const std::string &s)
 	sj_ca_sjR10.AddInputTask(r);
 	r->AddTask(&sj_ca_sjR10);
 
-	EIC::SpectraTask eic_spectra_0("eic_spectra", (args.asString() + " --R1=0.05 --R2=0.50 --maxEta=20.").c_str());
-	eic_spectra_0.AddInputTask(r);
-	r->AddTask(&eic_spectra_0);
+	EIC::SpectraTask eic_spectra_tof0("eic_spectra_tof0", (args.asString() + " --tofR1=0.05 --tofR2=1.0 --eta=10. --deltat=10.").c_str());
+	eic_spectra_tof0.AddInputTask(r);
+	r->AddTask(&eic_spectra_tof0);
+
+	EIC::SpectraTask eic_spectra_tof1("eic_spectra_tof1", (args.asString() + " --tofR1=0.05 --tofR2=5.0 --eta=10. --deltat=10.").c_str());
+	eic_spectra_tof1.AddInputTask(r);
+	r->AddTask(&eic_spectra_tof1);
+
+	EIC::SpectraTask eic_spectra_tof1x("eic_spectra_tof1x", (args.asString() + " --tofR1=0.05 --tofR2=5.0 --eta=10. --deltat=1000.").c_str());
+	eic_spectra_tof1x.AddInputTask(r);
+	r->AddTask(&eic_spectra_tof1x);
 
 	r->Init();
 	r->DumpTaskListInfo();
