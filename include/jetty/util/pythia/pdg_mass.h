@@ -20,6 +20,12 @@ namespace PyUtil
 			double Mass(int pdg);
 			int PDG(double m);
 
+			double beta(double pt, double eta, double phi, double m);
+			double beta(double m, double p); // relat beta
+			double gamma(double beta);
+			double gamma(double m, double p); // relat gamma
+			double tof(double m, double p, double L); // tof = L / beta
+
 			virtual ~PDGMass();
 
 		private:
