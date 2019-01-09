@@ -6,6 +6,7 @@
 
 #include <jetty/util/tglaubermc/tglaubermc.h>
 #include <jetty/util/pythia/event_pool.h>
+#include <jetty/util/pythia/pdg_mass.h>
 #include <jetty/util/blog.h>
 
 #include <jetty/util/rstream/tstream.h>
@@ -180,6 +181,11 @@ namespace GenUtil
 
 			// Linfo << "n constits: " << j.constituents().size();
 
+			// leading consituent in pT
+			std::vector<fastjet::PseudoJet> _c = fj::sorted_by_pt(j.constituents());
+			int _pdg = PyUtil::PDGMass::Instance().PDG(_c[0].m());
+			jts << "lpdg" << _pdg;
+
 			JettyFJUtils::LundEntries lund(j);
 			if (lund.CAjet())
 			{
@@ -193,6 +199,10 @@ namespace GenUtil
 				jts << "lund_pt1" << lund.pt1();
 				jts << "lund_pt2" << lund.pt2();
 				jts << "lund_lpdg" << lund.lpdg();
+			}
+			else
+			{
+				Lwarn << "no C/A jet from from constituents n = " << _c.size();
 			}
 
 			auto sj_info = new JettyFJUtils::SJInfo(&j,
