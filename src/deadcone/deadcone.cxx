@@ -27,9 +27,10 @@ int deadcone (const std::string &s)
 	PyUtil::Args args(s);
 
 	// analysis parameters
-	double max_part_eta = args.getD("--maxeta", 4.);
-	double max_jet_eta = args.getD("--max-jet-eta", 3.);
+	double max_part_eta = args.getD("--maxeta", 3.5);
 	double jetR = args.getD("--R", 0.4);
+	double max_jet_eta = args.getD("--max-jet-eta", max_part_eta - jetR - 0.1);
+	double min_jet_pt = args.getD("--min-jet-pt", 10.);
 	string outfname = args.get("--output", "deadcone.root");
 	Linfo << "pythia args:" << args.asString();
 
@@ -59,8 +60,8 @@ int deadcone (const std::string &s)
 	}
 	fout.cd();
 	TNtuple *tne = new TNtuple("tne", "tne", "n:pid:xsec");
-	TNtuple *tnj = new TNtuple("tnj", "tnj", "pt:e:eta:phi:lpid");
-	TNtuple *tnd = new TNtuple("tnd", "tnd", "pt:e:eta:phi:lpid:lund_dR:lund_pt:lund_e:lund_pt1:lund_pt2:lund_lpid");
+	TNtuple *tnj = new TNtuple("tnj", "tnj", "pt:e:eta:phi:lpid:nsplits");
+	TNtuple *tnd = new TNtuple("tnd", "tnd", "pt:e:eta:phi:lpid:lund_dR:lund_pt:lund_e:lund_pt1:lund_pt2:lund_lpid:nsplits");
 
 	int nEv = args.getI("--nev", -1);
 	LoopUtil::TPbar pbar(nEv);
@@ -88,13 +89,13 @@ int deadcone (const std::string &s)
 			// jet finding and lund
 			fj::JetDefinition jet_def(fj::antikt_algorithm, jetR);
 			fj::ClusterSequence ca(parts, jet_def);
-			auto jets = ca.inclusive_jets(0);
+			auto jets = ca.inclusive_jets(min_jet_pt);
 			for (const auto & jakt: jets)
 			{
 				if (TMath::Abs(jakt.eta()) > max_jet_eta) continue;
 				int lidx = fj::SelectorNHardest(1)(jakt.constituents())[0].user_index();
 				int lpid = pythia.event[lidx].id();
-				tnj->Fill(jakt.perp(), jakt.e(), jakt.eta(), jakt.phi(), lpid);
+				int nsplits = 0;
 				fj::JetDefinition decl_jet_def(fj::cambridge_algorithm, 1.0);
 				fj::ClusterSequence decl_ca(jakt.constituents(), decl_jet_def);
 				for (const auto & j : decl_ca.inclusive_jets(0))
@@ -103,14 +104,15 @@ int deadcone (const std::string &s)
 					jj = j;
 					while (jj.has_parents(j1,j2))
 					{
+						nsplits++;
 						// make sure j1 is always harder branch
 						if (j1.pt2() < j2.pt2()) swap(j1,j2);
 						// collect info and fill in the histogram
 						double delta_R = j1.delta_R(j2);
 						int _lidx = fj::SelectorNHardest(1)(jj.constituents())[0].user_index();
-						int _lpid = pythia.event[lidx].id();
+						int _lpid = pythia.event[_lidx].id();
 						tnd->Fill(jakt.perp(), jakt.e(), jakt.eta(), jakt.phi(), lpid,
-						         delta_R, jj.perp(), jj.e(), j1.perp(), j2.perp(), _lpid);
+						         delta_R, jj.perp(), jj.e(), j1.perp(), j2.perp(), _lpid, nsplits);
 						// // double delta_R_norm = delta_R / jet_def.R();
 						// double delta_R_norm = delta_R; // MP
 						// double z = j2.pt()/(j1.pt() + j2.pt());
@@ -126,6 +128,7 @@ int deadcone (const std::string &s)
 						jj = j1;
 					}
 				}
+				tnj->Fill(jakt.perp(), jakt.e(), jakt.eta(), jakt.phi(), lpid, nsplits);
 			}
 		}
 		else
