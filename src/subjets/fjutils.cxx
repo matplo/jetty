@@ -63,12 +63,12 @@ namespace JettyFJUtils
 	   fastjet::JetDefinition fJetDef(jetalgo, 1., static_cast<fastjet::RecombinationScheme>(0), fastjet::BestFJ30 );
 	   try
 	   {
-			Linfo << "number of constituents: " << constituents.size();
+			// Linfo << "number of constituents: " << constituents.size();
 			fastjet::ClusterSequence fClustSeqSA(constituents, fJetDef);
 			std::vector<fastjet::PseudoJet> fOutputJets;
 			fOutputJets.clear();
 			fOutputJets = fClustSeqSA.inclusive_jets(0);
-			Linfo << "number of jets: " << fOutputJets.size();
+			// Linfo << "number of jets: " << fOutputJets.size();
 			fastjet::PseudoJet jj;
 			fastjet::PseudoJet j1;
 			fastjet::PseudoJet j2;
@@ -76,7 +76,7 @@ namespace JettyFJUtils
 			_cajet = new fj::PseudoJet(fOutputJets[0]);
 
 			jj = fOutputJets[0];
-			Linfo << " - has parents? " << jj.has_parents(j1, j2);
+			// Linfo << " - has parents? " << jj.has_parents(j1, j2);
 			while(jj.has_parents(j1,j2))
 			{
 				if (j1.perp() < j2.perp())
