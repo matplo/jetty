@@ -29,6 +29,8 @@ namespace GenUtil
 
 		long int 							CurrentEventNumber() { return fCurrentEvent;}
 
+		HepMC::GenEvent* 					GetEvent() {return fEvent;}
+
 	private:
 		HepMC::IO_GenEvent fIn;
 		HepMC::GenEvent* fEvent;

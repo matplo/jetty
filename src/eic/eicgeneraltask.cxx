@@ -150,6 +150,7 @@ namespace EIC
 				// cuts need to happen here
 				parts.insert(parts.end(), _pv.begin(), _pv.end());
 				wxsec = hepmc->GetCrossSecion()->cross_section();
+				fMCEvWrapper->SetEvent(hepmc->GetEvent());
 				ps << "hepmc_" << parts;
 			}
 		}
@@ -160,6 +161,8 @@ namespace EIC
 		ps << "icode" << icode;
 		ps << "xsec_code" << xsec_code;
 		ps << "psj_" << parts;
+
+		ps << "hepmc_reread_" << fMCEvWrapper->PseudoJetParticles(true);
 
 		// for (auto p : parts)
 		// {
