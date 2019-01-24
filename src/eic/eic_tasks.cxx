@@ -1,5 +1,6 @@
 #include <jetty/eic/eic_tasks.h>
 #include <jetty/eic/eicspectratask.h>
+#include <jetty/eic/eicgeneraltask.h>
 
 #include <jetty/util/pythia/pythia_wrapper.h>
 #include <jetty/util/pythia/pyargs.h>
@@ -64,9 +65,9 @@ Long64_t n_events_hepmc(const char *s)
 	return r_hepmc.GetNExecCalls();
 }
 
-int eic_tasks (const std::string &s)
+int eic_tof_tasks (const std::string &s)
 {
-	Linfo << "This is run_ca_task...";
+	Linfo << "This is run_eic_tof_task...";
 
 	PyUtil::Args args(s);
 
@@ -143,6 +144,73 @@ int eic_tasks (const std::string &s)
 	// Linfo << "pythiaTAA N exec calls: " << pythiaTAA.GetNExecCalls();
 
 	delete r;
-	Linfo << "ca task done." << endl;
+	Linfo << "eic tof task set done." << endl;
+	return 0;
+}
+
+int eic_tasks (const std::string &s)
+{
+	Linfo << "This is run eic task set...";
+	PyUtil::Args args(s);
+
+	GenUtil::GenTask *r = 0;
+
+	Long64_t n_hepmc = 0;
+	if (args.isSet("--hepmc-input"))
+	{
+		GenUtil::HepMCReaderTask *r_hepmc = new GenUtil::HepMCReaderTask("hepmc_reader", args.asString().c_str());
+		r = r_hepmc;
+		n_hepmc = n_events_hepmc(args.asString().c_str());
+		Linfo << "found " << n_hepmc << " HEPMC events...";
+	}
+	else
+	{
+		GenUtil::PythiaTask *r_pythia = new GenUtil::PythiaTask("pythia_task", args.asString().c_str());
+		r = r_pythia;
+	}
+
+	GenUtil::SubjetTask sj_ca_sjR10("eic_subjets_ca_sjR10", (args.asString() + " --sjA=1 --sjR=0.10").c_str());
+	sj_ca_sjR10.AddInputTask(r);
+	r->AddTask(&sj_ca_sjR10);
+
+	EIC::GeneralTask eic_general("eic_general", (args.asString() + " --jetR=0.4 --eta=10.").c_str());
+	eic_general.AddInputTask(r);
+	r->AddTask(&eic_general);
+
+	r->Init();
+	r->DumpTaskListInfo();
+
+	int nEv = args.getI("--nev", -1);
+	if (nEv == -1)
+	{
+		if (n_hepmc > 0)
+			nEv = n_hepmc;
+		else
+			nEv = 10;
+	}
+	if (nEv > n_hepmc && n_hepmc > 0)
+		nEv = n_hepmc;
+	if (args.isSet("-h") || args.isSet("--help"))
+		nEv = 1;
+
+	LoopUtil::TPbar pbar(nEv);
+	for (int i = 0; i < nEv; i++)
+	{
+		pbar.Update();
+		r->Execute("<an option>");
+		if (r->GetStatus() != GenUtil::GenTask::kGood)
+			break;
+		GenUtil::ReadHepMCFile *f = r->GetData()->get<GenUtil::ReadHepMCFile>();
+		if (f)
+			Ldebug << f->CurrentEventNumber() << " number of particles: " << f->PseudoJetParticles(true).size();
+	}
+
+	r->Finalize();
+
+	Linfo << "N exec calls: " << r->GetNExecCalls();
+	// Linfo << "pythiaTAA N exec calls: " << pythiaTAA.GetNExecCalls();
+
+	delete r;
+	Linfo << "eic task set done." << endl;
 	return 0;
 }

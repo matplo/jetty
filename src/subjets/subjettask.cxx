@@ -127,7 +127,7 @@ namespace GenUtil
 
 		for (auto &t : fInputTasks)
 		{
-			GenUtil::PythiaTask *tp = (GenUtil::PythiaTask*)t;
+			GenUtil::PythiaTask *tp = dynamic_cast<GenUtil::PythiaTask*>(t);
 			Ldebug << GetName() << " processing input from task " << t->GetName();
 			if (tp)
 			{

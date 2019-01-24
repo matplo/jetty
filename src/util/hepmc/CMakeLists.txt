@@ -6,6 +6,7 @@ set(NAME_EXE ${MODULE}_exe)
 set(SOURCES_LIB
     readfile.cxx
     readertask.cxx
+    eventwrapper.cxx
 )
 
 set(SOURCES_EXE main.cxx)
