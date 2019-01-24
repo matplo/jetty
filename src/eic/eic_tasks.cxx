@@ -86,7 +86,7 @@ int eic_tasks (const std::string &s)
 		r = r_pythia;
 	}
 
-	GenUtil::SubjetTask sj_ca_sjR10("subjets_ca_sjR10", (args.asString() + " --sjA=1 --sjR=0.10").c_str());
+	GenUtil::SubjetTask sj_ca_sjR10("eic_subjets_ca_sjR10", (args.asString() + " --sjA=1 --sjR=0.10").c_str());
 	sj_ca_sjR10.AddInputTask(r);
 	r->AddTask(&sj_ca_sjR10);
 
