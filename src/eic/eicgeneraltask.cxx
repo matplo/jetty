@@ -176,6 +176,9 @@ namespace EIC
 		auto els = HepMCUtil::find_outgoing_electron(fMCEvWrapper->GetEvent());
 		Linfo << "outgoing electrons: " << els.size();
 
+		auto eic_Q2 = HepMCUtil::eIC_Q2(fMCEvWrapper->GetEvent());
+		Linfo << "Q2 = " << eic_Q2;
+
 		// Linfo << "hepmc outgoing particle: " << fMCEvWrapper->HepMCParticles(false, 63)[0]->pdg_id() << endl;
 		// for (auto p : parts)
 		// {
