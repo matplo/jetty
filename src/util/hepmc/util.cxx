@@ -7,6 +7,8 @@
 #include <jetty/util/blog.h>
 #include <TLorentzVector.h>
 
+#include <sstream>
+
 namespace HepMCUtil
 {
 	bool is_beam(HepMC::GenParticle *p)
@@ -27,8 +29,8 @@ namespace HepMCUtil
 		          mother != p->production_vertex()->particles_end(HepMC::parents);
 		          ++mother )
 		    {
-		        std::cout << "-mother beam? : " << is_beam(*mother) << " \t";
-		        (*mother)->print();
+		        // std::cout << "-mother beam? : " << is_beam(*mother) << " \t";
+		        // (*mother)->print();
 	    		if ((*mother)->pdg_id() != 11 && is_beam(*mother))
 	    			continue;
 		    	if ((*mother)->pdg_id() == 11 && is_beam(*mother))
@@ -101,6 +103,17 @@ namespace HepMCUtil
 		return 0x0;
 	}
 
+	HepMC::GenParticle* eIC_hadron_beam(HepMC::GenEvent *ev)
+	{
+		auto beams = beam_particles(ev);
+		for (auto b : beams)
+		{
+			if (b->pdg_id() != 11)
+				return b;
+		}
+		return 0x0;
+	}
+
 	double eIC_Q2 (HepMC::GenEvent *ev)
 	{
 		HepMC::GenParticle* be = eIC_electron_beam(ev);
@@ -144,5 +157,52 @@ namespace HepMCUtil
 		TLorentzVector result = vb - vo;
 
 		return -1. * result.Mag2();
+	}
+
+
+	EICkine::EICkine(HepMC::GenEvent *ev)
+		: fQ2(0), fW(0), fx(0), fy(0)
+		, fInev(), fOutev(), fInOutev(), fInhv()
+	{
+		HepMC::GenParticle* be = eIC_electron_beam(ev);
+		if (be == 0x0)
+		{
+			Lerror << "no electron beam?";
+			return;
+		}
+		auto oes = find_outgoing_electron(ev);
+		if (oes.size() < 1)
+		{
+			Lerror << "unable to find the outgoing electron in the event record!";
+			return;
+		}
+		HepMC::GenParticle *oe = oes[0];
+		fInev.SetPxPyPzE(be->momentum().px(), be->momentum().py(), be->momentum().pz(), be->momentum().e());
+		fOutev.SetPxPyPzE(oe->momentum().px(), oe->momentum().py(), oe->momentum().pz(), oe->momentum().e());
+		fInOutev = fInev - fOutev;
+		fQ2 = fInOutev.Mag2() * -1.;
+
+		HepMC::GenParticle* bh = eIC_hadron_beam(ev);
+		if (bh == 0x0)
+		{
+			Lerror << "no non electron beam?";
+			return;
+		}
+
+		fInhv.SetPxPyPzE(bh->momentum().px(), bh->momentum().py(), bh->momentum().pz(), bh->momentum().e());
+
+	    fW    = (fInhv + fInOutev).Mag2();
+    	fx    = fQ2 / (2. * fInhv.Dot(fInOutev));
+	    fy    = fInhv.Dot(fInOutev) / fInhv.Dot(fInev);
+	}
+
+	std::string EICkine::dump()
+	{
+		std::ostringstream s;
+		s << "Q2 = " << fQ2 <<
+			" W = " << fW <<
+			" x = " << fx <<
+			" y = " << fy;
+		return s.str();
 	}
 }

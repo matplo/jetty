@@ -181,6 +181,19 @@ namespace EIC
 		auto eic_Q2 = HepMCUtil::eIC_Q2(fMCEvWrapper->GetEvent());
 		Linfo << "Q2 = " << eic_Q2;
 
+		HepMCUtil::EICkine eic_kine(fMCEvWrapper->GetEvent());
+		Linfo << eic_kine.dump();
+		if (pythia)
+		{
+			 pythia->info.list();
+			Ldebug << "x1pdf = " << pythia->info.x1pdf();
+			Ldebug << "x2pdf = " << pythia->info.x2pdf();
+			// Ldebug << "QFac = " << pythia->info.QFac();
+			Ldebug << "Q2Fac = " << pythia->info.Q2Fac();
+			// Ldebug << "QRen = " << pythia->info.QRen();
+			Ldebug << "Q2Ren = " << pythia->info.Q2Ren();
+		}
+
 		// debugging of the electron recoil from the beam
 		// if (HepMCUtil::find_outgoing_electron(fMCEvWrapper->GetEvent(), true).size() > 1)
 		// {
