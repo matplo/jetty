@@ -11,7 +11,7 @@ namespace HepMC
 
 namespace HepMCUtil
 {
-	std::vector<HepMC::GenParticle*> find_outgoing_electron(HepMC::GenEvent *ev);
+	std::vector<HepMC::GenParticle*> find_outgoing_electron(HepMC::GenEvent *ev, bool debug = false);
 	std::vector<HepMC::GenParticle*> beam_particles(HepMC::GenEvent *ev);
 	double eIC_Q2 (HepMC::GenEvent *ev);
 }

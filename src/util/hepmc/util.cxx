@@ -9,7 +9,39 @@
 
 namespace HepMCUtil
 {
-	std::vector<HepMC::GenParticle*> find_outgoing_electron(HepMC::GenEvent *ev)
+	bool is_beam(HepMC::GenParticle *p)
+	{
+		HepMC::GenEvent *ev = p->parent_event();
+		auto bparts = ev->beam_particles();
+		if (p == bparts.first or p == bparts.second)
+			return true;
+		return false;
+	}
+
+	bool is_off_beam_electron(HepMC::GenParticle *p)
+	{
+		// HepMC::GenEvent *ev = p->parent_event();
+		if ( p->production_vertex() )
+		{
+		    for ( HepMC::GenVertex::particle_iterator mother = p->production_vertex()->particles_begin(HepMC::parents);
+		          mother != p->production_vertex()->particles_end(HepMC::parents);
+		          ++mother )
+		    {
+		        std::cout << "-mother beam? : " << is_beam(*mother) << " \t";
+		        (*mother)->print();
+	    		if ((*mother)->pdg_id() != 11 && is_beam(*mother))
+	    			continue;
+		    	if ((*mother)->pdg_id() == 11 && is_beam(*mother))
+		    		return true;
+		    	if ((*mother)->pdg_id() == 11)
+		    		return is_off_beam_electron(*mother);
+	    		return false;
+		    }
+		}
+		return true;
+	}
+
+	std::vector<HepMC::GenParticle*> find_outgoing_electron(HepMC::GenEvent *ev, bool debug)
 	{
 		std::vector<HepMC::GenParticle*> retv;
 		// good links to iteration tests: http://lcgapp.cern.ch/project/simu/HepMC/205/html/classHepMC_1_1GenVertex_1_1particle__iterator.html#_details
@@ -32,9 +64,15 @@ namespace HepMCUtil
 						// look for a final state electron
 						if ((*des)->pdg_id() == 11 && (*des)->status() == 1)
 						{
-							// Linfo << "descendant and an electron status=" << (*des)->status();
-							// (*des)->print( std::cout );
-							retv.push_back(*des);
+							bool is_beam_recoil = is_off_beam_electron((*des));
+							if (debug)
+							{
+								Linfo << "descendant and an electron status=" << (*des)->status();
+								(*des)->print( std::cout );
+								Linfo << "all mothers electrons? : " << is_beam_recoil;
+							}
+							if (is_beam_recoil)
+								retv.push_back(*des);
 						}
 					}
 				}
@@ -46,16 +84,9 @@ namespace HepMCUtil
 	std::vector<HepMC::GenParticle*> beam_particles(HepMC::GenEvent *ev)
 	{
 		std::vector<HepMC::GenParticle*> retv;
-        for ( HepMC::GenEvent::particle_iterator p = ev->particles_begin();
-             p != ev->particles_end();
-             ++p )
-        {
-        	// find the beam electron
-			if ((*p)->is_beam())
-			{
-				retv.push_back(*p);
-			}
-		}
+		auto bparts = ev->beam_particles ();
+		retv.push_back(bparts.first);
+		retv.push_back(bparts.second);
 		return retv;
 	}
 

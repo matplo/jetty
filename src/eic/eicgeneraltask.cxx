@@ -104,6 +104,7 @@ namespace EIC
 
 		std::vector<fj::PseudoJet> parts;
 
+		Pythia8::Pythia *pythia = 0;
 		for (auto &t : fInputTasks)
 		{
 			GenUtil::PythiaTask *tp = dynamic_cast<GenUtil::PythiaTask*>(t);
@@ -111,6 +112,7 @@ namespace EIC
 			if (tp)
 			{
 				Ldebug << GetName() << " got GenUtil::PythiaTask input from task " << t->GetName();
+				pythia = tp->GetPythia();
 				if (tp->GetPythia())
 				{
 					Ldebug << GetName() << " got non 0x0 pythia from " << t->GetName() << " at " << tp->GetPythia();
@@ -178,6 +180,17 @@ namespace EIC
 
 		auto eic_Q2 = HepMCUtil::eIC_Q2(fMCEvWrapper->GetEvent());
 		Linfo << "Q2 = " << eic_Q2;
+
+		// debugging of the electron recoil from the beam
+		// if (HepMCUtil::find_outgoing_electron(fMCEvWrapper->GetEvent(), true).size() > 1)
+		// {
+		// 	if (pythia)
+		// 	{
+		// 		pythia->info.list();
+		// 		pythia->event.list(true, true, 3);
+		// 	}
+		// }
+
 
 		// Linfo << "hepmc outgoing particle: " << fMCEvWrapper->HepMCParticles(false, 63)[0]->pdg_id() << endl;
 		// for (auto p : parts)
