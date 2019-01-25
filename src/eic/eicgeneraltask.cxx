@@ -22,6 +22,7 @@
 #include <TParticlePDG.h>
 #include <TF1.h>
 
+#include <fastjet/Selector.hh>
 #include <fastjet/PseudoJet.hh>
 #include <fastjet/ClusterSequence.hh>
 namespace fj = fastjet;
@@ -83,9 +84,11 @@ namespace EIC
 		fTStream    	= new RStream::TStream("p", fOutputTree);
 
 		fMCEvWrapper = new GenUtil::HepMCEventWrapper();
-		std::string mcevout(GetName() + ".hepmc");
-		fMCEvWrapper->SetOutputFile(mcevout.c_str());
-
+		if (fArgs.isSet("--write-hepmc"))
+		{
+			std::string mcevout(GetName() + ".hepmc");
+			fMCEvWrapper->SetOutputFile(mcevout.c_str());
+		}
 		return kGood;
 	}
 
@@ -116,24 +119,6 @@ namespace EIC
 				if (tp->GetPythia())
 				{
 					Ldebug << GetName() << " got non 0x0 pythia from " << t->GetName() << " at " << tp->GetPythia();
-					// note this will be the last pythia in the pool!
-					icode = tp->GetPythia()->info.code();
-					xsec_code = tp->GetPythia()->info.sigmaGen(icode);
-
-					Pythia8::Event &ev = tp->GetPythia()->event;
-					std::vector<Pythia8::Particle> pyparts;
-					for (int i = 0; i < ev.size(); i++)
-					{
-						Pythia8::Particle &pyp = ev[i];
-						if (TMath::Abs(pyp.eta()) > fSettings.maxEta)
-							continue;
-						if (pyp.isFinal())
-						{
-							pyparts.push_back(pyp);
-						}
-					}
-					ps << "py_" << pyparts;
-
 					fMCEvWrapper->SetPythia8(tp->GetPythia());
 					fMCEvWrapper->FillEvent();
 					Ldebug << "hepmc event at " << fMCEvWrapper->GetEvent();
@@ -152,68 +137,58 @@ namespace EIC
 			auto hepmc = t->GetData()->get<GenUtil::ReadHepMCFile>();
 			if (hepmc)
 			{
-				Ldebug << GetName() << " adding particles from " << t->GetName();
-				auto _pv = hepmc->PseudoJetParticles(true);
+				Ldebug << GetName() << " setting event from " << t->GetName();
+				// auto _pv = hepmc->PseudoJetParticles(true);
 				// cuts need to happen here
-				parts.insert(parts.end(), _pv.begin(), _pv.end());
-				wxsec = hepmc->GetCrossSecion()->cross_section();
+				// parts.insert(parts.end(), _pv.begin(), _pv.end());
+				// wxsec = hepmc->GetCrossSecion()->cross_section();
 				fMCEvWrapper->SetEvent(hepmc->GetEvent());
-				ps << "hepmc_" << parts;
 			}
 		}
+
+		wxsec = fMCEvWrapper->GetCrossSecion()->cross_section();
 
 		// do particle stuff
 		Ldebug << "number of particles : " << parts.size();
 		ps << "xsec" << wxsec;
-		ps << "icode" << icode;
-		ps << "xsec_code" << xsec_code;
-		ps << "psj_" << parts;
-
-		ps << "hepmc_reread_" << fMCEvWrapper->PseudoJetParticles(true);
-
-		Linfo << "hepmc beam particles: " << fMCEvWrapper->HepMCParticles(false, 4).size() << endl;
-		Linfo << "hepmc outgoing particles final: " << fMCEvWrapper->HepMCParticles(true, 1).size() << endl;
-		// Linfo << "number of vertices: " << fMCEvWrapper->Vertices().size();
-
-		auto els = HepMCUtil::find_outgoing_electron(fMCEvWrapper->GetEvent());
-		Linfo << "outgoing electrons: " << els.size();
-
-		auto eic_Q2 = HepMCUtil::eIC_Q2(fMCEvWrapper->GetEvent());
-		Linfo << "Q2 = " << eic_Q2;
 
 		HepMCUtil::EICkine eic_kine(fMCEvWrapper->GetEvent());
-		Linfo << eic_kine.dump();
-		Linfo << eic_kine.as_oss("eic_kine_").str();
+		Ldebug << eic_kine.dump();
+		//Ldebug << eic_kine.as_oss("eic_kine_").str();
 		ps << eic_kine.as_oss("kine_");
 
 		if (pythia)
 		{
-			 pythia->info.list();
-			Ldebug << "x1pdf = " << pythia->info.x1pdf();
-			Ldebug << "x2pdf = " << pythia->info.x2pdf();
-			// Ldebug << "QFac = " << pythia->info.QFac();
-			Ldebug << "Q2Fac = " << pythia->info.Q2Fac();
-			// Ldebug << "QRen = " << pythia->info.QRen();
-			Ldebug << "Q2Ren = " << pythia->info.Q2Ren();
+			// pythia->info.list();
+			ps << "py_x1pdf " << pythia->info.x1pdf();
+			ps << "py_x2pdf " << pythia->info.x2pdf();
+			ps << "py_QFac " << pythia->info.QFac();
+			ps << "py_Q2Fac " << pythia->info.Q2Fac();
+			ps << "py_QRen " << pythia->info.QRen();
+			ps << "py_Q2Ren " << pythia->info.Q2Ren();
+			icode = pythia->info.code();
+			ps << "py_icode" << icode;
+			xsec_code = pythia->info.sigmaGen(icode);
+			ps << "py_xsec_code" << xsec_code;
 		}
 
-		// debugging of the electron recoil from the beam
-		// if (HepMCUtil::find_outgoing_electron(fMCEvWrapper->GetEvent(), true).size() > 1)
-		// {
-		// 	if (pythia)
-		// 	{
-		// 		pythia->info.list();
-		// 		pythia->event.list(true, true, 3);
-		// 	}
-		// }
+		parts = fMCEvWrapper->PseudoJetParticles(true);
 
+		fj::Selector partSelector = fastjet::SelectorAbsEtaMax(fSettings.maxEta);
+		fj::Selector jetSelector = fastjet::SelectorAbsEtaMax(fSettings.maxEta - fSettings.jetR - 0.01) * fastjet::SelectorPtMin(1.);
 
-		// Linfo << "hepmc outgoing particle: " << fMCEvWrapper->HepMCParticles(false, 63)[0]->pdg_id() << endl;
-		// for (auto p : parts)
-		// {
-		// 	if (TMath::Abs(p.eta()) > fSettings.maxEta)
-		// 		continue;
-		// } // end of the jet loop
+		std::vector<fj::PseudoJet> parts_selected = partSelector(parts);
+		ps << "p_" << parts;
+		ps << "ps_" << parts_selected;
+
+		fj::JetDefinition jet_def(fj::antikt_algorithm, fSettings.jetR);
+		fj::ClusterSequence ca(parts_selected, jet_def);
+		auto jets = jetSelector(ca.inclusive_jets());
+		for (const auto & jakt: jets)
+		{
+			if (TMath::Abs(jakt.eta()) > fSettings.maxEta - fSettings.jetR) continue;
+			ps << "j_" << jakt;
+		}
 
 		ps << endl;
 		return kGood;

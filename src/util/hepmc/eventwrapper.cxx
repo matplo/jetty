@@ -247,6 +247,7 @@ namespace GenUtil
 				if ( !pmc->end_vertex() && pmc->status() == status )
 				{
 					fastjet::PseudoJet psj(vpmc.px(), vpmc.py(), vpmc.pz(), vpmc.e());
+					psj.set_user_index(pmc->barcode());
 					fPseudoJets.push_back(psj);
 				}
 			}

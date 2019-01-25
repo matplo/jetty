@@ -31,4 +31,7 @@ nev=${1}
 #jetty_eic_exe --eic ${mp_eic_base_settings} ${hard_bias} ${space_showers} --nev=${nev}
 
 # jetty_eic_exe --eic --task-prefix=lowQ2_ ${eic_base_settings} ${eic_lowQ2} --nev=${nev} ${@:2}
-jetty_eic_exe --eic --task-prefix=dis_ ${eic_base_settings} ${eic_dis} --nev=${nev} ${@:2}
+# jetty_eic_exe --eic --task-prefix=dis_ ${eic_base_settings} ${eic_dis} --nev=${nev} ${@:2}
+
+jetty_eic_exe --eic --eic-lowQ2 --task-prefix=lowQ2_ --nev=${nev} ${@:2}
+jetty_eic_exe --eic --eic-dis --task-prefix=dis_ --nev=${nev} ${@:2}
