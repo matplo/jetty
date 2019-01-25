@@ -1,5 +1,6 @@
 #include <jetty/util/rstream/tstream.h>
 #include <jetty/util/pythia/pyutil.h>
+#include <jetty/util/strutil.h>
 
 #include <limits>
 
@@ -318,6 +319,33 @@ namespace RStream
 		out.FillTree();
 		return out;
 	}
+
+	TStream& operator<<(TStream& out, const std::ostringstream &ss)
+	{
+		std::string s = ss.str();
+		auto v = StrUtil::split_to_vector(s.c_str(), " ");
+		int i = 0;
+		// std::cout << "size : " << v.size();
+		for (auto _s : v)
+		{
+			// std::cout << " " << i << ") " << _s;
+			if (i % 2 == 0)
+			{
+				out.fCurrentName = _s;
+			}
+			else
+			{
+				double val = StrUtil::str_to_double(_s.c_str(), std::numeric_limits<double>::min());
+				assert(out.fCurrentName.size() > 0);
+				out.FillBranch(out.fCurrentName.c_str(), val);
+				out.fCurrentName = "";
+			}
+			i++;
+		}
+		// std::cout << std::endl;
+		return out;
+	}
+
 };
 
 

@@ -2,6 +2,7 @@
 #define __STRUTIL_HH
 
 #include <string>
+#include <vector>
 #include <sstream>
 
 namespace StrUtil
@@ -22,6 +23,9 @@ namespace StrUtil
 	double str_to_double(const char *str, double defret = 0.0);
 	long str_to_long(const char *str, long defret = 0);
 	int str_to_int(const char *str, int defret = 0);
+
+	std::vector<std::string> split_to_vector(const char *cs, const char *csdelim);
+
 };
 
 #endif //  __STRUTIL_HH

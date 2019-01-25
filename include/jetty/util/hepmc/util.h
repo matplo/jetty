@@ -9,6 +9,7 @@ namespace HepMC
 
 #include <vector>
 #include <string>
+#include <sstream>
 #include <TLorentzVector.h>
 
 namespace HepMCUtil
@@ -31,6 +32,8 @@ namespace HepMCUtil
 		const TLorentzVector & eInOutTLV() {return fInOutev;}
 		const TLorentzVector & hInTLV() {return fInhv;}
 		std::string 			dump();
+		std::ostringstream 		as_oss(const char *prefix);
+
 	private:
 		EICkine() {;}
 		double fQ2;

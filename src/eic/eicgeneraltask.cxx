@@ -183,6 +183,9 @@ namespace EIC
 
 		HepMCUtil::EICkine eic_kine(fMCEvWrapper->GetEvent());
 		Linfo << eic_kine.dump();
+		Linfo << eic_kine.as_oss("eic_kine_").str();
+		ps << eic_kine.as_oss("kine_");
+
 		if (pythia)
 		{
 			 pythia->info.list();

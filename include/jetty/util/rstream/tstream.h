@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <sstream>
 #include <fastjet/PseudoJet.hh>
 #include <Pythia8/Event.h>
 
@@ -45,6 +46,8 @@ namespace RStream
 
 		void FillBranch(const char *name, const std::vector<Pythia8::Particle> &in);
 		friend TStream& operator<<(TStream& out, const std::vector<Pythia8::Particle> &in);
+
+		friend TStream& operator<<(TStream& out, const std::ostringstream &ss);
 
 	   std::string CurrentBranchName() const {return fCurrentName;}
 

@@ -7,8 +7,6 @@
 #include <jetty/util/blog.h>
 #include <TLorentzVector.h>
 
-#include <sstream>
-
 namespace HepMCUtil
 {
 	bool is_beam(HepMC::GenParticle *p)
@@ -204,5 +202,16 @@ namespace HepMCUtil
 			" x = " << fx <<
 			" y = " << fy;
 		return s.str();
+	}
+
+	std::ostringstream EICkine::as_oss(const char *prefix)
+	{
+		std::ostringstream s;
+		s <<
+			prefix <<"Q2" << " " << fQ2 << " " <<
+			prefix <<"W"  << " " << fW << " "  <<
+			prefix <<"x"  << " " << fx << " "  <<
+			prefix <<"y"  << " " << fy;
+		return s;
 	}
 }

@@ -90,4 +90,26 @@ namespace StrUtil
 		return d;
 	}
 
+	std::vector<std::string> split_to_vector(const char *cs, const char *csdelim)
+	{
+		std::vector<std::string> retv;
+		std::string s(cs);
+		std::string delimiter(csdelim);
+		std::string token;
+		size_t pos = 0;
+		while ((pos = s.find(delimiter)) != std::string::npos)
+		{
+		    token = s.substr(0, pos);
+		    if (token.size() > 0)
+			    retv.push_back(token);
+		    s.erase(0, pos + delimiter.length());
+		}
+		if (s.size() > 0)
+		{
+			retv.push_back(s);
+		}
+		return retv;
+	}
+
+
 }
