@@ -7,6 +7,7 @@ set(SOURCES_LIB
     readfile.cxx
     readertask.cxx
     eventwrapper.cxx
+    util.cxx
 )
 
 set(SOURCES_EXE main.cxx)
