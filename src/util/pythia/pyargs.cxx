@@ -87,6 +87,36 @@ namespace PyUtil
 			add("--invalid"); // or this...
 		}
 
+		// convenience for eRHIC settings
+		if (isSet("--eic-dis") or isSet("--eic-lowQ2"))
+		{
+			add("Beams:idA=11");
+			add("Beams:idB=2212");
+			add("Init:showChangedSettings=on");
+			add("Beams:eA=20");
+			add("Beams:eB=250");
+			add("Beams:frameType=2");
+			add("Main:timesAllowErrors=10000");
+			if (isSet("--eic-dis"))
+			{
+				add("WeakBosonExchange:ff2ff(t:gmZ)=on");
+				add("PhaseSpace:Q2Min=10");
+				add("SpaceShower:pTmaxMatch=2");
+				add("PDF:lepton=off");
+				add("TimeShower:QEDshowerByL=off");
+			}
+			if (isSet("--eic-lowQ2"))
+			{
+				add("HardQCD:all=on");
+				add("PDF:lepton2gamma=on");
+				add("Photon:Q2max=1.");
+				add("Photon:Wmin=10.");
+				add("PhaseSpace:pTHatMin=2.");
+				add("PhotonParton:all=on");
+				add("Photon:ProcessType=0");
+			}
+		}
+
 		if (isSet("--minbias"))
 		{
 			add("HardQCD:all=off");

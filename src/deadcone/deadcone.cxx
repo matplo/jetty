@@ -63,6 +63,7 @@ int deadcone (const std::string &s)
 	TNtuple *tnj = new TNtuple("tnj", "tnj", "pt:e:eta:phi:lpid:nsplits");
 	TNtuple *tnd = new TNtuple("tnd", "tnd", "pt:e:eta:phi:lpid:lund_dR:lund_pt:lund_e:lund_pt1:lund_pt2:lund_lpid:nsplits");
 
+	unsigned int iPyStops = 0;
 	int nEv = args.getI("--nev", -1);
 	LoopUtil::TPbar pbar(nEv);
 	for (int i = 0; i < nEv; i++)
@@ -133,8 +134,13 @@ int deadcone (const std::string &s)
 		}
 		else
 		{
-			Lerror << "Pythia next failed. Stop.";
-			return -1;
+			iPyStops++;
+			Lerror << "Pythia next failed " << iPyStops << " times.";
+			if (iPyStops >= 1000)
+			{
+				Lerror << "... this is too much. Stop.";
+				return -1;
+			}
 		}
 	}
 	fout.Write();
