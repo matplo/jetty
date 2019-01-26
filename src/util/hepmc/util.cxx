@@ -7,8 +7,40 @@
 #include <jetty/util/blog.h>
 #include <TLorentzVector.h>
 
+#include <fastjet/PseudoJet.hh>
+
 namespace HepMCUtil
 {
+	std::vector<int> PDGcodesForPseudoJets(HepMC::GenEvent *ev, const std::vector<fastjet::PseudoJet> &v)
+	{
+		std::vector<int> pdgs;
+		for (auto psj : v)
+		{
+			int _pdg = pdg_id_pseudojet(ev, psj);
+			pdgs.push_back(_pdg);
+		}
+		return pdgs;
+	}
+
+	std::vector<int> barcodesForPseudoJets(const std::vector<fastjet::PseudoJet> &v)
+	{
+		std::vector<int> pdgs;
+		for (auto psj : v)
+		{
+			int _pdg = psj.user_index();
+			pdgs.push_back(_pdg);
+		}
+		return pdgs;
+	}
+
+	int pdg_id_pseudojet(HepMC::GenEvent *ev, const fastjet::PseudoJet &psj)
+	{
+		auto p = ev->barcode_to_particle(psj.user_index());
+		if (p)
+			return p->pdg_id();
+		return 0;
+	}
+
 	bool is_beam(HepMC::GenParticle *p)
 	{
 		HepMC::GenEvent *ev = p->parent_event();
@@ -159,7 +191,7 @@ namespace HepMCUtil
 
 
 	EICkine::EICkine(HepMC::GenEvent *ev)
-		: fQ2(0), fW(0), fx(0), fy(0)
+		: fQ2(0), fW2(0), fx(0), fy(0)
 		, fInev(), fOutev(), fInOutev(), fInhv()
 	{
 		HepMC::GenParticle* be = eIC_electron_beam(ev);
@@ -189,7 +221,7 @@ namespace HepMCUtil
 
 		fInhv.SetPxPyPzE(bh->momentum().px(), bh->momentum().py(), bh->momentum().pz(), bh->momentum().e());
 
-	    fW    = (fInhv + fInOutev).Mag2();
+	    fW2    = (fInhv + fInOutev).Mag2();
     	fx    = fQ2 / (2. * fInhv.Dot(fInOutev));
 	    fy    = fInhv.Dot(fInOutev) / fInhv.Dot(fInev);
 	}
@@ -198,7 +230,7 @@ namespace HepMCUtil
 	{
 		std::ostringstream s;
 		s << "Q2 = " << fQ2 <<
-			" W = " << fW <<
+			" W2 = " << fW2 <<
 			" x = " << fx <<
 			" y = " << fy;
 		return s.str();
@@ -209,8 +241,8 @@ namespace HepMCUtil
 		std::ostringstream s;
 		s <<
 			prefix <<"Q2" << " " << fQ2 << " " <<
-			prefix <<"W"  << " " << fW << " "  <<
-			prefix <<"x"  << " " << fx << " "  <<
+			prefix <<"W2" << " " << fW2 << " " <<
+			prefix <<"x"  << " " << fx  << " " <<
 			prefix <<"y"  << " " << fy;
 		return s;
 	}

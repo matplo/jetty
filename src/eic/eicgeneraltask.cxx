@@ -160,12 +160,12 @@ namespace EIC
 		if (pythia)
 		{
 			// pythia->info.list();
-			ps << "py_x1pdf " << pythia->info.x1pdf();
-			ps << "py_x2pdf " << pythia->info.x2pdf();
-			ps << "py_QFac " << pythia->info.QFac();
-			ps << "py_Q2Fac " << pythia->info.Q2Fac();
-			ps << "py_QRen " << pythia->info.QRen();
-			ps << "py_Q2Ren " << pythia->info.Q2Ren();
+			ps << "py_x1pdf" << pythia->info.x1pdf();
+			ps << "py_x2pdf" << pythia->info.x2pdf();
+			ps << "py_QFac" << pythia->info.QFac();
+			ps << "py_Q2Fac" << pythia->info.Q2Fac();
+			ps << "py_QRen" << pythia->info.QRen();
+			ps << "py_Q2Ren" << pythia->info.Q2Ren();
 			icode = pythia->info.code();
 			ps << "py_icode" << icode;
 			xsec_code = pythia->info.sigmaGen(icode);
@@ -178,8 +178,29 @@ namespace EIC
 		fj::Selector jetSelector = fastjet::SelectorAbsEtaMax(fSettings.maxEta - fSettings.jetR - 0.01) * fastjet::SelectorPtMin(1.);
 
 		std::vector<fj::PseudoJet> parts_selected = partSelector(parts);
-		ps << "p_" << parts;
-		ps << "ps_" << parts_selected;
+		ps << "all_" << parts;
+		ps << "sel_" << parts_selected;
+		auto pdgs = HepMCUtil::PDGcodesForPseudoJets(fMCEvWrapper->GetEvent(), parts_selected);
+		ps << "sel_pdg" << pdgs;
+		auto bar_codes = HepMCUtil::barcodesForPseudoJets(parts_selected);
+		ps << "sel_bc" << bar_codes;
+
+		std::vector<int> beam_barcodes;
+		auto beam_parts = HepMCUtil::beam_particles(fMCEvWrapper->GetEvent());
+		for (auto b : beam_parts)
+		{
+			beam_barcodes.push_back(b->barcode());
+		}
+		ps << "beam_bc" << beam_barcodes;
+		auto oes = HepMCUtil::find_outgoing_electron(fMCEvWrapper->GetEvent());
+		if (oes.size() < 1)
+		{
+			Lerror << "unable to find the outgoing electron in the event record!";
+		}
+		else
+		{
+			ps << "out_e_bc" << oes[0]->barcode();
+		}
 
 		fj::JetDefinition jet_def(fj::antikt_algorithm, fSettings.jetR);
 		fj::ClusterSequence ca(parts_selected, jet_def);
