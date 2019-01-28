@@ -1,6 +1,7 @@
 #include <jetty/util/pythia/pyargs.h>
 #include <jetty/util/pythia/pyutil.h>
 #include <jetty/util/sysutil.h>
+#include <jetty/util/strutil.h>
 #include <jetty/util/blog.h>
 
 #include <boost/algorithm/string.hpp>
@@ -85,6 +86,14 @@ namespace PyUtil
 			add("Beams:eCM=0"); // this will fail on initialization
 			add("--dry"); // this if checked should halt the execution
 			add("--invalid"); // or this...
+		}
+
+		// helper for LEP multiparton
+		if (isSet("--lep") and isSet("23:onIfAny"))
+		{
+			std::string s = get("23:onIfAny");
+			std::string news = StrUtil::replace_substring_copy(s, "+", " ");
+			add(boost::str(boost::format("23:onIfAny=%1%") % news));
 		}
 
 		// convenience for eRHIC settings
