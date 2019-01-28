@@ -200,6 +200,11 @@ namespace EIC
 		else
 		{
 			ps << "out_e_bc" << oes[0]->barcode();
+			for (size_t ip = 0; ip < parts_selected.size(); ip++)
+			{
+				if (parts_selected.at(ip).user_index() == oes[0]->barcode())
+					parts_selected.at(ip) = parts_selected.at(ip) * 1e-6;
+			}
 		}
 
 		fj::JetDefinition jet_def(fj::antikt_algorithm, fSettings.jetR);
