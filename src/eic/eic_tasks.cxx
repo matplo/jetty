@@ -173,7 +173,8 @@ int eic_tasks (const std::string &s)
 	sj_ca_sjR10.AddInputTask(r);
 	r->AddTask(&sj_ca_sjR10);
 
-	EIC::GeneralTask eic_general("eic_general", (args.asString() + " --jetR=0.4 --eta=10.").c_str());
+	// EIC::GeneralTask eic_general("eic_general", (args.asString() + " --jetR=0.4 --eta=10.").c_str());
+	EIC::GeneralTask eic_general("eic_general", args.asString().c_str());
 	eic_general.AddInputTask(r);
 	r->AddTask(&eic_general);
 

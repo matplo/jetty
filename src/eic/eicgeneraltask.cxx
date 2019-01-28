@@ -205,11 +205,12 @@ namespace EIC
 		fj::JetDefinition jet_def(fj::antikt_algorithm, fSettings.jetR);
 		fj::ClusterSequence ca(parts_selected, jet_def);
 		auto jets = jetSelector(ca.inclusive_jets());
-		for (const auto & jakt: jets)
-		{
-			if (TMath::Abs(jakt.eta()) > fSettings.maxEta - fSettings.jetR) continue;
-			ps << "j_" << jakt;
-		}
+		// for (const auto & jakt: jets)
+		// {
+		// 	if (TMath::Abs(jakt.eta()) > fSettings.maxEta - fSettings.jetR) continue;
+		// 	ps << "j_" << jakt;
+		// }
+		ps << "j_" << jets;
 
 		ps << endl;
 		return kGood;
