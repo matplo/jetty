@@ -89,7 +89,7 @@ namespace PyUtil
 		}
 
 		// helper for LEP multiparton
-		if (isSet("--lep"))
+		if (isSet("--lepZ0"))
 		{
 			// double mZ = pythia.particleData.m0(23);
 			// pythia.settings.parm("Beams:eCM", mZ);
