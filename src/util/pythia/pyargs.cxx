@@ -89,11 +89,28 @@ namespace PyUtil
 		}
 
 		// helper for LEP multiparton
-		if (isSet("--lep") and isSet("23:onIfAny"))
+		if (isSet("--lep"))
 		{
-			std::string s = get("23:onIfAny");
-			std::string news = StrUtil::replace_substring_copy(s, "+", " ");
-			add(boost::str(boost::format("23:onIfAny=%1%") % news));
+			// double mZ = pythia.particleData.m0(23);
+			// pythia.settings.parm("Beams:eCM", mZ);
+			double mZ = 91.188;
+			add(boost::str(boost::format("Beams:eCM=%1%") % mZ));
+			add("Beams:idA=11");
+			add("Beams:idB=-11");
+			add("Tune:ee=6");
+			add("PDF:lepton=off");
+			add("WeakSingleBoson:ffbar2gmZ=on");
+			add("23:onMode=off");
+			if (isSet("23:onIfAny"))
+			{
+				std::string s = get("23:onIfAny");
+				std::string news = StrUtil::replace_substring_copy(s, "+", " ");
+				add(boost::str(boost::format("23:onIfAny=%1%") % news));
+			}
+			else
+			{
+				add("23:onIfAny=1 2 3 4 5");
+			}
 		}
 
 		// convenience for eRHIC settings
