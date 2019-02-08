@@ -27,6 +27,8 @@ namespace HepMCUtil
 	std::vector<HepMC::GenParticle*> beam_particles(HepMC::GenEvent *ev);
 	double eIC_Q2 (HepMC::GenEvent *ev);
 
+	std::vector<HepMC::GenParticle*> find_outgoing_photon(HepMC::GenEvent *ev, bool debug = false);
+
 	class EICkine
 	{
 	public:

@@ -70,6 +70,7 @@ add_subdirectory(gen)
 add_subdirectory(area)
 add_subdirectory(eic)
 add_subdirectory(deadcone)
+add_subdirectory(photons)
 
 # FILE(GLOB files "${CMAKE_CURRENT_SOURCE_DIR}/../include/*.h")
 # INSTALL(FILES ${files} DESTINATION include)

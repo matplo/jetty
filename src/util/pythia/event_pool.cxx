@@ -52,8 +52,8 @@ namespace PyUtil
 				if (fPool[ie][ip].isFinal())
 				{
 					fastjet::PseudoJet psj ( fPool[ie][ip].px(), fPool[ie][ip].py(), fPool[ie][ip].pz(), fPool[ie][ip].e());
-					psj.set_user_index(ie * 10000 + ip);
-					if (ip > 10000)
+					psj.set_user_index(ie * 100000 + ip);
+					if (ip > 100000)
 						Lwarn << "setting user index particle beyond offset 10k - not reliable - needs a fix";
 					GenUtil::PythiaUserInfo *uinfo = new GenUtil::PythiaUserInfo(&fPool[ie], ip);
 					psj.set_user_info(uinfo);

@@ -11,6 +11,140 @@
 
 namespace HepMCUtil
 {
+	// http://lcgapp.cern.ch/project/simu/HepMC/205/html/example__UsingIterators_8cc-example.html#a1
+	inline bool isPhoton( const HepMC::GenParticle* p )
+    {
+        if ( p->pdg_id() == 22 ) return 1;
+        return 0;
+    }
+
+	inline bool isWboson( const HepMC::GenParticle* p )
+    {
+        if ( abs(p->pdg_id()) == 24 ) return 1;
+        return 0;
+    }
+
+	inline bool isFinalState( const HepMC::GenParticle* p )
+    {
+        if ( !p->end_vertex() && p->status()==1 ) return 1;
+        return 0;
+    }
+
+	inline bool isFromVertexCount( const HepMC::GenParticle* p, const int n)
+	{
+		if (p->production_vertex()->particles_out_size() == n) return 1;
+		return 0;
+	}
+
+    inline bool isHadron( const HepMC::GenParticle *p)
+    {
+		// return ( abs(pdg_id()) <= 9 || abs(pdg_id()) == 21 || abs(pdg_id()) >100 );
+		return ( abs(p->pdg_id()) >100 );
+    }
+
+    inline bool isParton( const HepMC::GenParticle *p)
+    {
+		return ( abs(p->pdg_id()) <= 9 || abs(p->pdg_id()) == 21);
+    }
+
+	inline bool isBoson( const HepMC::GenParticle *p)
+	{
+		return ( ( abs(p->pdg_id()) >20 && abs(p->pdg_id()) <=40 ) || abs(p->pdg_id()) == 9 );
+	}
+
+    inline bool isLepton( const HepMC::GenParticle *p)
+    {
+    	return ( abs(p->pdg_id()) >=11 &&  abs(p->pdg_id()) <= 18 );
+    }
+
+	inline bool isDaughterOf( const HepMC::GenParticle* p, const HepMC::GenParticle* m)
+	{
+	    for ( HepMC::GenVertex::particle_iterator mother = p->production_vertex()->particles_begin(HepMC::parents);
+	          mother != p->production_vertex()->particles_end(HepMC::parents);
+	          ++mother )
+	    {
+	    	if ((*mother) == m) return 1;
+	    }
+	    return 0;
+    }
+
+	inline bool isPhotonsDaughter( const HepMC::GenParticle* p)
+	{
+	    for ( HepMC::GenVertex::particle_iterator mother = p->production_vertex()->particles_begin(HepMC::parents);
+	          mother != p->production_vertex()->particles_end(HepMC::parents);
+	          ++mother )
+	    {
+	    	if (isPhoton(*mother)) return 1;
+	    }
+	    return 0;
+    }
+
+	inline bool isImmediateBeamDaughter( const HepMC::GenParticle* p)
+	{
+		HepMC::GenEvent *ev = p->parent_event();
+		auto bparts = ev->beam_particles();
+		if (isDaughterOf(p, bparts.first) and isDaughterOf(p, bparts.second))
+			return 1;
+		return 0;
+	}
+
+	inline bool isFromHadronDecay(const HepMC::GenParticle* p)
+	{
+	    for ( HepMC::GenVertex::particle_iterator mother = p->production_vertex()->particles_begin(HepMC::parents);
+	          mother != p->production_vertex()->particles_end(HepMC::parents);
+	          ++mother )
+	    {
+	    	if (isHadron(*mother)) return 1;
+	    }
+	    return 0;
+	}
+
+	inline bool isPhotonOffHardParton(const HepMC::GenParticle* p)
+	{
+		// check if single mother
+		if (isFromVertexCount(p, 1))
+		{
+			HepMC::GenVertex::particle_iterator mother = p->production_vertex()->particles_begin(HepMC::parents);
+			if (isPhotonsDaughter(p))
+			{
+				return isPhotonOffHardParton(*mother);
+			}
+		}
+		else
+		{
+			if (isFromHadronDecay(p))
+			{
+				return 0;
+			}
+			else
+			{
+				return 1;
+			}
+		}
+		return 0;
+	}
+
+	std::vector<HepMC::GenParticle*> find_outgoing_photon(HepMC::GenEvent *ev, bool debug)
+	{
+		std::vector<HepMC::GenParticle*> retv;
+        for ( HepMC::GenEvent::particle_iterator p = ev->particles_begin();
+             p != ev->particles_end();
+             ++p )
+        {
+        	if (isFinalState(*p) && isPhoton(*p))
+        	{
+        		if (debug)
+        		{
+        			Linfo << "found FS photon:";
+					(*p)->print( std::cout );
+        		}
+        		if(isPhotonOffHardParton(*p))
+        			retv.push_back(*p);
+        	}
+        }
+		return retv;
+	}
+
 	std::vector<int> PDGcodesForPseudoJets(HepMC::GenEvent *ev, const std::vector<fastjet::PseudoJet> &v)
 	{
 		std::vector<int> pdgs;

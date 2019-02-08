@@ -299,12 +299,14 @@ namespace PyUtil
 			add("HardQCD:qqbar2qqbarNew=on");
 		}
 
+		int nDebugEvents = getI("--debug-events", 0);
+
 		if (isSet("Next:numberShowEvent") == false)
-			add("Next:numberShowEvent", 0);
+			add("Next:numberShowEvent", nDebugEvents);
 		if (isSet("Next:numberShowInfo") == false)
-			add("Next:numberShowInfo", 0);
+			add("Next:numberShowInfo", nDebugEvents);
 		if (isSet("Next:numberShowProcess") == false)
-			add("Next:numberShowProcess", 0);
+			add("Next:numberShowProcess", nDebugEvents);
 		if (isSet("Next:numberCount") == false)
 			add("Next:numberCount", 0);
 
