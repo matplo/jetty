@@ -1,6 +1,7 @@
 #include <jetty/util/pythia/event_pool.h>
 #include <jetty/util/pythia/pdg_mass.h>
 #include <jetty/util/blog.h>
+#include <jetty/util/userinfo.h>
 #include <TRandom.h>
 
 namespace PyUtil
@@ -54,6 +55,8 @@ namespace PyUtil
 					psj.set_user_index(ie * 10000 + ip);
 					if (ip > 10000)
 						Lwarn << "setting user index particle beyond offset 10k - not reliable - needs a fix";
+					GenUtil::PythiaUserInfo *uinfo = new GenUtil::PythiaUserInfo(&fPool[ie], ip);
+					psj.set_user_info(uinfo);
 					fFinalPseudoJets.push_back(psj);
 					// PDGMass::Instance().Add(fPool[ie][ip].m(), fPool[ie][ip].id());
 					PDGMass::Instance().Add(psj.m(), fPool[ie][ip].id());

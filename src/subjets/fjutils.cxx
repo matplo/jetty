@@ -2,6 +2,7 @@
 #include <fastjet/contrib/SoftDrop.hh>
 #include <jetty/util/blog.h>
 #include <jetty/util/pythia/pdg_mass.h>
+#include <jetty/util/userinfo.h>
 
 namespace fj = fastjet;
 
@@ -98,8 +99,21 @@ namespace JettyFJUtils
 				// get the PID of the leading constituent
 				std::vector<fastjet::PseudoJet> _c = fastjet::sorted_by_pt(jj.constituents());
 				_nc.push_back(int(_c.size()));
-				int _pdg = PyUtil::PDGMass::Instance().PDG(_c[0].m());
+
+				// old trick
+				// int _pdg = PyUtil::PDGMass::Instance().PDG(_c[0].m());
+				// _lpdg.push_back(_pdg);
+
+				// using fj user info
+				// const GenUtil::PythiaUserInfo &uinfo = _c[0].user_info<GenUtil::PythiaUserInfo>();
+				// Linfo << uinfo.getIndex();
+				// const Pythia8::Particle *p = _c[0].user_info<GenUtil::PythiaUserInfo>().getParticle();
+				// if (p)
+				// 	Linfo << _pdg << " : " << p->id();
+
+				int _pdg = _c[0].user_info<GenUtil::PythiaUserInfo>().getParticle()->id();
 				_lpdg.push_back(_pdg);
+
 				jj = j1;
 			}
 	   }

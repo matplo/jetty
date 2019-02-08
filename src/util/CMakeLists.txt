@@ -8,6 +8,7 @@ set(SOURCES_LIB
 	looputil.cxx
 	args.cxx
 	blog.cxx
+	userinfo.cxx
 )
 
 set_headers_lib(HEADERS_LIB SOURCES_LIB)

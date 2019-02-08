@@ -20,6 +20,29 @@ using namespace std;
 
 namespace GenUtil
 {
+	HepMCPSJUserInfo::HepMCPSJUserInfo(HepMC::GenParticle *p)
+		: fastjet::PseudoJet::UserInfoBase::UserInfoBase()
+		, fParticle(p)
+		, fEvent(0)
+		, fIndex(-1)
+	{
+		if (fParticle)
+		{
+			fEvent = fParticle->parent_event();
+			fIndex = fParticle->barcode();
+		}
+	}
+
+	HepMC::GenParticle* HepMCPSJUserInfo::getParticle()
+	{
+		if (fParticle)
+			return fParticle;
+		if (fEvent)
+			return fEvent->barcode_to_particle(fIndex);
+		else
+			return 0x0;
+	}
+
 	HepMCEventWrapper::~HepMCEventWrapper()
 	{
 		if (fCleanUpEvent)
@@ -248,6 +271,8 @@ namespace GenUtil
 				{
 					fastjet::PseudoJet psj(vpmc.px(), vpmc.py(), vpmc.pz(), vpmc.e());
 					psj.set_user_index(pmc->barcode());
+					HepMCPSJUserInfo *uinfo = new HepMCPSJUserInfo(fEvent, pmc->barcode());
+					psj.set_user_info(uinfo);
 					fPseudoJets.push_back(psj);
 				}
 			}

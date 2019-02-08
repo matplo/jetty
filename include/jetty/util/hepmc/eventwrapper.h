@@ -17,16 +17,38 @@ namespace Pythia8
 	class Pythia;
 }
 
-namespace fastjet
-{
-	class PseudoJet;
-}
-
 #include <list>
 #include <vector>
 
+#include <fastjet/PseudoJet.hh>
+
 namespace GenUtil
 {
+	class HepMCPSJUserInfo : public fastjet::PseudoJet::UserInfoBase
+	{
+	public:
+		HepMCPSJUserInfo()
+			: fastjet::PseudoJet::UserInfoBase::UserInfoBase(), fParticle(0), fEvent(0), fIndex(-1)
+			{;}
+		HepMCPSJUserInfo(HepMC::GenEvent *ev, int x)
+			: fastjet::PseudoJet::UserInfoBase::UserInfoBase(), fParticle(0), fEvent(ev), fIndex(x)
+			{fParticle = getParticle();}
+		HepMCPSJUserInfo(HepMC::GenParticle *p);
+
+		virtual ~HepMCPSJUserInfo() {;}
+
+		void setIndex(int x) {fIndex = x;}
+		int getIndex(){return fIndex;}
+		void setEvent(HepMC::GenEvent* ev) {fEvent = ev;}
+		HepMC::GenEvent* getEvent() {return fEvent;}
+		HepMC::GenParticle* getParticle();
+
+	private:
+		HepMC::GenParticle *fParticle;
+		HepMC::GenEvent* 	fEvent;
+		int 			 	fIndex;
+	};
+
 	class HepMCEventWrapper
 	{
 	public:
