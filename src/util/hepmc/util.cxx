@@ -57,6 +57,15 @@ namespace HepMCUtil
     	return ( abs(p->pdg_id()) >=11 &&  abs(p->pdg_id()) <= 18 );
     }
 
+	inline bool isBeam(HepMC::GenParticle *p)
+	{
+		HepMC::GenEvent *ev = p->parent_event();
+		auto bparts = ev->beam_particles();
+		if (p == bparts.first or p == bparts.second)
+			return 1;
+		return 0;
+	}
+
 	inline bool isDaughterOf( const HepMC::GenParticle* p, const HepMC::GenParticle* m)
 	{
 	    for ( HepMC::GenVertex::particle_iterator mother = p->production_vertex()->particles_begin(HepMC::parents);

@@ -66,6 +66,8 @@ namespace SysUtil
 
 		int getHash() 	const;
 
+		bool debugMode() const;
+
 	protected:
 		void				_convert(int argc, char **argv);
 		void		 		_init_logging();

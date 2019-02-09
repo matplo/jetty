@@ -190,7 +190,7 @@ namespace Photons
 		auto oes = HepMCUtil::find_outgoing_photon(fMCEvWrapper->GetEvent());
 		if (oes.size() < 1)
 		{
-			Lerror << "unable to find the outgoing photon in the event record!";
+			Lwarn << "unable to find the outgoing photon in the event record!";
 		}
 		else
 		{
@@ -198,11 +198,20 @@ namespace Photons
 			for (auto p : oes) _idx.push_back(p->barcode());
 			ps << "out_photon_bc" << _idx;
 			// Linfo << "prompt photon HEPMC:" << oes[0]->barcode();
-			if (pythia)
+		}
+		if (pythia)
+		{
+			std::vector<int> _idx_py = PyUtil::prompt_photon_indexes(pythia->event);
+			// Linfo << "prompt photon pythia:" << _idx_py[0];
+			ps << "out_photon_bc_pythia" << _idx_py;
+			if (oes.size() < 1 && fArgs.debugMode())
 			{
-				std::vector<int> _idx_py = PyUtil::prompt_photon_indexes(pythia->event);
-				// Linfo << "prompt photon pythia:" << _idx_py[0];
-				ps << "out_photon_bc_pythia" << _idx_py;
+				pythia->process.list();
+				Linfo << "pythia final state prompt photons: " << _idx_py.size();
+				for (auto ip : _idx_py)
+					Linfo << " - " << ip;
+				Linfo << " . ";
+				pythia->event.list();
 			}
 		}
 
