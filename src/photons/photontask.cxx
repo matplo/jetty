@@ -33,6 +33,44 @@ namespace fj = fastjet;
 
 namespace Photons
 {
+	template <class T>
+	class VarPair
+	{
+	public:
+		VarPair(const char *name) : fName(name), fV() {;}
+		virtual ~VarPair() {;}
+		void push_back(T v)
+		{
+			fV.push_back(v);
+		}
+		const std::string & name() const {return fName;}
+		const std::vector<T> & values() const {return fV;}
+	private:
+		VarPair() : fName("noname"), fV() {;}
+		std::string fName;
+		std::vector<T> fV;
+	};
+
+	//class VarCollector
+	//{
+	//public:
+	//	VarCollector() : fPairs() {;}
+	//	virtual ~VarCollector() {;}
+	//	// ostream ...
+	//	template <class T>
+	//	void push_back(const char *name, T v)
+	//	{
+	//		double vd(v);
+	//		for (auto p : fPairs)
+	//		{
+	//			if (p.name() == name)
+	//		}
+	//		fPairs.
+	//	}
+	//private:
+	//	std::vector<VarPair<double>> fPairs;
+	//}
+
 	PhotonTask::Settings::Settings() :
 		maxEta(10.),
 		jetR(0.4)
@@ -94,6 +132,9 @@ namespace Photons
 
 	unsigned int PhotonTask::ExecThis(const char * /*opt*/)
 	{
+		auto vpair = VarPair<double>("something");
+		vpair.push_back(1.);
+
 		int npart = 2;
 		Ldebug << "fpGlauberMC: " << fpGlauberMC;
 		if (fpGlauberMC)
@@ -218,12 +259,45 @@ namespace Photons
 		fj::JetDefinition jet_def(fj::antikt_algorithm, fSettings.jetR);
 		fj::ClusterSequence ca(parts_selected, jet_def);
 		auto jets = jetSelector(ca.inclusive_jets());
-		// for (const auto & jakt: jets)
-		// {
-		// 	if (TMath::Abs(jakt.eta()) > fSettings.maxEta - fSettings.jetR) continue;
-		// 	ps << "j_" << jakt;
-		// }
 		ps << "j_" << jets;
+		for (const auto & jakt: jets)
+		{
+			if (!fj::SelectorNHardest(1)(jakt.constituents())[0].has_user_info<GenUtil::HepMCPSJUserInfo>())
+			{
+				Lerror << "user info missing for the leading constituent";
+				break;
+			}
+			auto uinfo = fj::SelectorNHardest(1)(jakt.constituents())[0].user_info<GenUtil::HepMCPSJUserInfo>();
+			int lpid = uinfo.getParticle()->pdg_id();
+			int lidx = uinfo.getParticle()->barcode();
+			int nsplits = 0;
+			fj::JetDefinition decl_jet_def(fj::cambridge_algorithm, 1.0);
+			fj::ClusterSequence decl_ca(jakt.constituents(), decl_jet_def);
+			for (const auto & j : decl_ca.inclusive_jets(0))
+			{
+				fj::PseudoJet jj, j1, j2;
+				jj = j;
+				while (jj.has_parents(j1,j2))
+				{
+					nsplits++;
+					if (j1.pt2() < j2.pt2()) swap(j1,j2);
+					double delta_R = j1.delta_R(j2);
+					if (!fj::SelectorNHardest(1)(jj.constituents())[0].has_user_info<GenUtil::HepMCPSJUserInfo>())
+					{
+						Lerror << "user info missing for the leading constituent of a radiator";
+						break;
+					}
+					auto _uinfo = fj::SelectorNHardest(1)(jj.constituents())[0].user_info<GenUtil::HepMCPSJUserInfo>();
+					int _lpid = _uinfo.getParticle()->pdg_id();
+					int _lidx = _uinfo.getParticle()->barcode();
+					// tnd->Fill(jakt.perp(), jakt.e(), jakt.eta(), jakt.phi(), lpid,
+					//          delta_R, jj.perp(), jj.e(), j1.perp(), j2.perp(), _lpid, nsplits);
+
+					jj = j1;
+				}
+			}
+			// tnj->Fill(jakt.perp(), jakt.e(), jakt.eta(), jakt.phi(), lpid, nsplits);
+		}
 
 		ps << endl;
 		return kGood;
