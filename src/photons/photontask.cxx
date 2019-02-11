@@ -1,5 +1,6 @@
 #include <jetty/photons/photontask.h>
 
+#include <jetty/util/tasks/gentaskoutput.h>
 #include <jetty/util/tasks/pythiatask.h>
 #include <jetty/util/hepmc/readfile.h>
 #include <jetty/util/hepmc/eventwrapper.h>
@@ -144,6 +145,13 @@ namespace Photons
 			std::string mcevout(GetName() + ".hepmc");
 			fMCEvWrapper->SetOutputFile(mcevout.c_str());
 		}
+
+		TFile *f = GenUtil::GenTaskOutput::Instance().GetOutput("test.root");
+		f->cd();
+		TNtuple *tnj = new TNtuple("tnj", "tnj", "pt:e:eta:phi:lpid:nsplits");
+		GenUtil::GenTaskOutput::Instance().RegisterOutputObject(tnj);
+		TNtuple *tnd = new TNtuple("tnd", "tnd", "pt:e:eta:phi:lpid:lund_dR:lund_pt:lund_e:lund_pt1:lund_pt2:lund_lpid:nsplits");
+		GenUtil::GenTaskOutput::Instance().RegisterOutputObject(tnd);
 		return kGood;
 	}
 
@@ -159,6 +167,9 @@ namespace Photons
 
 		Linfo << coll.fMap["ala"].size();
 		Linfo << coll.fMap["bela"].size();
+
+		TNtuple *tnj = dynamic_cast<TNtuple*>(GenUtil::GenTaskOutput::Instance().GetOutputObject("tnj"));
+		TNtuple *tnd = dynamic_cast<TNtuple*>(GenUtil::GenTaskOutput::Instance().GetOutputObject("tnd"));
 
 		int npart = 2;
 		Ldebug << "fpGlauberMC: " << fpGlauberMC;
@@ -315,13 +326,13 @@ namespace Photons
 					auto _uinfo = fj::SelectorNHardest(1)(jj.constituents())[0].user_info<GenUtil::HepMCPSJUserInfo>();
 					int _lpid = _uinfo.getParticle()->pdg_id();
 					int _lidx = _uinfo.getParticle()->barcode();
-					// tnd->Fill(jakt.perp(), jakt.e(), jakt.eta(), jakt.phi(), lpid,
-					//          delta_R, jj.perp(), jj.e(), j1.perp(), j2.perp(), _lpid, nsplits);
+					tnd->Fill(jakt.perp(), jakt.e(), jakt.eta(), jakt.phi(), lpid,
+					         delta_R, jj.perp(), jj.e(), j1.perp(), j2.perp(), _lpid, nsplits);
 
 					jj = j1;
 				}
 			}
-			// tnj->Fill(jakt.perp(), jakt.e(), jakt.eta(), jakt.phi(), lpid, nsplits);
+			tnj->Fill(jakt.perp(), jakt.e(), jakt.eta(), jakt.phi(), lpid, nsplits);
 		}
 
 		ps << endl;

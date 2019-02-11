@@ -4,6 +4,7 @@ set(NAME_LIB ${MODULE})
 
 set(SOURCES_LIB
 	gentask.cxx
+	gentaskoutput.cxx
 	glaubertask.cxx
 	eventpooltask.cxx
 	pythiatask.cxx
