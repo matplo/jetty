@@ -74,10 +74,13 @@ namespace PyUtil
 			add(boost::str(boost::format("PhaseSpace:pTHatMin=%1%") % pTHatMin));
 		}
 
-		double pTHatMax = getD("--pTHatMax", -99);
+		double pTHatMax = getD("--pTHatMax", -1.);
 		if (pTHatMax == -99)
-			pTHatMax = getD("PhaseSpace:pTHatMax", -99); // backward compat.
-		add(boost::str(boost::format("PhaseSpace:pTHatMax=%1%") % pTHatMax));
+			pTHatMax = getD("PhaseSpace:pTHatMax", -1.); // backward compat.
+		if (pTHatMax >= 0)
+		{
+			add(boost::str(boost::format("PhaseSpace:pTHatMax=%1%") % pTHatMax));
+		}
 
 		if (getD("PhaseSpace:pTHatMin") > getD("PhaseSpace:pTHatMax") && getD("PhaseSpace:pTHatMax") >= 0)
 		{
@@ -86,6 +89,15 @@ namespace PyUtil
 			add("Beams:eCM=0"); // this will fail on initialization
 			add("--dry"); // this if checked should halt the execution
 			add("--invalid"); // or this...
+		}
+
+		if (isSet("--hardBias"))
+		{
+			add("PhaseSpace:bias2Selection=on");
+			if (isSet("--hardBiasPow"))
+				add(boost::str(boost::format("PhaseSpace:bias2SelectionPow=%1%") % getD("hardBiasPow", 4.)));
+			if (isSet("--hardBiasRef"))
+				add(boost::str(boost::format("PhaseSpace:bias2SelectionRef=%1%") % getD("hardBiasRef", 10.)));
 		}
 
 		// helper for LEP multiparton
@@ -264,6 +276,13 @@ namespace PyUtil
 		if (isSet("--hardQCDbeauty"))
 		{
 			add("HardQCD:all=off");
+			add("HardQCD:hardbbbar=on");
+		}
+
+		if (isSet("--hardQCDhf"))
+		{
+			add("HardQCD:all=off");
+			add("HardQCD:hardccbar=on");
 			add("HardQCD:hardbbbar=on");
 		}
 

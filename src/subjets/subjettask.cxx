@@ -138,6 +138,7 @@ namespace GenUtil
 					// note this will be the last pythia in the pool!
 					icode = tp->GetPythia()->info.code();
 					xsec_code = tp->GetPythia()->info.sigmaGen(icode);
+					wxsec = tp->GetPythia()->info.sigmaGen();
 				}
 			}
 			auto evpool = t->GetData()->get<PyUtil::EventPool>();

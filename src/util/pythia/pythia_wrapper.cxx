@@ -123,36 +123,43 @@ namespace PyUtil
 		string outfname = args->get("--out");
 		if (outfname.size() == 0) outfname = "default.root";
 		int nEvent      = args->getI("Main:numberOfEvents");
-		double pTHatMin = args->getD("PhaseSpace:pTHatMin");
-		double pTHatMax = args->getD("PhaseSpace:pTHatMax");
-		double mHatMin  = args->getD("PhaseSpace:mHatMin");
-		double mHatMax  = args->getD("PhaseSpace:mHatMax");
+		// double pTHatMin = args->getD("PhaseSpace:pTHatMin");
+		// double pTHatMax = args->getD("PhaseSpace:pTHatMax");
+		// double mHatMin  = args->getD("PhaseSpace:mHatMin");
+		// double mHatMax  = args->getD("PhaseSpace:mHatMax");
 		double eCM      = args->getD("Beams:eCM");
 		double eA       = args->getD("Beams:eA");
 		double eB       = args->getD("Beams:eB");
-		if (args->getI("Beams:frameType") == 1 || eA==eB)
+		string smodif = boost::str(boost::format("_nEv_%d.root") % nEvent);
+		if (eA > 0 || eB > 0)
 		{
-			eA = eCM / 2.;
-			eB = eCM / 2.;
+			smodif = boost::str(boost::format("_eA_%1.0f_eB_%1.0f_nEv_%d.root") % eA % eB % nEvent);
 		}
-		string smodif = boost::str(boost::format("_eA_%1.0f_eB_%1.0f_eCM_XXXGeV_pTHatMin_%2.1f_pTHatMax_%2.1f_nEv_%d.root")
-		                           % eA % eB % pTHatMin % pTHatMax % nEvent);
-		if (args->isSet("--z0"))
+		if (args->getI("Beams:frameType") == 1)
 		{
-			smodif = boost::str(boost::format("_eA_%1.0f_eB_%1.0f_eCM_XXXGeV_mHatMin_%2.1f_mHatMax_%2.1f_nEv_%d.root")
-			                    % eA % eB % mHatMin % mHatMax % nEvent);
+			if (eCM > 0)
+			{
+				eA = eCM / 2.;
+				eB = eCM / 2.;
+				smodif = boost::str(boost::format("_eA_%1.0f_eB_%1.0f_eCM_%1.0fGeV_nEv_%d.root") % eA % eB % eCM % nEvent);
+			}
 		}
-		if (args->isSet("--minbias"))
-		{
-			smodif = boost::str(boost::format("_eA_%1.0f_eB_%1.0f_eCM_XXXGeV_minbias_nEv_%d.root") % eA % eB % nEvent);
-		}
-
-		if (args->isSet("--inel"))
-		{
-			smodif = boost::str(boost::format("_eA_%1.0f_eB_%1.0f_eCM_XXXGeV_inel_nEv_%d.root") % eA % eB % nEvent);
-		}
+		// string smodif = boost::str(boost::format("_eA_%1.0f_eB_%1.0f_eCM_XXXGeV_pTHatMin_%2.1f_pTHatMax_%2.1f_nEv_%d.root")
+		//                            % eA % eB % pTHatMin % pTHatMax % nEvent);
+		// if (args->isSet("--z0"))
+		// {
+		// 	smodif = boost::str(boost::format("_eA_%1.0f_eB_%1.0f_eCM_XXXGeV_mHatMin_%2.1f_mHatMax_%2.1f_nEv_%d.root")
+		// 	                    % eA % eB % mHatMin % mHatMax % nEvent);
+		// }
+		// if (args->isSet("--minbias"))
+		// {
+		// 	smodif = boost::str(boost::format("_eA_%1.0f_eB_%1.0f_eCM_XXXGeV_minbias_nEv_%d.root") % eA % eB % nEvent);
+		// }
+		// if (args->isSet("--inel"))
+		// {
+		// 	smodif = boost::str(boost::format("_eA_%1.0f_eB_%1.0f_eCM_XXXGeV_inel_nEv_%d.root") % eA % eB % nEvent);
+		// }
 		// smodif = smodif.ReplaceAll("_eCM_XXX", TString::Format("_eCM_%1.0f", eCM));
-		boost::replace_all(smodif, "_eCM_XXX", boost::str(boost::format("_eCM_%1.0f") % eCM));
 		boost::replace_all(outfname, ".root", smodif);
 		if (args->isSet("--nsd"))
 			boost::replace_all(outfname, ".root", "_nsd.root");
