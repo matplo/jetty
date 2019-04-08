@@ -62,10 +62,6 @@ namespace Photons
 			double dv(v);
 			fMap[name].push_back(dv);
 		}
-		// void push_back(const char *name, double v)
-		// {
-		// 	fMap[name].push_back(v);
-		// }
 		std::map<const char *, std::vector<double>> fMap;
 	};
 
@@ -157,16 +153,14 @@ namespace Photons
 
 	unsigned int PhotonTask::ExecThis(const char * /*opt*/)
 	{
-		auto vpair = VarPair<double>("something");
-		vpair.push_back(1.);
-
-		VarCollector coll;
-		coll.push_back("ala", 1);
-		coll.push_back("bela", 2);
-		coll.push_back("bela", 23);
-
-		Linfo << coll.fMap["ala"].size();
-		Linfo << coll.fMap["bela"].size();
+		// auto vpair = VarPair<double>("something");
+		// vpair.push_back(1.);
+		// VarCollector coll;
+		// coll.push_back("ala", 1);
+		// coll.push_back("bela", 2);
+		// coll.push_back("bela", 23);
+		// Linfo << coll.fMap["ala"].size();
+		// Linfo << coll.fMap["bela"].size();
 
 		TNtuple *tnj = dynamic_cast<TNtuple*>(GenUtil::GenTaskOutput::Instance().GetOutputObject("tnj"));
 		TNtuple *tnd = dynamic_cast<TNtuple*>(GenUtil::GenTaskOutput::Instance().GetOutputObject("tnd"));
