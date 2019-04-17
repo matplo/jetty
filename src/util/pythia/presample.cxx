@@ -6,7 +6,7 @@
 #include <jetty/util/looputil.h>
 
 #include <boost/filesystem/path.hpp>
-#include <boost/progress.hpp>
+// #include <boost/progress.hpp>
 
 
 PreSamplePythia::PreSamplePythia(const char *config)

@@ -6,6 +6,8 @@
 #include <jetty/util/wrapper/wrapper.h>
 #include <jetty/util/tasks/gentask.h>
 
+#include <TString.h>
+
 class TGlauberMC;
 class TTree;
 class TFile;
@@ -34,7 +36,7 @@ namespace GenUtil
 		TGlauberMC 	*GetGlauberMC() {return fpGlauberMC;}
 
 	protected:
-		const char 		*OutputFileName();
+		TString 		OutputFileName();
 		TGlauberMC 		*fpGlauberMC;
 		double 			 fFixedb;
 

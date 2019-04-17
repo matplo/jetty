@@ -37,8 +37,8 @@ namespace GenUtil
 	    	<< " x-sect = " << fpGlauberMC->GetTotXSect()
 	    	<< " +- " << fpGlauberMC->GetTotXSectErr() << " b ";
 	    TString name = OutputFileName();
-		Linfo << GetName() << " writing file: " << name;
-		TFile out(name, "recreate", name,9);
+		Linfo << GetName() << " writing file: " << name.Data();
+		TFile out(name, "recreate", name.Data(), 9);
 		TNtuple  *nt = fpGlauberMC->GetNtuple();
 		if (nt)
 			nt->Write();
@@ -56,7 +56,7 @@ namespace GenUtil
 		return kDone;
 	}
 
-	const char * GlauberTask::OutputFileName()
+	TString GlauberTask::OutputFileName()
 	{
 		if (!fpGlauberMC)
 		{
@@ -87,7 +87,8 @@ namespace GenUtil
 			else
 				name = Form("%s%s%s.root",fpGlauberMC->Str(),om.Data(),nd.Data());
 		}
-		return name.Data();
+		Linfo << "return output file name: " << name.Data();
+		return name;
 	}
 
 	unsigned int GlauberTask::ExecThis(const char *opt)
@@ -278,7 +279,8 @@ namespace GenUtil
 
 		if (fArgs.isSet("--write-collisions"))
 		{
-			string outfname = OutputFileName();
+			TString _s = OutputFileName();
+			string outfname = _s.Data();
 			StrUtil::replace_substring(outfname, ".root", "gtask.root");
 			// outfname = // change name
 			fOutputFile = new TFile(outfname.c_str(), "recreate");
