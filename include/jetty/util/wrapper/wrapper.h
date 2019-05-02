@@ -24,21 +24,26 @@ class Wrapper
 
 		virtual 		~Wrapper()
 		{
-			for (unsigned int i = 0; i < fPointers.size(); i++)
+			// for (unsigned int i = 0; i < fPointers.size(); i++)
+			for (unsigned int i = fPointers.size(); i-- > 0; )
 			{
 				if (debug)
 					{
-						std::cout << "[d] Deleting... " << fPointers[i]->get_name() << std::endl;
+						if (fDelete[i])
+							std::cout << "[d] Deleting... " << fPointers[i]->get_name() << std::endl;
+						else
+							std::cout << "[d] NOT Deleting... " << fPointers[i]->get_name() << std::endl;
 						std::cout << "    " << fLabels[i];
 						std::cout << *fPointers[i] << std::endl;
 					}
 
-				delete fPointers[i];
+				if (fDelete[i])
+					delete fPointers[i];
 			}
 		}
 
 		template <class T>
-		unsigned int 	add(T *p, const char *label = "no_label")
+		unsigned int 	add(T *p, const char *label = "no_label", bool todelete = true)
 		{
 			if (contains(p))
 			{
@@ -53,14 +58,15 @@ class Wrapper
 			fPointers.push_back(c);
 			std::string slabel(label);
 			fLabels.push_back(slabel);
+			fDelete.push_back(todelete);
 			return id;
 		}
 
 		template <class T>
-		unsigned int 	add(const T &o, const char *label = "no_label")
+		unsigned int 	add(const T &o, const char *label = "no_label", bool todelete = true)
 		{
 			T *p = new T(o);
-			return add(p, label);
+			return add(p, label, todelete);
 		}
 
 		template <class T>
@@ -86,6 +92,7 @@ class Wrapper
 						delete fPointers[i];
 						fPointers.erase(fPointers.begin() + i);
 						fLabels.erase(fLabels.begin() + i);
+						fDelete.erase(fDelete.begin() + i);
 						return true;
 					}
 			}
@@ -181,6 +188,7 @@ class Wrapper
 				WrapContainer<bool> *c = (WrapContainer<bool>*)(fPointers[i]); // always returns c!=0
 				WrapContainer<bool> &rc = *c;
 				std::cout << "    " << fLabels[i];
+				std::cout << " del(" << fDelete[i] << ")";
 				std::cout << rc << std::endl;
 			}
 		}
@@ -200,6 +208,7 @@ class Wrapper
 		std::vector< WrapType* >		fPointers;
 		//std::forward_list< WrapType* >		fPointers;
 		std::vector<std::string> fLabels;
+		std::vector<bool> fDelete;
 
 	private:
 		unsigned int 	idcount;
