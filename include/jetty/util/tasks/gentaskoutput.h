@@ -4,6 +4,7 @@
 class TList;
 class TFile;
 class TObject;
+class Wrapper;
 
 namespace GenUtil
 {
@@ -18,9 +19,9 @@ namespace GenUtil
 
 			virtual ~GenTaskOutput();
 
-			TFile 	*GetOutput(const char *fname);
-			TObject *GetOutputObject(const char *name);
-			TObject *RegisterOutputObject(TObject *o);
+			Wrapper *GetWrapper() {return fWrapper;}
+
+			TFile *GetOutput(const char *fname);
 
 		private:
 			GenTaskOutput(); // private construct
@@ -30,8 +31,7 @@ namespace GenUtil
 			GenTaskOutput& operator= ( const GenTaskOutput& ) = delete ;
 			GenTaskOutput& operator= ( GenTaskOutput&& ) = delete ;
 
-			TList* 					fListOfFiles;
-			TList* 					fListOfObjects;
+			Wrapper *fWrapper;
 	};
 }
 

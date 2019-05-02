@@ -1,4 +1,4 @@
-#include <jetty/util/tasks/gentask.h>
+ #include <jetty/util/tasks/gentask.h>
 #include <jetty/util/blog.h>
 #include <jetty/util/strutil.h>
 
@@ -47,7 +47,8 @@ namespace GenUtil
 			if (t)
 				delete t;
 		}
-		fTasks.clear();
+		// this is not needed?
+		// fTasks.clear();
 
 		fShared->set_debug(1);
 		delete fShared;

@@ -142,12 +142,19 @@ namespace Photons
 			fMCEvWrapper->SetOutputFile(mcevout.c_str());
 		}
 
-		TFile *f = GenUtil::GenTaskOutput::Instance().GetOutput("test.root");
+		std::string foutname = GetName();
+		foutname = foutname + ".root";
+		TFile *f = GenUtil::GenTaskOutput::Instance().GetOutput(foutname.c_str());
 		f->cd();
 		TNtuple *tnj = new TNtuple("tnj", "tnj", "pt:e:eta:phi:lpid:nsplits");
-		GenUtil::GenTaskOutput::Instance().RegisterOutputObject(tnj);
+		GenUtil::GenTaskOutput::Instance().GetWrapper()->add(tnj, "tnj", false);
 		TNtuple *tnd = new TNtuple("tnd", "tnd", "pt:e:eta:phi:lpid:lund_dR:lund_pt:lund_e:lund_pt1:lund_pt2:lund_lpid:nsplits");
-		GenUtil::GenTaskOutput::Instance().RegisterOutputObject(tnd);
+		GenUtil::GenTaskOutput::Instance().GetWrapper()->add(tnd, "tnd", false);
+
+		TTree *jt = new TTree("jt", "jt");
+		GenUtil::GenTaskOutput::Instance().GetWrapper()->add(jt, "jt", false);
+		RStream::TStream *tstream    = new RStream::TStream("j", jt);
+		GenUtil::GenTaskOutput::Instance().GetWrapper()->add(tstream, "j", true);
 		return kGood;
 	}
 
@@ -162,8 +169,13 @@ namespace Photons
 		// Linfo << coll.fMap["ala"].size();
 		// Linfo << coll.fMap["bela"].size();
 
-		TNtuple *tnj = dynamic_cast<TNtuple*>(GenUtil::GenTaskOutput::Instance().GetOutputObject("tnj"));
-		TNtuple *tnd = dynamic_cast<TNtuple*>(GenUtil::GenTaskOutput::Instance().GetOutputObject("tnd"));
+		TNtuple *tnj = GenUtil::GenTaskOutput::Instance().GetWrapper()->get<TNtuple>("tnj");
+		TNtuple *tnd = GenUtil::GenTaskOutput::Instance().GetWrapper()->get<TNtuple>("tnd");
+
+
+		TTree *jt = GenUtil::GenTaskOutput::Instance().GetWrapper()->get<TTree>("jt");
+		RStream::TStream *tstream    = GenUtil::GenTaskOutput::Instance().GetWrapper()->get<RStream::TStream>("tstream");
+		// use VarCollector to put jet split info into a tree - an entry is a jet - a leave is a split...
 
 		int npart = 2;
 		Ldebug << "fpGlauberMC: " << fpGlauberMC;
@@ -346,6 +358,13 @@ namespace Photons
 			Linfo << GetName() << " Finalize " << " file written: " << fOutput->GetName();
 		}
 		//}
+		GenUtil::GenTaskOutput::Instance().GetWrapper()->list();
+
+		std::string foutname = GetName();
+		foutname = foutname + ".root";
+		TFile *f = GenUtil::GenTaskOutput::Instance().GetOutput(foutname.c_str());
+		f->Write();
+		f->Close();
 		return kDone;
 	}
 }
