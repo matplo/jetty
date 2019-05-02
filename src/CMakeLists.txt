@@ -67,6 +67,10 @@ set(CMAKE_MACOSX_RPATH 1)
 message( STATUS "CMAKE_CURRENT_SOURCE_DIR is ${CMAKE_CURRENT_SOURCE_DIR}")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include)
 
+# for gmp installed with brew
+include_directories("/usr/local/include")
+link_directories("/usr/local/lib")
+
 add_subdirectory(util)
 add_subdirectory(examples)
 add_subdirectory(subjets)
