@@ -59,10 +59,35 @@ namespace Photons
 		template <class T>
 		void push_back(const char *name, T v)
 		{
+			std::string s(name);
+			if (keyExists(name) == false)
+			{
+				fKeys.push_back(s);
+			}
 			double dv(v);
-			fMap[name].push_back(dv);
+			fMap[s].push_back(dv);
+			// Linfo << "number of entries for key [" << name << "] : " << fMap[s].size();
 		}
-		std::map<const char *, std::vector<double>> fMap;
+		bool keyExists(const char *name)
+		{
+			std::string s(name);
+			return !(fMap.find(s) == fMap.end());
+		}
+		void fillTStream(RStream::TStream *tstream)
+		{
+			RStream::TStream &ts = *tstream;
+			// Linfo << "number of keys: " << fKeys.size();
+			for ( auto k : fKeys )
+			{
+				// Linfo << "number of entries for key [" << k << "] : " << fMap[k].size();
+				// Linfo << "number of entries for key [" << k << "] : " << fMap["jpt"].size();
+				ts << k.c_str() << fMap[k];
+				// for (auto v : fMap[k])
+				// 	Linfo << k << " : " << v;
+			}
+		}
+		std::map<std::string, std::vector<double>> fMap;
+		std::vector<std::string> fKeys;
 	};
 
 	//class VarCollector
@@ -151,6 +176,12 @@ namespace Photons
 		TNtuple *tnd = new TNtuple("tnd", "tnd", "pt:e:eta:phi:lpid:lund_dR:lund_pt:lund_e:lund_pt1:lund_pt2:lund_lpid:nsplits");
 		GenUtil::GenTaskOutput::Instance().GetWrapper()->add(tnd, "tnd", false);
 
+		TNtuple *tng = new TNtuple("tng", "tng", "pt:e:eta:phi:lpid:nsplits:nlnkt2:nlnkt1:nlnkt0:nlnktm1:nlnktm2");
+		GenUtil::GenTaskOutput::Instance().GetWrapper()->add(tng, "tng", false);
+
+		TNtuple *tngp = new TNtuple("tngp", "tngp", "pt:e:eta:phi");
+		GenUtil::GenTaskOutput::Instance().GetWrapper()->add(tngp, "tngp", false);
+
 		TTree *jt = new TTree("jt", "jt");
 		GenUtil::GenTaskOutput::Instance().GetWrapper()->add(jt, "jt", false);
 		RStream::TStream *tstream    = new RStream::TStream("j", jt);
@@ -169,12 +200,16 @@ namespace Photons
 		// Linfo << coll.fMap["ala"].size();
 		// Linfo << coll.fMap["bela"].size();
 
+		bool photonStructure = fArgs.isSet("--photonStructure");
+
 		TNtuple *tnj = GenUtil::GenTaskOutput::Instance().GetWrapper()->get<TNtuple>("tnj");
 		TNtuple *tnd = GenUtil::GenTaskOutput::Instance().GetWrapper()->get<TNtuple>("tnd");
+		TNtuple *tng = GenUtil::GenTaskOutput::Instance().GetWrapper()->get<TNtuple>("tng");
+		TNtuple *tngp = GenUtil::GenTaskOutput::Instance().GetWrapper()->get<TNtuple>("tngp");
 
 
 		TTree *jt = GenUtil::GenTaskOutput::Instance().GetWrapper()->get<TTree>("jt");
-		RStream::TStream *tstream    = GenUtil::GenTaskOutput::Instance().GetWrapper()->get<RStream::TStream>("tstream");
+		RStream::TStream *tstream = GenUtil::GenTaskOutput::Instance().GetWrapper()->get<RStream::TStream>("j");
 		// use VarCollector to put jet split info into a tree - an entry is a jet - a leave is a split...
 
 		int npart = 2;
@@ -273,7 +308,7 @@ namespace Photons
 		auto oes = HepMCUtil::find_outgoing_photon(fMCEvWrapper->GetEvent());
 		if (oes.size() < 1)
 		{
-			Lwarn << "unable to find the outgoing photon in the event record!";
+			Ldebug << "unable to find the outgoing photon in the event record!";
 		}
 		else
 		{
@@ -296,6 +331,11 @@ namespace Photons
 				Linfo << " . ";
 				pythia->event.list();
 			}
+			for (auto ip : _idx_py)
+				tngp->Fill(pythia->event[ip].pT(),
+				           pythia->event[ip].e(),
+				           pythia->event[ip].eta(),
+				           pythia->event[ip].phi());
 		}
 
 		fj::JetDefinition jet_def(fj::antikt_algorithm, fSettings.jetR);
@@ -313,6 +353,18 @@ namespace Photons
 			int lpid = uinfo.getParticle()->pdg_id();
 			int lidx = uinfo.getParticle()->barcode();
 			int nsplits = 0;
+
+			int nsplits_ln_kt2 = 0;
+			int nsplits_ln_kt1 = 0;
+			int nsplits_ln_kt0 = 0;
+			int nsplits_ln_ktm1 = 0;
+			int nsplits_ln_ktm2 = 0;
+
+			if (photonStructure && lpid != 22)
+				continue;
+
+			VarCollector vc;
+			int hardestPhoton = 1.;
 			fj::JetDefinition decl_jet_def(fj::cambridge_algorithm, 1.0);
 			fj::ClusterSequence decl_ca(jakt.constituents(), decl_jet_def);
 			for (const auto & j : decl_ca.inclusive_jets(0))
@@ -332,13 +384,47 @@ namespace Photons
 					auto _uinfo = fj::SelectorNHardest(1)(jj.constituents())[0].user_info<GenUtil::HepMCPSJUserInfo>();
 					int _lpid = _uinfo.getParticle()->pdg_id();
 					int _lidx = _uinfo.getParticle()->barcode();
+					double _kt = j2.perp() * delta_R;
+					double ln_kt = TMath::Log(_kt);
+					if (ln_kt > 2) nsplits_ln_kt2++;
+					if (ln_kt > 1) nsplits_ln_kt1++;
+					if (ln_kt > 0) nsplits_ln_kt0++;
+					if (ln_kt >-1) nsplits_ln_ktm1++;
+					if (ln_kt >-2) nsplits_ln_ktm2++;
 					tnd->Fill(jakt.perp(), jakt.e(), jakt.eta(), jakt.phi(), lpid,
 					         delta_R, jj.perp(), jj.e(), j1.perp(), j2.perp(), _lpid, nsplits);
 
+					vc.push_back("jpt", jakt.perp());
+					vc.push_back("jeta", jakt.eta());
+					vc.push_back("jphi", jakt.phi());
+
+					vc.push_back("dR", delta_R);
+					vc.push_back("spt", jj.perp());
+					vc.push_back("spt1", j1.perp());
+					vc.push_back("spt2", j2.perp());
+
+					if (photonStructure && _lpid == 22)
+					{
+						// this is a split with a leading photon
+						;
+					}
+					else
+					{
+						hardestPhoton = 0;
+					}
 					jj = j1;
 				}
 			}
 			tnj->Fill(jakt.perp(), jakt.e(), jakt.eta(), jakt.phi(), lpid, nsplits);
+			tng->Fill(jakt.perp(), jakt.e(), jakt.eta(), jakt.phi(), lpid, nsplits,
+			          nsplits_ln_kt2, nsplits_ln_kt1, nsplits_ln_kt0, nsplits_ln_ktm1, nsplits_ln_ktm2);
+			// Linfo << "number of keys: " << vc.fKeys.size();
+			if (vc.fKeys.size())
+			{
+				vc.fillTStream(tstream);
+				(*tstream) << "hardestPhoton" << hardestPhoton * 1.;
+				(*tstream) << endl;
+			}
 		}
 
 		ps << endl;

@@ -81,6 +81,15 @@ namespace GenUtil
 		return fData->get<Pythia8::Pythia>();
 	}
 
+	unsigned int PythiaTask::FinalizeThis(const char *opt)
+	{
+		if (fpPythia)
+		{
+			fpPythia->stat();
+		}
+		return kGood;
+	}
+
 	///---
 	SpectraPtHatBins::~SpectraPtHatBins()
 	{
