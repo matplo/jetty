@@ -36,3 +36,5 @@ if (CGAL_FOUND)
 else()
 	message(WARNING "CGAL not found - part of util will not be compiled")
 endif()
+
+add_subdirectory(lep)
