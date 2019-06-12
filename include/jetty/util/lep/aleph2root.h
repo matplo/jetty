@@ -1,8 +1,5 @@
 namespace Aleph
 {
-	void make_a_tree(const char *fname)
-	{
-		;
-	}
+	int make_a_tree(const char *fname);
 };
 

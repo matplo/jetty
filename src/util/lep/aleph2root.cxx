@@ -30,28 +30,147 @@
 #include <TTree.h>
 
 #include <jetty/util/blog.h>
+#include <jetty/util/args.h>
+#include <jetty/util/strutil.h>
+#include <jetty/util/rstream/tstream.h>
 
 #include <string>
 #include <fstream>
 
 namespace Aleph
 {
-
-	void make_a_tree(const char *fname = "")
+	int make_a_tree(const char *fname = "")
 	{
 		TString sfname = TString::Format("%s.root", fname);
 		TFile fout(sfname, "recreate");
 		fout.cd();
-		TTree t("t");
+		TTree t("t" ,"aleph data");
+
+		RStream::TStream tstr("e", &t);
+
+		bool reading_parts = false;
+		bool reading_event = false;
 
 		std::ifstream infile(fname);
 		std::string line;
+
+		int run    = -99;
+		int event  = -99;
+		double ecm = -99.0;
+		int vflag  = -99;
+		double vx  = -99.0;
+		double vy  = -99.0;
+		double ex  = -99.0;
+		double ey  = -99.0;
+
+		std::map<std::string, std::vector<double>> parts;
+
 		while (std::getline(infile, line))
 		{
-			Ldebug << line;
+			if (line.find("ALEPH_DATA", 0) != std::string::npos)
+			{
+				Ldebug << line << " - start of the event found";
+				if (reading_event)
+				{
+					Lerror << "something went wrong : new event before finishing the last one" << event;
+				}
+				reading_event = true;
+				StrUtil::replace_substring(line, " ", "");
+				StrUtil::replace_substring(line, "EVENT", " EVENT=");
+				StrUtil::replace_substring(line, "ECM", " ECM");
+				StrUtil::replace_substring(line, "GEV", "");
+
+				SysUtil::Args _args(line);
+				run   = _args.getI("ALEPH_DATARUN", 0);
+				event = _args.getI("EVENT", 0);
+				ecm   = _args.getD("ECM", 0.0);
+			}
+			else
+			{
+				if (reading_event)
+				{
+					if (line.find("Primary vertex info flag", 0) != std::string::npos)
+					{
+						StrUtil::replace_substring(line, "Primary vertex info flag", "vflag");
+						StrUtil::replace_substring(line, " ", "");
+						StrUtil::replace_substring(line, "vx", " vx");
+						StrUtil::replace_substring(line, "vy", " vy");
+						StrUtil::replace_substring(line, "ex", " ex");
+						StrUtil::replace_substring(line, "ey", " ey");
+						reading_parts = true;
+
+						SysUtil::Args _args(line);
+						vflag = _args.getI("vflag", -99);
+						vx    = _args.getD("vx", -99.);
+						vy    = _args.getD("vy", -99.);
+						ex    = _args.getD("ex", -99.);
+						ey    = _args.getD("ey", -99.);
+					}
+					else if (reading_parts)
+					{
+						StrUtil::replace_substring(line, " ", "");
+						std::vector<std::string> vars{"px=", "py=", "pz=", "m=", "charge", "pwflag", "d0", "z0", "ntpc", "nitc", "nvdet"};
+						std::vector<std::string> tovars{"px=", " py=", " pz=", " m=", " charge=", " pwflag=", " d0=", " z0=", " ntpc=", " nitc=", " nvdet="};
+						for ( unsigned int i = 0; i < vars.size(); i++)
+						{
+							StrUtil::replace_substring(line, vars[i].c_str(), tovars[i].c_str());
+						}
+						SysUtil::Args _args(line);
+						for ( unsigned int i = 0; i < vars.size(); i++)
+						{
+							std::string _svar = StrUtil::replace_substring_copy(vars[i], "=", "");
+							double val = _args.getD(_svar.c_str(), 0.0);
+							parts[_svar].push_back(val);
+						}
+					}
+				}
+			}
+			// Linfo << line;
+			if (line.find("END_EVENT", 0) != std::string::npos)
+			{
+				Ldebug << line << " - end of the event found";
+				if (reading_event && reading_parts)
+				{
+					tstr << "run" 	<< run;
+					tstr << "event" << event;
+					tstr << "ecm" 	<< ecm;
+
+					tstr << "vflag" << vflag;
+
+					std::vector<std::string> pvars{"px", "py", "pz", "m", "charge", "pwflag", "d0", "z0", "ntpc", "nitc", "nvdet"};
+					for ( auto & v : pvars)
+					{
+						tstr << v.c_str() << parts[v];
+					}
+
+					tstr << std::endl;
+
+					reading_event = false;
+					reading_parts = false;
+
+					run   = -99;
+					event = -99;
+					ecm   = -99.0;
+					vflag = -99;
+					vx    = -99.0;
+					vy    = -99.0;
+					ex    = -99.0;
+					ey    = -99.0;
+
+					parts.clear();
+
+				}
+				else
+				{
+					Lerror << "Something awfully wrong with the event structure...";
+					break;
+				}
+			}
 		}
 
 		fout.Write();
 		fout.Close();
+
+		return 0;
 	};
 };

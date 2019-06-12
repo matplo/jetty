@@ -16,8 +16,8 @@ int main ( int argc, char *argv[] )
 
 	if (args.isSet("--rootify"))
 	{
-		std::string _sin = agrs.get("--input").c_str();
-		return Aleph::aleph2root(_sin.c_str());
+		std::string _sin = args.get("--input");
+		return Aleph::make_a_tree(_sin.c_str());
 	}
 	return 0;
 };
