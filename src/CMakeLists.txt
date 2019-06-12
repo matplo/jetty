@@ -37,6 +37,8 @@ else()
   include_directories(${ROOT_INCLUDE_DIRS})
 endif()
 
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11")
+
 set(Boost_NO_BOOST_CMAKE ON)
 set(BUILD_SHARED_LIBS ON)
 set(Boost_USE_STATIC_LIBS OFF)
