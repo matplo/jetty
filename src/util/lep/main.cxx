@@ -19,5 +19,11 @@ int main ( int argc, char *argv[] )
 		std::string _sin = args.get("--input");
 		return Aleph::make_a_tree(_sin.c_str());
 	}
+
+	if (args.isSet("--dump"))
+	{
+		std::string _sin = args.get("--input");
+		return Aleph::dump(_sin.c_str(), args.getI("--nev", -1), args.isSet("--noparts"));
+	}
 	return 0;
 };

@@ -17,11 +17,11 @@ string(REPLACE ".cxx" ".h" HEADERS_EXE "${SOURCES_EXE}")
 
 add_library(${NAME_LIB} SHARED ${SOURCES_LIB})
 target_include_directories(${NAME_LIB} PUBLIC ${ROOT_INCLUDE_DIR} ${FASTJET_DIR}/include ${CGAL_INCLUDE_DIR})
-target_link_libraries( ${NAME_LIB} ${PROJECT_NAME}_util ${ROOT_LIBRARIES} ${CGAL_LIBRARIES})
+target_link_libraries( ${NAME_LIB} ${PROJECT_NAME}_util ${ROOT_LIBRARIES} ${CGAL_LIBRARIES} ${PROJECT_NAME}_util_rstream)
 
 if (HEPMC_FOUND)
 	add_executable(${NAME_EXE} ${SOURCES_EXE})
-	target_link_libraries( ${NAME_EXE} ${NAME_LIB} ${HEPMC_LIBRARIES} ${ROOT_LIBRARIES} ${PROJECT_NAME}_util_hepmc)
+	target_link_libraries( ${NAME_EXE} ${NAME_LIB} ${HEPMC_LIBRARIES} ${ROOT_LIBRARIES} ${PROJECT_NAME}_util_hepmc ${PROJECT_NAME}_util_rstream)
 else()
 	message(WARNING "HepMC not found - ${NAME_EXE} part of util will not be compiled")
 endif()
