@@ -15,6 +15,7 @@
 #include <boost/algorithm/string.hpp>
 
 #include <jetty/mljets/jet_efp.h>
+#include <jetty/mljets/NTReader.h>
 
 using namespace std;
 
@@ -26,6 +27,13 @@ int main ( int argc, char *argv[] )
 	if (args.isSet("--jetefp"))
 	{
 		return jet_efp(argc, argv);
+	}
+
+	if (args.isSet("--read-test"))
+	{
+		NTReader r(0);
+		r.Loop();
+		//return test_ntuple_read(argc, argv);
 	}
 	return 0;
 };
