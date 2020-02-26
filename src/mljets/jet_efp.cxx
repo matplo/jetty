@@ -30,6 +30,7 @@
 #include <jetty/mljets/jet.h>
 #include <jetty/mljets/einstein_sum.h>
 #include <jetty/mljets/efp7.h>
+#include <jetty/mljets/fill_efp7.h>
 //#endif // WITH_EFP7
 
 using namespace mljets;
@@ -231,11 +232,20 @@ int jet_efp(int argc, char *argv[])
                 }
 #endif
 
-#ifdef WITH_EFP7
+// #ifdef WITH_EFP7
+// #define FILL_EFP7_NO_TRUTH 1
+// #include <fill_efp7.cc>
+// #undef FILL_EFP7_NO_TRUTH
+// #endif // WITH_EFP7
+
 #define FILL_EFP7_NO_TRUTH 1
-#include <fill_efp7.cc>
+FILL_EFP7(efp_raw, particle_reco_tpc, jet_ak04tpc, eta_raw, 0.4);
+#ifndef FILL_EFP7_NO_TRUTH
+FILL_EFP7(efp, particle_truth, jet_truth_ak04, eta, 0.4);
+FILL_EFP7(efp, particle_charged_truth, jet_charged_truth_ak04, eta,
+          0.4);
+#endif // FILL_EFP7_NO_TRUTH
 #undef FILL_EFP7_NO_TRUTH
-#endif // WITH_EFP7
 
             }
 

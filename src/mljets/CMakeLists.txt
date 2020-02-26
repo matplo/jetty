@@ -7,6 +7,7 @@ set(SOURCES_LIB
 	efp7.cxx 
 	jet_efp.cxx
 	jet.cxx
+	fill_efp7.cxx
 )
 
 set(SOURCES_EXE main.cxx)
