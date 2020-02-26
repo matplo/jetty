@@ -8,6 +8,8 @@ include(safeguards)
 include(set_headers_lib)
 include(install_targets_custom)
 
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
 execute_process ( COMMAND fastjet-config --prefix WORKING_DIRECTORY /tmp OUTPUT_VARIABLE FASTJET_DIR OUTPUT_STRIP_TRAILING_WHITESPACE )
 execute_process ( COMMAND fastjet-config --cxxflags WORKING_DIRECTORY /tmp OUTPUT_VARIABLE FASTJET_CXXFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE )
 execute_process ( COMMAND fastjet-config --libs --plugins WORKING_DIRECTORY /tmp OUTPUT_VARIABLE FASTJET_LIBS OUTPUT_STRIP_TRAILING_WHITESPACE )
@@ -99,3 +101,11 @@ add_subdirectory(photons)
 
 # make install and cpack
 # include(install_target)
+
+
+find_package(MKL)
+if(MKL_FOUND)
+	add_subdirectory(mljets)
+else() 
+	message(WARNING "MKL libs not found - mljets compilation skipped")
+endif()
