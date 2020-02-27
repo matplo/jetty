@@ -1,15 +1,15 @@
-#define JETTY_MLJETS_NTReader_cxx
-#include <jetty/mljets/NTReader.h>
+#define JETTY_MLJETS_NTReaderEvent_cxx
+#include <jetty/mljets/NTReaderEvent.h>
 #include <jetty/util/blog.h>
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
 
-void NTReader::Loop()
+void NTReaderEvent::Loop()
 {
 //   In a ROOT session, you can do:
-//      root> .L NTReader.C
-//      root> NTReader t
+//      root> .L NTReaderEvent.C
+//      root> NTReaderEvent t
 //      root> t.GetEntry(12); // Fill t data members with entry number 12
 //      root> t.Show();       // Show values of entry 12
 //      root> t.Show(16);     // Read and show values of entry 16
@@ -52,6 +52,5 @@ void NTReader::Loop()
 	      	Lwarn << " - ev id < current_ev_id " << ev_id << " < " << current_ev_id;
       	current_ev_id = ev_id;
       }
-      Linfo << "track (pt, eta, phi): (" << ParticlePt << ", " << ParticleEta << ", " << ParticlePhi << ")" << " event (id, run#): (" << ev_id << ", " << run_number << ")";
    }
 }

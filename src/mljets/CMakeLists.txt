@@ -9,6 +9,7 @@ set(SOURCES_LIB
 	jet.cxx
 	fill_efp7.cxx
 	NTReader.cxx
+	NTReaderEvent.cxx
 )
 
 set(SOURCES_EXE main.cxx)

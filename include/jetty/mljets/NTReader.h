@@ -22,6 +22,8 @@ public :
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
    // Declaration of leaf types
+   Int_t           current_run_number;
+   UInt_t          current_ev_id;
    Int_t           run_number;
    UInt_t          ev_id;
    Float_t         ParticlePt;
@@ -49,7 +51,7 @@ public :
 #endif
 
 #ifdef JETTY_MLJETS_NTReader_cxx
-NTReader::NTReader(TTree *tree) : fChain(0) 
+NTReader::NTReader(TTree *tree) : fChain(0), current_ev_id(-1), current_run_number(-1)
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
