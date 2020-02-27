@@ -51,6 +51,7 @@ void NTReaderEvent::Loop()
       	if (ev_id < current_ev_id)
 	      	Lwarn << " - ev id < current_ev_id " << ev_id << " < " << current_ev_id;
       	current_ev_id = ev_id;
+      	Linfo << centrality;
       }
    }
 }

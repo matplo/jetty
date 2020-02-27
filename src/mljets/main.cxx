@@ -16,6 +16,7 @@
 
 #include <jetty/mljets/jet_efp.h>
 #include <jetty/mljets/NTReader.h>
+#include <jetty/mljets/NTReaderEvent.h>
 
 using namespace std;
 
@@ -33,6 +34,10 @@ int main ( int argc, char *argv[] )
 	{
 		NTReader r(0);
 		r.Loop();
+
+		NTReaderEvent rE(0);
+		rE.Loop();
+
 		//return test_ntuple_read(argc, argv);
 	}
 	return 0;

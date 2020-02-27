@@ -25,14 +25,18 @@
 #include <jetty/util/args.h>
 #include <jetty/util/blog.h>
 #include <jetty/util/strutil.h>
+#include <jetty/util/looputil.h>
 
-//#ifdef WITH_EFP7
+// #include <jet.h>
+// #ifdef WITH_EFP7
+// #include <einstein_sum.h>
+// #include <efp7.cc>
+// #endif // WITH_EFP7
+
 #include <jetty/mljets/jet.h>
 #include <jetty/mljets/einstein_sum.h>
 #include <jetty/mljets/efp7.h>
 #include <jetty/mljets/fill_efp7.h>
-//#endif // WITH_EFP7
-
 using namespace mljets;
 
 #define NTRACK_MAX (1U << 17)
@@ -42,7 +46,6 @@ inline float half(const float x)
     return x;
 }
 
-// int main(int argc, char *argv[])
 int jet_efp(int argc, char *argv[])
 {
     if (argc < 2) {
@@ -54,9 +57,9 @@ int jet_efp(int argc, char *argv[])
 
     dummyv[0] = strdup("main");
 
+#if 0
     TApplication application("", &dummyc, dummyv);
     TCanvas canvas("canvas", "", 960 + 4, 720 + 28);
-#if 0
     TH1D histogram0("histogram0", "", 120, -2, 2);
     TH1D histogram1("histogram1", "", 120, -2, 2);
 
@@ -81,16 +84,40 @@ int jet_efp(int argc, char *argv[])
     Float_t _branch_jet_ak04tpc_phi[32768];
     Float_t _branch_jet_ak04tpc_efp_raw[32768][489];
 
-    for (int iarg = 1; iarg < argc; iarg++) {
+    SysUtil::Args args(argc, argv);
+    if (args.isSet("-f"))
+    {
+        Linfo << "file argument set... ok.";
+    }
+    else
+    {
+        Lerror << "file argument -f not set";
+        return -1;
+    }
+
+    int findex = 1;
+    for (int iarg = argc - 1; iarg > 0; iarg--) {
+        std::string s(argv[iarg]);
+        if (s.rfind("-f", 0) == 0) {
+            continue;
+        }
+        findex = iarg++;
+        break;
+    }
+    Linfo << "using findex at position" << findex;
+    for (int iarg = findex; iarg < argc; iarg++) {
+
         TFile *file = TFile::Open(argv[iarg]);
 
         if (file == NULL) {
             exit(EXIT_FAILURE);
         }
 
-        TTree *_tree_event = dynamic_cast<TTree *>
-            (dynamic_cast<TDirectoryFile *>
-             (file->Get("AliAnalysisTaskNTGJ"))->Get("_tree_event"));
+        TDirectoryFile *ntgj = dynamic_cast<TDirectoryFile *>
+            (file->Get("AliAnalysisTaskNTGJ"));
+        TDirectoryFile *pwghf = dynamic_cast<TDirectoryFile *>
+            (file->Get("PWGHF_TreeCreator"));
+        TTree *t = NULL;
 
         UInt_t ntrack;
         Float_t track_e[NTRACK_MAX];
@@ -98,13 +125,26 @@ int jet_efp(int argc, char *argv[])
         Float_t track_eta[NTRACK_MAX];
         Float_t track_phi[NTRACK_MAX];
         UChar_t track_quality[NTRACK_MAX];
+        UInt_t track_event_id;
 
-        _tree_event->SetBranchAddress("ntrack", &ntrack);
-        _tree_event->SetBranchAddress("track_e", track_e);
-        _tree_event->SetBranchAddress("track_pt", track_pt);
-        _tree_event->SetBranchAddress("track_eta", track_eta);
-        _tree_event->SetBranchAddress("track_phi", track_phi);
-        _tree_event->SetBranchAddress("track_quality", track_quality);
+        if (ntgj != NULL) {
+            t = dynamic_cast<TTree *>(ntgj->Get("_tree_event"));
+
+            t->SetBranchAddress("ntrack", &ntrack);
+            t->SetBranchAddress("track_e", track_e);
+            t->SetBranchAddress("track_pt", track_pt);
+            t->SetBranchAddress("track_eta", track_eta);
+            t->SetBranchAddress("track_phi", track_phi);
+            t->SetBranchAddress("track_quality", track_quality);
+        }
+        else if (pwghf != NULL) {
+            t = dynamic_cast<TTree *>(pwghf->Get("tree_Particle"));
+
+            t->SetBranchAddress("ParticlePt", track_pt);
+            t->SetBranchAddress("ParticleEta", track_eta);
+            t->SetBranchAddress("ParticlePhi", track_phi);
+            t->SetBranchAddress("ev_id", &track_event_id);
+        }
 
 #ifdef FASTJET_MEDIAN
         fastjet::JetMedianBackgroundEstimator fastjet_ue_estimator(
@@ -115,31 +155,65 @@ int jet_efp(int argc, char *argv[])
                 fastjet::GhostedAreaSpec(0.9)));
 #endif // FASTJET_MEDIAN
 
-        for (Long64_t i = 0; i < _tree_event->GetEntries(); i++) {
-            _tree_event->GetEntry(i);
-
+        TLorentzVector last_v;
+        Long64_t nentries = t->GetEntries();
+        LoopUtil::TPbar pbar(nentries);
+        for (Long64_t i = 0; i < nentries; i++) {
+            t->GetEntry(i);
+            pbar.Update();
             std::vector<fastjet::PseudoJet> particle_reco_tpc;
             std::vector<point_2d_t> particle_reco_area_estimation;
-            std::map<size_t, size_t> track_reco_index;
-            double sum_pt = 0;
 
-            for (UInt_t j = 0; j < ntrack; j++) {
-                if ((track_quality[j] & 3) != 0 &&
-                    std::isfinite(track_eta[j]) &&
-                    std::isfinite(track_phi[j])) {
-                    track_reco_index[j] = particle_reco_tpc.size();
+            if (ntgj != NULL) {
+                for (UInt_t j = 0; j < ntrack; j++) {
+                    if ((track_quality[j] & 3) != 0 &&
+                        std::isfinite(track_eta[j]) &&
+                        std::isfinite(track_phi[j])) {
+                        TLorentzVector v;
 
-                    TLorentzVector v;
-
-                    v.SetPtEtaPhiE(track_pt[j], track_eta[j],
-                                   track_phi[j], track_e[j]);
-                    particle_reco_tpc.push_back(fastjet::PseudoJet(
-                        v.Px(), v.Py(), v.Pz(), v.P()));
-                    particle_reco_area_estimation.push_back(
-                        point_2d_t(track_eta[j], track_phi[j]));
-                    sum_pt += track_pt[j];
+                        v.SetPtEtaPhiE(track_pt[j], track_eta[j],
+                                       track_phi[j], track_e[j]);
+                        particle_reco_tpc.push_back(fastjet::PseudoJet(
+                            v.Px(), v.Py(), v.Pz(), v.P()));
+                        particle_reco_area_estimation.push_back(
+                            point_2d_t(track_eta[j], track_phi[j]));
+                    }
                 }
             }
+            else if (pwghf != NULL) {
+#if 1
+                if (i > 0) {
+                    particle_reco_tpc.push_back(fastjet::PseudoJet(
+                        last_v.Px(), last_v.Py(), last_v.Pz(),
+                        last_v.P()));
+                }
+
+                const UInt_t current_event_id = track_event_id;
+
+                while (true) {
+                    // http://pdg.lbl.gov/2019/listings/
+                    // rpp2019-list-pi-plus-minus.pdf
+                    static const double piplusminus_mass =
+                        139.57061e-3;
+                    TLorentzVector v;
+
+                    v.SetPtEtaPhiM(track_pt[0], track_eta[0],
+                                   track_phi[0], piplusminus_mass);
+                    particle_reco_tpc.push_back(fastjet::PseudoJet(
+                        v.Px(), v.Py(), v.Pz(), v.P()));
+                    t->GetEntry(++i);
+                    if (i >= t->GetEntries() ||
+                        track_event_id != current_event_id) {
+                        v.SetPtEtaPhiM(track_pt[0], track_eta[0],
+                                       track_phi[0], piplusminus_mass);
+                        last_v = v;
+                        break;
+                    }
+                }
+#endif
+            }
+
+            // fprintf(stderr, "%s:%d: %lu\n", __FILE__, __LINE__, particle_reco_tpc.size());
 
             for (size_t j = 0; j < particle_reco_tpc.size(); j++) {
                 particle_reco_tpc[j].set_user_index(static_cast<int>(j));
@@ -231,23 +305,25 @@ int jet_efp(int argc, char *argv[])
 #endif // FASTJET_MEDIAN
                 }
 #endif
+            }
 
-// #ifdef WITH_EFP7
-// #define FILL_EFP7_NO_TRUTH 1
-// #include <fill_efp7.cc>
-// #undef FILL_EFP7_NO_TRUTH
-// #endif // WITH_EFP7
+//#ifdef WITH_EFP7
+//#define FILL_EFP7_NO_TRUTH 1
+//#include <fill_efp7.cc>
+//#undef FILL_EFP7_NO_TRUTH
+//#endif // WITH_EFP7
 
+//#ifdef WITH_EFP7
 #define FILL_EFP7_NO_TRUTH 1
 FILL_EFP7(efp_raw, particle_reco_tpc, jet_ak04tpc, eta_raw, 0.4);
 #ifndef FILL_EFP7_NO_TRUTH
 FILL_EFP7(efp, particle_truth, jet_truth_ak04, eta, 0.4);
-FILL_EFP7(efp, particle_charged_truth, jet_charged_truth_ak04, eta,
-          0.4);
+FILL_EFP7(efp, particle_charged_truth, jet_charged_truth_ak04, eta, 0.4);
 #endif // FILL_EFP7_NO_TRUTH
 #undef FILL_EFP7_NO_TRUTH
+//#endif // WITH_EFP7
 
-            }
+
 
 #if 0
             if (i % 100 == 0) {
